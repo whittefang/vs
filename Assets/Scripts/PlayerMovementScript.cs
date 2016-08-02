@@ -3,17 +3,21 @@ using System.Collections;
 
 public class PlayerMovementScript : MonoBehaviour {
 	Rigidbody2D RB;
-	public float speedMax = 0, jumpForce = 0, jumpDistance = 0;
+	public float speedMax = 0, jumpForce = 0, jumpDistance = 0, groundDistance = 0;
 	float currentSpeed = 0;
 	InputScript IS;
+	SpriteAnimator spriteAnimator;
+	FighterStateMachineScript state;
 	float deadSize = .15f;
 	bool canMove = true, grounded = true;
 	int groundedBuffer = 0;
 	int groundMask = 1 << 8;
 	// Use this for initialization
 	void Awake () {
+		state = GetComponent<FighterStateMachineScript>();
 		IS = GetComponent<InputScript> ();
 		RB = GetComponent<Rigidbody2D> ();
+		spriteAnimator = GetComponent<SpriteAnimator> ();
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
 	}
@@ -23,7 +27,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	
 	}
 	public void ProcessMovement(float x,  float y){
-		if (canMove) {
+		if (canMove && state.GetState() == "neutral") {
 			if (x < deadSize && x > -deadSize) {
 				x = 0;
 			}
@@ -33,8 +37,20 @@ public class PlayerMovementScript : MonoBehaviour {
 			GroundCheck ();
 			JumpCheck (x, y);
 			if (grounded) {
-				RB.velocity = new Vector2 (x * currentSpeed, RB.velocity.y);
+				
+				if (x > 0) {
+					RB.velocity = new Vector2 (currentSpeed, RB.velocity.y);
+					spriteAnimator.PlayWalkAnim ();
+				} else if(x < 0){
+					RB.velocity = new Vector2 (-currentSpeed, RB.velocity.y);
+					spriteAnimator.PlayWalkAwayAnim ();
+				}else if (x == 0){
+					RB.velocity = new Vector2 (0, RB.velocity.y);
+					spriteAnimator.PlayNeutralAnim ();
+				}
 			}
+		}else {
+			RB.velocity = Vector2.zero;
 		}
 	}
 	public void SetSpeed(float newSpeed = 0){
@@ -44,7 +60,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		currentSpeed = speedMax;
 	}
 	public void JumpCheck(float x, float y){
-		if (y > .25f) {
+		if (y > .4f) {
 			if (x > .25f) {
 				// forward
 				TowardJump();
@@ -60,8 +76,10 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void NeutralJump(){
 		if (grounded) {
+			RB.velocity = Vector2.zero;
 
 			// prejump frames
+			spriteAnimator.PlayJumpNeutral();
 			RB.AddForce (new Vector2 (0, jumpForce));
 			grounded = false;
 			groundedBuffer = 3;
@@ -69,8 +87,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void TowardJump(){
 		if (grounded){
-
+			RB.velocity = Vector2.zero;
 			// prejump frames
+			spriteAnimator.PlayJumpToward();
 			RB.AddForce (new Vector2(jumpDistance, jumpForce));
 			grounded = false;
 			groundedBuffer = 3;
@@ -78,7 +97,10 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void AwayJump(){
 		if (grounded) {
+
+			RB.velocity = Vector2.zero;
 			// prejump frames
+			spriteAnimator.PlayJumpAway();
 			RB.AddForce (new Vector2 (-jumpDistance, jumpForce));
 			grounded = false;
 			groundedBuffer = 3;
@@ -88,19 +110,16 @@ public class PlayerMovementScript : MonoBehaviour {
 		if (!grounded) {
 			// do a check for ground
 			//.35f
-			Debug.Log("beep");
-			RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, .7f, groundMask);
+			RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, groundDistance, groundMask);
 
 			if (groundCheck.collider != null && groundedBuffer <= 0) {
 
 				// landing frames
 
-				Debug.Log("biip");
 				grounded = true;
 			} else if (groundedBuffer > 0) {
 				groundedBuffer--;
 
-				Debug.Log("boop");
 			}
 		}
 	}

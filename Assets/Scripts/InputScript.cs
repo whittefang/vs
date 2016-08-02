@@ -36,10 +36,12 @@ public class InputScript : MonoBehaviour {
 
 		// Detect if a button was pressed this frame
 		if (prevState.Buttons.X == ButtonState.Released && state.Buttons.X == ButtonState.Pressed&& xButtonPress!=null) {
+			Debug.Log ("x press");
 			xButtonPress ();
 		}
 		// Detect if a button was released this frame
 		if (prevState.Buttons.X == ButtonState.Pressed && state.Buttons.X == ButtonState.Released&& xButtonRelease!=null) {
+			Debug.Log ("x press");
 			xButtonRelease ();
 		}
 
@@ -76,6 +78,7 @@ public class InputScript : MonoBehaviour {
 	}
 	// takes in function delegate and assigns them to appropriate buttons
 	public void assignXButton(buttonDelegate xPress, buttonDelegate xRelease){
+		Debug.Log ("set");
 		xButtonPress = xPress;
 		xButtonRelease = xRelease;
 	}
