@@ -27,30 +27,29 @@ public class PlayerMovementScript : MonoBehaviour {
 	
 	}
 	public void ProcessMovement(float x,  float y){
-		if (canMove && state.GetState() == "neutral") {
+		if (canMove && state.GetState () == "neutral") {
 			if (x < deadSize && x > -deadSize) {
 				x = 0;
 			}
 			if (y < deadSize && y > -deadSize) {
 				y = 0;
 			}
-			GroundCheck ();
 			JumpCheck (x, y);
 			if (grounded) {
 				
 				if (x > 0) {
 					RB.velocity = new Vector2 (currentSpeed, RB.velocity.y);
 					spriteAnimator.PlayWalkAnim ();
-				} else if(x < 0){
+				} else if (x < 0) {
 					RB.velocity = new Vector2 (-currentSpeed, RB.velocity.y);
 					spriteAnimator.PlayWalkAwayAnim ();
-				}else if (x == 0){
+				} else if (x == 0) {
 					RB.velocity = new Vector2 (0, RB.velocity.y);
 					spriteAnimator.PlayNeutralAnim ();
 				}
 			}
-		}else {
-			RB.velocity = Vector2.zero;
+		} else if (state.GetState () == "jumping" || state.GetState () == "jump attack") {
+			GroundCheck ();
 		}
 	}
 	public void SetSpeed(float newSpeed = 0){
@@ -76,6 +75,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void NeutralJump(){
 		if (grounded) {
+			state.SetState ("jumping");
 			RB.velocity = Vector2.zero;
 
 			// prejump frames
@@ -87,6 +87,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void TowardJump(){
 		if (grounded){
+			state.SetState ("jumping");
 			RB.velocity = Vector2.zero;
 			// prejump frames
 			spriteAnimator.PlayJumpToward();
@@ -97,7 +98,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void AwayJump(){
 		if (grounded) {
-
+			state.SetState ("jumping");
 			RB.velocity = Vector2.zero;
 			// prejump frames
 			spriteAnimator.PlayJumpAway();
@@ -115,13 +116,19 @@ public class PlayerMovementScript : MonoBehaviour {
 			if (groundCheck.collider != null && groundedBuffer <= 0) {
 
 				// landing frames
-
+				state.SetState("neutral");
 				grounded = true;
 			} else if (groundedBuffer > 0) {
 				groundedBuffer--;
 
 			}
 		}
+	}
+	public void StopMovement(){
+		RB.velocity = Vector2.zero;
+	}
+	public void MoveToward(float speedx, float speedy = 0){
+		RB.velocity = new Vector2 (speedx, speedy);
 	}
 
 }

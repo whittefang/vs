@@ -11,6 +11,12 @@ public class RyuAnimations : MonoBehaviour {
 	public Sprite[] lightFrames;
 	public Sprite[] mediumFrames;
 	public Sprite[] heavyFrames;
+	public Sprite[] jumpLightFrames;
+	public Sprite[] jumpMediumFrames;
+	public Sprite[] jumpHeavyFrames;
+	public Sprite[] SpecialOneFrames;
+	public Sprite[] SpecialTwoFrames;
+	public Sprite[] SpecialThreeFrames;
 	public SpriteAnimator spriteAnimator;
 
 	SpriteRenderer spriteRenderer;
@@ -28,6 +34,12 @@ public class RyuAnimations : MonoBehaviour {
 		spriteAnimator.SetLightAnimation (StartLightAnim);
 		spriteAnimator.SetMediumAnimation (StartMediumAnim);
 		spriteAnimator.SetHeavyAnimation (StartHeavyAnim);
+		spriteAnimator.SetJumpLightAnimation (StartJumpLightAnim);
+		spriteAnimator.SetJumpMediumAnimation (StartJumpMediumAnim);
+		spriteAnimator.SetJumpHeavyAnimation (StartJumpHeavyAnim);
+		spriteAnimator.SetSpecialOneAnimation (StartSpecialOneAnim);
+		spriteAnimator.SetSpecialTwoAnimation (StartSpecialTwoAnim);
+		spriteAnimator.SetSpecialThreeAnimation (StartSpecialThreeAnim);
 	}
 	
 
@@ -105,16 +117,84 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator Medium(){
-		for (int i = 0; i < 5; i++) {
-			spriteRenderer.sprite = lightFrames [i];
+		for (int i = 0; i < 8; i++) {
+			spriteRenderer.sprite = mediumFrames [i];
 			for (int x = 0; x < 3; x++) {
 				yield return null;
 			}
 		}
 	}
 	IEnumerator Heavy(){
+		for (int i = 0; i < 14; i++) {
+			spriteRenderer.sprite = heavyFrames [i];
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator JumpLight(){
 		for (int i = 0; i < 5; i++) {
-			spriteRenderer.sprite = lightFrames [i];
+			spriteRenderer.sprite = jumpLightFrames [i];
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator JumpMedium(){
+		for (int i = 0; i < 9; i++) {
+			spriteRenderer.sprite = jumpMediumFrames [i];
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator JumpHeavy(){
+		for (int i = 0; i < 7; i++) {
+			spriteRenderer.sprite = jumpHeavyFrames [i];
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator SpecialOne(){
+		for (int i = 0; i < 12; i++) {
+			spriteRenderer.sprite = SpecialOneFrames [i];
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator SpecialTwo(){
+		for (int i = 0; i < 13; i++) {
+			spriteRenderer.sprite = SpecialTwoFrames [i];
+			// hold on rising uppercut
+			if (i == 5) {
+				for (int x = 0; x < 18; x++) {
+					yield return null;
+				}
+			}
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator SpecialThree(){
+		for (int i = 0; i < 4; i++) {
+			spriteRenderer.sprite = SpecialThreeFrames [i];
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+		for (int ii = 0; ii < 3; ii++) {
+			for (int i = 4; i < 12; i++) {
+				spriteRenderer.sprite = SpecialThreeFrames [i];
+				for (int x = 0; x < 3; x++) {
+					yield return null;
+				}
+			}
+		}
+		for (int i = 12; i < 15; i++) {
+			spriteRenderer.sprite = SpecialThreeFrames [i];
 			for (int x = 0; x < 3; x++) {
 				yield return null;
 			}
@@ -132,6 +212,30 @@ public class RyuAnimations : MonoBehaviour {
 		EndAnimations ();
 		StartCoroutine (Heavy());
 	}
+	public void StartJumpLightAnim(){
+		EndAnimations ();
+		StartCoroutine (JumpLight());
+	}
+	public void StartJumpMediumAnim(){
+		EndAnimations ();
+		StartCoroutine (JumpMedium());
+	}
+	public void StartJumpHeavyAnim(){
+		EndAnimations ();
+		StartCoroutine (JumpHeavy());
+	}
+	public void StartSpecialOneAnim(){
+		EndAnimations ();
+		StartCoroutine (SpecialOne());
+	}
+	public void StartSpecialTwoAnim(){
+		EndAnimations ();
+		StartCoroutine (SpecialTwo());
+	}
+	public void StartSpecialThreeAnim(){
+		EndAnimations ();
+		StartCoroutine (SpecialThree());
+	}
 	public void StartTowardJumpAnim(){
 		EndAnimations ();
 		StartCoroutine (JumpTowards());
@@ -144,6 +248,7 @@ public class RyuAnimations : MonoBehaviour {
 		EndAnimations ();
 		StartCoroutine (JumpNeutral());
 	}
+
 	public void StartWalkAnim(){
 		EndAnimations ();
 		StartCoroutine (loopAnimation (walkFrames));

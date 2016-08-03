@@ -4,7 +4,8 @@ using System.Collections;
 public class SpriteAnimator : MonoBehaviour {
 	public delegate void AnimationDelegate();
 	AnimationDelegate walkAnim, walkAwayAnim, stopAnimations, neutralAnim, jumpTowardAnim, jumpAwayAnim, jumpNeutralAnim,
-						lightAnim, mediumAnim, heavyAnim;
+					  lightAnim, mediumAnim, heavyAnim, jumpLightAnim, jumpMediumAnim, jumpHeavyAnim, specialOneAnim,
+					  specialTwoAnim,specialThreeAnim, throwAnim, superAnim;
 	public string currentState = "blank";
 	// Use this for initialization
 	void Start () {
@@ -60,6 +61,40 @@ public class SpriteAnimator : MonoBehaviour {
 		currentState = "heavy";
 		heavyAnim ();
 	}
+	public void PlayJumpLight(){
+		currentState = "jumpLight";
+		jumpLightAnim ();
+	}
+	public void PlayJumpMedium(){
+		currentState = "jumpMedium";
+		jumpMediumAnim ();
+	}
+	public void PlayJumpHeavy(){
+		currentState = "jumpHeavy";
+		jumpHeavyAnim ();
+	}
+	public void PlaySpecialOne(){
+		currentState = "special one";
+		specialOneAnim ();
+	}
+	public void PlaySpecialTwo(){
+		currentState = "special two";
+		specialTwoAnim ();
+	}
+	public void PlaySpecialThree(){
+		currentState = "special three";
+		specialThreeAnim ();
+	}
+	public void PlayThrow(){
+		currentState = "throw";
+		throwAnim ();
+	}
+	public void PlaySuper(){
+		currentState = "super";
+		superAnim ();
+	}
+
+
 	public void StopAnimations(){
 		stopAnimations ();
 	}
@@ -95,5 +130,29 @@ public class SpriteAnimator : MonoBehaviour {
 	}
 	public void SetHeavyAnimation(AnimationDelegate newAnim){
 		heavyAnim = newAnim;
+	}
+	public void SetJumpLightAnimation(AnimationDelegate newAnim){
+		jumpLightAnim = newAnim;
+	}
+	public void SetJumpMediumAnimation(AnimationDelegate newAnim){
+		jumpMediumAnim = newAnim;
+	}
+	public void SetJumpHeavyAnimation(AnimationDelegate newAnim){
+		jumpHeavyAnim = newAnim;
+	}
+	public void SetSpecialOneAnimation(AnimationDelegate newAnim){
+		specialOneAnim = newAnim;
+	}
+	public void SetSpecialTwoAnimation(AnimationDelegate newAnim){
+		specialTwoAnim = newAnim;
+	}
+	public void SetSpecialThreeAnimation(AnimationDelegate newAnim){
+		specialThreeAnim = newAnim;
+	}
+	public void SetThrowAnimation(AnimationDelegate newAnim){
+		throwAnim = newAnim;
+	}
+	public void SetSuperAnimation(AnimationDelegate newAnim){
+		superAnim = newAnim;
 	}
 }

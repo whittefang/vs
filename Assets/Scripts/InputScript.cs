@@ -5,7 +5,8 @@ using XInputDotNetPure; // Required in C#
 public class InputScript : MonoBehaviour {
 	public delegate void buttonDelegate();
 	public delegate void ThumbstickDelegate(float x, float y);
-	buttonDelegate aButtonPress, bButtonPress, xButtonPress, yButtonPress, aButtonRelease, bButtonRelease, xButtonRelease, yButtonRelease;
+	buttonDelegate aButtonPress, bButtonPress, xButtonPress, yButtonPress, aButtonRelease, bButtonRelease, xButtonRelease, yButtonRelease,
+					rbButtonPress, rbButtonRelease, rTriggerPress, rTriggerRelease;
 	ThumbstickDelegate leftStick;
 
 	PlayerIndex playerIndex;
@@ -36,12 +37,12 @@ public class InputScript : MonoBehaviour {
 
 		// Detect if a button was pressed this frame
 		if (prevState.Buttons.X == ButtonState.Released && state.Buttons.X == ButtonState.Pressed&& xButtonPress!=null) {
-			Debug.Log ("x press");
+			
 			xButtonPress ();
 		}
 		// Detect if a button was released this frame
 		if (prevState.Buttons.X == ButtonState.Pressed && state.Buttons.X == ButtonState.Released&& xButtonRelease!=null) {
-			Debug.Log ("x press");
+			
 			xButtonRelease ();
 		}
 
@@ -62,7 +63,22 @@ public class InputScript : MonoBehaviour {
 		if (prevState.Buttons.B == ButtonState.Pressed && state.Buttons.B == ButtonState.Released&& bButtonRelease!=null) {
 			bButtonRelease ();
 		}
-
+		// x button press
+		if (state.Buttons.RightShoulder == ButtonState.Pressed && prevState.Buttons.RightShoulder == ButtonState.Released&& rbButtonPress!=null) {
+			rbButtonPress ();
+		}
+		// Detect if a button was released this frame
+		if (prevState.Buttons.RightShoulder == ButtonState.Pressed && state.Buttons.RightShoulder == ButtonState.Released&& rbButtonRelease!=null) {
+			rbButtonRelease ();
+		}
+		// Detect if rt button was released this frame
+		if (prevState.Triggers.Right > .5f && state.Triggers.Right < .5f && rTriggerRelease!=null) {
+			rTriggerRelease ();
+		}
+		// Detect if rt button was pressed this frame
+		if (prevState.Triggers.Right < .5f && state.Triggers.Right > .5f && rTriggerPress!=null) {
+			rTriggerPress ();
+		}
 
 	}
 
@@ -78,7 +94,6 @@ public class InputScript : MonoBehaviour {
 	}
 	// takes in function delegate and assigns them to appropriate buttons
 	public void assignXButton(buttonDelegate xPress, buttonDelegate xRelease){
-		Debug.Log ("set");
 		xButtonPress = xPress;
 		xButtonRelease = xRelease;
 	}
@@ -86,6 +101,16 @@ public class InputScript : MonoBehaviour {
 	public void assignYButton(buttonDelegate yPress, buttonDelegate yRelease){
 		yButtonPress = yPress;
 		yButtonRelease = yRelease;
+	}
+	// takes in function delegate and assigns them to appropriate buttons
+	public void assignRBButton(buttonDelegate rbPress, buttonDelegate rbRelease){
+		rbButtonPress = rbPress;
+		rbButtonRelease = rbRelease;
+	}
+	// takes in function delegate and assigns them to appropriate buttons
+	public void assignRT(buttonDelegate rtPress, buttonDelegate rtRelease){
+		rTriggerPress = rtPress;
+		rTriggerRelease = rtRelease;
 	}
 	public void SetThumbstick(ThumbstickDelegate newLeftStick){
 		leftStick = newLeftStick;
