@@ -4,6 +4,7 @@ using System.Collections;
 public class HitboxScript : MonoBehaviour {
 	public int damage;
 	public int pnum;
+	public int hitstun;
 	public bool disableOnHit = false, isEnabled = true;
 	public string[] tagsToDamage;
 	public delegate void voidDel();
@@ -43,7 +44,7 @@ public class HitboxScript : MonoBehaviour {
 			}
 
 			// deal the damage
-			other.GetComponent<HealthScript> ().DealDamage (damage);
+			other.GetComponent<HealthScript> ().DealDamage (damage, hitstun);
 
 			// turn off object
 			if (disableOnHit) {

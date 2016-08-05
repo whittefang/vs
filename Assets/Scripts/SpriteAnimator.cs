@@ -5,7 +5,7 @@ public class SpriteAnimator : MonoBehaviour {
 	public delegate void AnimationDelegate();
 	AnimationDelegate walkAnim, walkAwayAnim, stopAnimations, neutralAnim, jumpTowardAnim, jumpAwayAnim, jumpNeutralAnim,
 					  lightAnim, mediumAnim, heavyAnim, jumpLightAnim, jumpMediumAnim, jumpHeavyAnim, specialOneAnim,
-					  specialTwoAnim,specialThreeAnim, throwAnim, superAnim;
+					  specialTwoAnim,specialThreeAnim, throwAnim, superAnim, hitAnim;
 	public string currentState = "blank";
 	// Use this for initialization
 	void Start () {
@@ -38,6 +38,7 @@ public class SpriteAnimator : MonoBehaviour {
 		}
 	}
 	public void PlayJumpToward(){
+		Debug.Log ("jump towarsds");
 		currentState = "jump towards";
 		jumpTowardAnim ();
 	}
@@ -92,6 +93,10 @@ public class SpriteAnimator : MonoBehaviour {
 	public void PlaySuper(){
 		currentState = "super";
 		superAnim ();
+	}
+	public void PlayHit(){
+		currentState = "hit";
+		hitAnim();
 	}
 
 
@@ -154,5 +159,8 @@ public class SpriteAnimator : MonoBehaviour {
 	}
 	public void SetSuperAnimation(AnimationDelegate newAnim){
 		superAnim = newAnim;
+	}
+	public void SetHitAnimation(AnimationDelegate newAnim){
+		hitAnim = newAnim;
 	}
 }

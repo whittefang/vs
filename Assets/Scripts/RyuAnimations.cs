@@ -17,6 +17,7 @@ public class RyuAnimations : MonoBehaviour {
 	public Sprite[] SpecialOneFrames;
 	public Sprite[] SpecialTwoFrames;
 	public Sprite[] SpecialThreeFrames;
+	public Sprite[] HitFrames;
 	public SpriteAnimator spriteAnimator;
 
 	SpriteRenderer spriteRenderer;
@@ -40,13 +41,16 @@ public class RyuAnimations : MonoBehaviour {
 		spriteAnimator.SetSpecialOneAnimation (StartSpecialOneAnim);
 		spriteAnimator.SetSpecialTwoAnimation (StartSpecialTwoAnim);
 		spriteAnimator.SetSpecialThreeAnimation (StartSpecialThreeAnim);
+		spriteAnimator.SetHitAnimation (StartHitAnim);
 	}
 	
 
 
 	IEnumerator loopAnimation(Sprite[] animationFrames){
+		//Debug.Log ("loop");
 		int currentFrame = 0;
 		while (true) {
+			
 			if (currentFrame >= animationFrames.Length) {
 				currentFrame = 0;
 			}
@@ -178,6 +182,14 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator Hit(){
+		for (int i = 0; i < 4; i++) {
+			spriteRenderer.sprite = HitFrames [i];
+			for (int x = 0; x < 3; x++) {
+				yield return null;
+			}
+		}
+	}
 	IEnumerator SpecialThree(){
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
@@ -248,9 +260,14 @@ public class RyuAnimations : MonoBehaviour {
 		EndAnimations ();
 		StartCoroutine (JumpNeutral());
 	}
-
-	public void StartWalkAnim(){
+	public void StartHitAnim(){
 		EndAnimations ();
+		StartCoroutine (Hit());
+	}
+	public void StartWalkAnim(){
+		Debug.Log ("walk");
+		EndAnimations ();
+		Debug.Log ("walk2");
 		StartCoroutine (loopAnimation (walkFrames));
 	}
 	public void StartWalkAwayAnim(){
