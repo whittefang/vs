@@ -53,11 +53,13 @@ public class HealthScript : MonoBehaviour {
 	IEnumerator InitateHitstun(int stunFrames){
 		state.SetState ("hitstun");
 		for (int x = 0; x < stunFrames; x++) {
+			if (PMS.ForceGroundCheck ()) {
+				PMS.EnableBodyBox ();
+			}
 			yield return null;
 		}
-		bool isGrounded = PMS.ForceGroundCheck ();
-		Debug.Log (isGrounded);
-		if (isGrounded) {
+
+		if (PMS.ForceGroundCheck ()) {
 			state.SetState ("neutral");
 		} else {
 			state.SetState ("falling hit");

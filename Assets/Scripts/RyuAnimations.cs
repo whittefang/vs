@@ -120,9 +120,9 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator Medium(){
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
-			for (int x = 0; x < 3; x++) {
+			for (int x = 0; x < 4; x++) {
 				yield return null;
 			}
 		}
@@ -146,6 +146,7 @@ public class RyuAnimations : MonoBehaviour {
 	IEnumerator JumpMedium(){
 		for (int i = 0; i < 9; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
+
 			for (int x = 0; x < 3; x++) {
 				yield return null;
 			}
@@ -172,7 +173,7 @@ public class RyuAnimations : MonoBehaviour {
 			spriteRenderer.sprite = SpecialTwoFrames [i];
 			// hold on rising uppercut
 			if (i == 5) {
-				for (int x = 0; x < 18; x++) {
+				for (int x = 0; x < 12; x++) {
 					yield return null;
 				}
 			}

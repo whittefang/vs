@@ -16,6 +16,9 @@ public class ProjectileScript : MonoBehaviour {
 			Invoke("TurnOffSelf", lifeDuration);
 		}
 	}
+	void OnDisable(){
+		CancelInvoke ();
+	}
 	void TurnOffSelf(){
 		bodyToTurnOff.SetActive (false);
 	}

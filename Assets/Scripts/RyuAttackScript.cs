@@ -7,7 +7,7 @@ public class RyuAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject fireball;
+	public GameObject fireball, lightHitbox, mediumHitbox, heavyHitbox, sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox;
 	ProjectileScript fireballProjectileScript;
 
 	// Use this for initialization
@@ -39,6 +39,13 @@ public class RyuAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 15; x++) {
+			if (x == 4) {
+				lightHitbox.SetActive (true);
+			}
+			if (x == 6) {
+				lightHitbox.SetActive (false);
+				state.SetState ("light recovery");
+			}
 			yield return null;
 		}
 		state.SetState ("neutral");
@@ -51,7 +58,8 @@ public class RyuAttackScript : MonoBehaviour {
 		}
 	}
 	public void Medium(){
-		if (state.GetState() == "neutral") {
+		if (state.GetState() == "neutral" || state.GetState() =="light recovery") {
+			StopAllCoroutines ();
 			StartCoroutine (mediumEnum ());
 		} else if (state.GetState () == "jumping") {
 			StartCoroutine (jumpMediumEnum ());
@@ -63,15 +71,16 @@ public class RyuAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 
-		for (int x = 0; x < 6; x++) {
+		for (int x = 0; x < 9; x++) {
 			yield return null;
 		}
-		PMS.MoveToward (5);
-		for (int x = 0; x < 6; x++) {
-			yield return null;
-		}
-		PMS.StopMovement ();
-		for (int x = 0; x < 12; x++) {
+		mediumHitbox.SetActive (true);
+
+		for (int x = 0; x < 18; x++) {
+			if (x == 2) {
+				mediumHitbox.SetActive (false);
+				state.SetState ("medium recovery");
+			}
 			yield return null;
 		}
 		state.SetState ("neutral");
@@ -84,7 +93,8 @@ public class RyuAttackScript : MonoBehaviour {
 		}
 	}
 	public void Heavy(){
-		if (state.GetState() == "neutral") {
+		if (state.GetState() == "neutral" || state.GetState() =="medium recovery") {
+			StopAllCoroutines ();
 			StartCoroutine (heavyEnum ());
 		} else if (state.GetState () == "jumping") {
 			StartCoroutine (jumpHeavyEnum ());
@@ -97,9 +107,15 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		PMS.MoveToward (10);
 		for (int x = 0; x < 22; x++) {
+			if (x == 18) {
+				heavyHitbox.SetActive (true);
+			}
 			yield return null;
 		}
+
 		PMS.StopMovement ();
+		heavyHitbox.SetActive (false);
+		state.SetState ("heavy recovery");
 		for (int x = 0; x < 20; x++) {
 			yield return null;
 		}
@@ -114,7 +130,8 @@ public class RyuAttackScript : MonoBehaviour {
 	}
 
 	public void SpecialOne(){
-		if (state.GetState() == "neutral" && !fireball.activeSelf) {
+		if ((state.GetState() == "neutral" || state.GetState() =="light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery") && !fireball.activeSelf) {
+			StopAllCoroutines ();
 			StartCoroutine (SpecialOneEnum ());
 		}
 
@@ -142,7 +159,8 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
-		if (state.GetState() == "neutral") {
+		if (state.GetState() == "neutral" || state.GetState() =="light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery"){
+			StopAllCoroutines ();
 			StartCoroutine (SpecialTwoEnum ());
 		}
 
@@ -152,16 +170,32 @@ public class RyuAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 14; x++) {
+			if (x == 3) {
+				state.SetState ("invincible");
+				sp2HitboxPart1.SetActive (true);
+			}
+
 			yield return null;
 		}
-		PMS.MoveToward (5, 20);
+
+
+		PMS.MoveToward (5, 25);
 		for (int x = 0; x < 46; x++) {
+			if (x == 1) {
+				state.SetState ("attack");
+				sp2HitboxPart1.SetActive (false);
+				sp2HitboxPart2.SetActive (true);
+			}
+			if (x == 15) {
+				sp2HitboxPart2.SetActive (false);
+			}
 			yield return null;
 		}
 		state.SetState ("neutral");
 	}
 	public void SpecialThree(){
-		if (state.GetState() == "neutral") {
+		if (state.GetState() == "neutral" || state.GetState() == "light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery") {
+			StopAllCoroutines ();
 			StartCoroutine (SpecialthreeEnum ());
 		}
 
@@ -174,6 +208,42 @@ public class RyuAttackScript : MonoBehaviour {
 			yield return null;
 		}
 		for (int x = 0; x < 80; x++) {
+			if (x == 9) {
+				sp3Hitbox.SetActive(true);
+			}
+			if (x == 12) {
+				sp3Hitbox.SetActive(false);
+			}
+			if (x == 18) {
+				sp3Hitbox.SetActive(true);
+			}
+			if (x == 21) {
+				sp3Hitbox.SetActive(false);
+			}
+			if (x == 33) {
+				sp3Hitbox.SetActive(true);
+			}
+			if (x == 35) {
+				sp3Hitbox.SetActive(false);
+			}
+			if (x == 42) {
+				sp3Hitbox.SetActive(true);
+			}
+			if (x == 45) {
+				sp3Hitbox.SetActive(false);
+			}
+			if (x == 59) {
+				sp3Hitbox.SetActive(true);
+			}
+			if (x == 61) {
+				sp3Hitbox.SetActive(false);
+			}
+			if (x == 66) {
+				sp3Hitbox.SetActive(true);
+			}
+			if (x == 68) {
+				sp3Hitbox.SetActive(false);
+			}
 			PMS.MoveToward (8);
 			yield return null;
 		}

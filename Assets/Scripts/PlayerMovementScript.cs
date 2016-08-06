@@ -9,10 +9,13 @@ public class PlayerMovementScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	SpriteRenderer SR;
 	FighterStateMachineScript state;
+	BoxCollider2D bodyBox;
 	float deadSize = .15f;
 	bool canMove = true, grounded = true;
 	int groundedBuffer = 0;
 	int groundMask = 1 << 8;
+	int onGroundMask = 10;
+	int jumpingMask = 9;
 	public GameObject otherPlayer;
 	public bool OnLeft;
 	// Use this for initialization
@@ -22,9 +25,9 @@ public class PlayerMovementScript : MonoBehaviour {
 		IS = GetComponent<InputScript> ();
 		RB = GetComponent<Rigidbody2D> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
+		bodyBox = GetComponent<BoxCollider2D> ();
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
-
 		if (tag == "playerOne") {
 			otherPlayer = GameObject.FindGameObjectWithTag ("playerTwo");
 		} else {
@@ -106,7 +109,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	public void NeutralJump(){
 		if (state.GetState() == "neutral") {
 			state.SetState ("jumping");
-
+			gameObject.layer = jumpingMask;
 			// prejump frames
 			spriteAnimator.PlayJumpNeutral();
 			RB.velocity = Vector2.zero;
@@ -118,6 +121,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	public void TowardJump(){
 		if (state.GetState() == "neutral"){
 			state.SetState ("jumping");
+			gameObject.layer = jumpingMask;
 			// prejump frames
 			if (OnLeft) {
 				spriteAnimator.PlayJumpToward ();
@@ -133,6 +137,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	public void AwayJump(){
 		if (state.GetState() == "neutral") {
 			state.SetState ("jumping");
+			gameObject.layer = jumpingMask;
 			// prejump frames
 			if (OnLeft) {
 				spriteAnimator.PlayJumpAway();
@@ -146,19 +151,20 @@ public class PlayerMovementScript : MonoBehaviour {
 		}
 	}
 	void GroundCheck(){
-			// do a check for ground
-			//.35f
-			RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, groundDistance, groundMask);
+		// do a check for ground
+		//.35f
+		RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, groundDistance, groundMask);
 
-			if (groundCheck.collider != null && groundedBuffer <= 0) {
+		if (groundCheck.collider != null && groundedBuffer <= 0) {
 
-				// landing frames
-				state.SetState("neutral");
-				grounded = true;
-			} else if (groundedBuffer > 0) {
-				groundedBuffer--;
+			// landing frames
+			state.SetState("neutral");
+			gameObject.layer = onGroundMask;
+			grounded = true;
+		} else if (groundedBuffer > 0) {
+			groundedBuffer--;
 
-			}
+		}
 	}
 	public bool ForceGroundCheck(){
 		RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, groundDistance, groundMask);
@@ -182,6 +188,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public bool CheckIfOnLeft(){
 		return OnLeft;
+	}
+	public void EnableBodyBox(){
+		gameObject.layer = onGroundMask;
 	}
 
 }

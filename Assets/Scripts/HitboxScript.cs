@@ -27,6 +27,7 @@ public class HitboxScript : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other){
+		Debug.Log (other.tag);
 		bool match = false;
 		// check if the tag is in the damage list
 		foreach (string x in tagsToDamage) {
