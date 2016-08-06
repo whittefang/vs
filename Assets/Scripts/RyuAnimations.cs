@@ -47,7 +47,6 @@ public class RyuAnimations : MonoBehaviour {
 
 
 	IEnumerator loopAnimation(Sprite[] animationFrames){
-		//Debug.Log ("loop");
 		int currentFrame = 0;
 		while (true) {
 			
@@ -265,9 +264,7 @@ public class RyuAnimations : MonoBehaviour {
 		StartCoroutine (Hit());
 	}
 	public void StartWalkAnim(){
-		Debug.Log ("walk");
 		EndAnimations ();
-		Debug.Log ("walk2");
 		StartCoroutine (loopAnimation (walkFrames));
 	}
 	public void StartWalkAwayAnim(){

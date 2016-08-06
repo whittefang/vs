@@ -5,7 +5,20 @@ public class ProjectileScript : MonoBehaviour {
 	public Vector2 direction;
 	public float speed = .1f;
 	bool movementEnabled = true;
-
+	public float lifeDuration = 0;
+	public bool useLimitedLife = false;
+	public  GameObject bodyToTurnOff;
+	void OnEnable(){
+		if (useLimitedLife) {
+			if (bodyToTurnOff == null){
+				bodyToTurnOff = this.gameObject;
+			}
+			Invoke("TurnOffSelf", lifeDuration);
+		}
+	}
+	void TurnOffSelf(){
+		bodyToTurnOff.SetActive (false);
+	}
 	public bool MovementEnabled{
 		get{
 			return movementEnabled;

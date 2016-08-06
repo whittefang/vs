@@ -38,7 +38,6 @@ public class SpriteAnimator : MonoBehaviour {
 		}
 	}
 	public void PlayJumpToward(){
-		Debug.Log ("jump towarsds");
 		currentState = "jump towards";
 		jumpTowardAnim ();
 	}
@@ -95,7 +94,7 @@ public class SpriteAnimator : MonoBehaviour {
 		superAnim ();
 	}
 	public void PlayHit(){
-		currentState = "hit";
+		currentState = "hitstun";
 		hitAnim();
 	}
 

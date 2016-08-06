@@ -6,8 +6,10 @@ public class AnimationLoopScript : MonoBehaviour {
 	SpriteRenderer  SR;
 	int currentFrame = 0;
 	// Use this for initialization
-	void Start () {
-		SR = GetComponent<SpriteRenderer> ();
+	void OnEnable () {
+		if (SR == null) {
+			SR = GetComponent<SpriteRenderer> ();
+		}
 		StartCoroutine (loop ());
 	}
 	

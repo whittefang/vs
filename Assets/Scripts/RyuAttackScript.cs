@@ -8,11 +8,13 @@ public class RyuAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject fireball;
+	ProjectileScript fireballProjectileScript;
 
 	// Use this for initialization
 	void Start () {
 		state = GetComponent<FighterStateMachineScript>();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
+		fireballProjectileScript = fireball.GetComponent < ProjectileScript> ();
 		PMS = GetComponent<PlayerMovementScript> ();
 		inputScript = GetComponent<InputScript> ();
 		inputScript.assignXButton (Light, null);
@@ -112,7 +114,7 @@ public class RyuAttackScript : MonoBehaviour {
 	}
 
 	public void SpecialOne(){
-		if (state.GetState() == "neutral") {
+		if (state.GetState() == "neutral" && !fireball.activeSelf) {
 			StartCoroutine (SpecialOneEnum ());
 		}
 
@@ -125,6 +127,14 @@ public class RyuAttackScript : MonoBehaviour {
 			yield return null;
 		}
 		fireball.transform.position = transform.position;
+		if (PMS.CheckIfOnLeft ()) {
+			fireball.GetComponentInChildren<SpriteRenderer> ().flipX = true;
+			fireballProjectileScript.direction = new Vector2 (1, 0);
+		} else {
+			fireball.GetComponentInChildren<SpriteRenderer> ().flipX = false;
+			fireballProjectileScript.direction = new Vector2 (-1, 0);
+		
+		}
 		fireball.SetActive (true);
 		for (int x = 0; x < 24; x++) {
 			yield return null;
