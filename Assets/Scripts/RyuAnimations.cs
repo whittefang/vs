@@ -18,9 +18,12 @@ public class RyuAnimations : MonoBehaviour {
 	public Sprite[] SpecialTwoFrames;
 	public Sprite[] SpecialThreeFrames;
 	public Sprite[] HitFrames;
+	public Sprite[] BlockFrames;
 	public SpriteAnimator spriteAnimator;
 
+	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
+	SoundsPlayer sound;
 	// Use this for initialization
 	void Start () {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -42,10 +45,14 @@ public class RyuAnimations : MonoBehaviour {
 		spriteAnimator.SetSpecialTwoAnimation (StartSpecialTwoAnim);
 		spriteAnimator.SetSpecialThreeAnimation (StartSpecialThreeAnim);
 		spriteAnimator.SetHitAnimation (StartHitAnim);
+		spriteAnimator.SetBlockAnimation (StartBlockAnim);
+
+		sound = GetComponent<SoundsPlayer> ();
+		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 	}
 	
 
-
+	//IEnumerator 
 	IEnumerator loopAnimation(Sprite[] animationFrames){
 		int currentFrame = 0;
 		while (true) {
@@ -56,40 +63,61 @@ public class RyuAnimations : MonoBehaviour {
 			spriteRenderer.sprite = animationFrames [currentFrame];
 			currentFrame++;
 			// number of frames to wait
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
 	IEnumerator JumpTowards(){
 		spriteRenderer.sprite = towardJumpFrames [0];
-		for (int x = 0; x < 3; x++) {
-			yield return null;
+		for (int x = 0; x < 3;) {
+			 yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		spriteRenderer.sprite = towardJumpFrames [1];
-		for (int x = 0; x < 10; x++) {
-			yield return null;
+		for (int x = 0; x < 10;) {
+			 yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = towardJumpFrames [i+2];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
 	IEnumerator JumpAway(){
 		spriteRenderer.sprite = towardJumpFrames [13];
-		for (int x = 0; x < 3; x++) {
-			yield return null;
+		for (int x = 0; x < 3;) {
+			 yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		spriteRenderer.sprite = towardJumpFrames [12];
-		for (int x = 10; x < 10; x++) {
-			yield return null;
+		for (int x = 10; x < 10;) {
+			 yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		for (int i = 11; i > 0; i--) {
 			spriteRenderer.sprite = towardJumpFrames [i];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 		spriteRenderer.sprite = towardJumpFrames [13];
@@ -97,49 +125,113 @@ public class RyuAnimations : MonoBehaviour {
 	IEnumerator JumpNeutral(){
 		
 		spriteRenderer.sprite = neutralJumpFrames [0];
-		for (int x = 0; x < 3; x++) {
-			yield return null;
+		for (int x = 0; x < 3;) {
+			 yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		spriteRenderer.sprite = neutralJumpFrames [1];
-		for (int x = 0; x < 6; x++) {
-			yield return null;
+		for (int x = 0; x < 6;) {
+			 yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		for (int i = 0; i < 9; i++) {
 			spriteRenderer.sprite = neutralJumpFrames [i+2];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
+	IEnumerator Hit(int duration){
+		for (int i = 1; i < 4; i++) {
+			spriteRenderer.sprite = HitFrames [i];
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+					duration--;
+				}	
+			}
+		}
+		while (duration > 0) {
+			if ((duration / 3) <= 3) {
+				
+				spriteRenderer.sprite = HitFrames[duration/3];
+				for (int x = 0; x < 3;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+						duration--;
+					}	
+				}
+			} else {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					duration--;
+				}
+
+			}
+		}
+	}
+	IEnumerator Block(){
+		for (int i = 0; i < 4; i++) {
+			spriteRenderer.sprite = BlockFrames [i];
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+			}
+		}
+	}
+	// depricated
 	IEnumerator Light(){
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = lightFrames [i];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
 	IEnumerator Medium(){
 		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
-			for (int x = 0; x < 4; x++) {
-				yield return null;
+			for (int x = 0; x < 4;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
 	IEnumerator Heavy(){
 		for (int i = 0; i < 14; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
 			}
 		}
 	}
 	IEnumerator JumpLight(){
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
-			for (int x = 0; x < 3; x++) {
+			for (int x = 0; x < 3;) {
 				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
 			}
 		}
 	}
@@ -147,68 +239,88 @@ public class RyuAnimations : MonoBehaviour {
 		for (int i = 0; i < 9; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
 	IEnumerator JumpHeavy(){
 		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = jumpHeavyFrames [i];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
 	IEnumerator SpecialOne(){
+		sound.PlaySP1 ();
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
 	IEnumerator SpecialTwo(){
+		sound.PlaySP2 ();
 		for (int i = 0; i < 13; i++) {
 			spriteRenderer.sprite = SpecialTwoFrames [i];
 			// hold on rising uppercut
 			if (i == 5) {
-				for (int x = 0; x < 12; x++) {
-					yield return null;
+				for (int x = 0; x < 12;) {
+					 yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 				}
 			}
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 	}
-	IEnumerator Hit(){
-		for (int i = 0; i < 4; i++) {
-			spriteRenderer.sprite = HitFrames [i];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
-			}
-		}
-	}
+
 	IEnumerator SpecialThree(){
+		sound.PlaySP3 ();
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
-			for (int x = 0; x < 3; x++) {
-				yield return null;
+			for (int x = 0; x < 3;) {
+				 yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 			}
 		}
 		for (int ii = 0; ii < 3; ii++) {
 			for (int i = 4; i < 12; i++) {
 				spriteRenderer.sprite = SpecialThreeFrames [i];
-				for (int x = 0; x < 3; x++) {
+				for (int x = 0; x < 3;) {
 					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
 				}
 			}
 		}
 		for (int i = 12; i < 15; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
-			for (int x = 0; x < 3; x++) {
+			for (int x = 0; x < 3;) {
 				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
 			}
 		}
 	}
@@ -260,9 +372,13 @@ public class RyuAnimations : MonoBehaviour {
 		EndAnimations ();
 		StartCoroutine (JumpNeutral());
 	}
-	public void StartHitAnim(){
+	public void StartHitAnim(int duration){
 		EndAnimations ();
-		StartCoroutine (Hit());
+		StartCoroutine (Hit(duration));
+	}
+	public void StartBlockAnim(){
+		EndAnimations ();
+		StartCoroutine (Block());
 	}
 	public void StartWalkAnim(){
 		EndAnimations ();

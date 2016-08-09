@@ -17,9 +17,15 @@ public class PlayerMovementScript : MonoBehaviour {
 	int onGroundMask = 10;
 	int jumpingMask = 9;
 	public GameObject otherPlayer;
+	public Transform attacksObject;
 	public bool OnLeft;
+	TimeManagerScript timeManager;
+	public delegate void vDelegate();
+	 vDelegate cancelAttacks;
+
 	// Use this for initialization
 	void Awake () {
+		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		SR = GetComponent<SpriteRenderer> ();
 		state = GetComponent<FighterStateMachineScript>();
 		IS = GetComponent<InputScript> ();
@@ -40,7 +46,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	
 	}
 	public void ProcessMovement(float x,  float y){
-		if (canMove && state.GetState () == "neutral") {
+		if (canMove && state.GetState () == "neutral" && !timeManager.CheckIfTimePaused()) {
 			if (x < deadSize && x > -deadSize) {
 				x = 0;
 			}
@@ -86,9 +92,11 @@ public class PlayerMovementScript : MonoBehaviour {
 		if (transform.position.x > otherPlayer.transform.position.x && state.GetState() == "neutral" && OnLeft == true) {
 			OnLeft = false;
 			SR.flipX = false;
+			attacksObject.eulerAngles = new Vector2(0, 180);
 		} else if (transform.position.x < otherPlayer.transform.position.x && state.GetState() == "neutral" && OnLeft == false){
 			OnLeft = true;
 			SR.flipX = true;
+			attacksObject.eulerAngles = new Vector2(0, 0);
 		}
 	}
 	public void JumpCheck(float x, float y){
@@ -158,6 +166,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		if (groundCheck.collider != null && groundedBuffer <= 0) {
 
 			// landing frames
+			cancelAttacks();
 			state.SetState("neutral");
 			gameObject.layer = onGroundMask;
 			grounded = true;
@@ -189,8 +198,19 @@ public class PlayerMovementScript : MonoBehaviour {
 	public bool CheckIfOnLeft(){
 		return OnLeft;
 	}
+	public bool CheckIfBlocking(){
+		if (OnLeft && state.GetState () == "neutral" && IS.GetX () < -.25f) {
+			return true;
+		}else if (!OnLeft && state.GetState() == "neutral" && IS.GetX() > .25f){
+			return true;
+		}else  {
+			return false;
+		}
+	}
 	public void EnableBodyBox(){
 		gameObject.layer = onGroundMask;
 	}
-
+	public void setAttackCancel(vDelegate newFunc){
+		cancelAttacks = newFunc;
+	}
 }

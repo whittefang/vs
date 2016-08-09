@@ -3,9 +3,11 @@ using System.Collections;
 
 public class SpriteAnimator : MonoBehaviour {
 	public delegate void AnimationDelegate();
+	public delegate void AnimationDelegateInt(int x);
 	AnimationDelegate walkAnim, walkAwayAnim, stopAnimations, neutralAnim, jumpTowardAnim, jumpAwayAnim, jumpNeutralAnim,
 					  lightAnim, mediumAnim, heavyAnim, jumpLightAnim, jumpMediumAnim, jumpHeavyAnim, specialOneAnim,
-					  specialTwoAnim,specialThreeAnim, throwAnim, superAnim, hitAnim;
+					  specialTwoAnim,specialThreeAnim, throwAnim, superAnim,  blockAnim;
+	AnimationDelegateInt hitAnim;
 	public string currentState = "blank";
 	// Use this for initialization
 	void Start () {
@@ -93,9 +95,13 @@ public class SpriteAnimator : MonoBehaviour {
 		currentState = "super";
 		superAnim ();
 	}
-	public void PlayHit(){
+	public void PlayHit(int duration){
 		currentState = "hitstun";
-		hitAnim();
+		hitAnim(duration);
+	}
+	public void PlayBlock(){
+		currentState = "Blockstun";
+		blockAnim();
 	}
 
 
@@ -159,7 +165,10 @@ public class SpriteAnimator : MonoBehaviour {
 	public void SetSuperAnimation(AnimationDelegate newAnim){
 		superAnim = newAnim;
 	}
-	public void SetHitAnimation(AnimationDelegate newAnim){
+	public void SetHitAnimation(AnimationDelegateInt newAnim){
 		hitAnim = newAnim;
+	}
+	public void SetBlockAnimation(AnimationDelegate newAnim){
+		blockAnim = newAnim;
 	}
 }

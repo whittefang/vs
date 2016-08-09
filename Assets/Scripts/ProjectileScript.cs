@@ -8,7 +8,12 @@ public class ProjectileScript : MonoBehaviour {
 	public float lifeDuration = 0;
 	public bool useLimitedLife = false;
 	public  GameObject bodyToTurnOff;
+	TimeManagerScript timeManager;
+
 	void OnEnable(){
+		if (timeManager == null) {
+			timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
+		}
 		if (useLimitedLife) {
 			if (bodyToTurnOff == null){
 				bodyToTurnOff = this.gameObject;
@@ -43,12 +48,20 @@ public class ProjectileScript : MonoBehaviour {
 		}
 	}
 	void Move(){
-		transform.position += (Vector3)direction * speed;
+		if (!timeManager.CheckIfTimePaused ()) {
+			transform.position += (Vector3)direction * speed;
+		}
+			
 	}
 	public void SetDirection(Vector2 newDirection){
 		direction = newDirection;
 	}
 	public void SetSpeed(float newSpeed){
 		speed = newSpeed;
+	}
+	void OnTriggerEnter2D(Collider2D other){
+		if (other.tag == "fireballKiller"){
+			gameObject.SetActive (false);
+		}
 	}
 }

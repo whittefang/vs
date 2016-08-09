@@ -7,12 +7,19 @@ public class RyuAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject fireball, lightHitbox, mediumHitbox, heavyHitbox, sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox;
+	public GameObject fireball, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox, sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox, fireballGunpoint;
 	ProjectileScript fireballProjectileScript;
+	TimeManagerScript timeManager;
+
+	SoundsPlayer sounds;
+	public HitboxScript lightHitboxScript, mediumHitboxScript, heavyHitboxScript;
+	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false;
 
 	// Use this for initialization
 	void Start () {
+		sounds = GetComponent<SoundsPlayer>();
 		state = GetComponent<FighterStateMachineScript>();
+		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		fireballProjectileScript = fireball.GetComponent < ProjectileScript> ();
 		PMS = GetComponent<PlayerMovementScript> ();
@@ -24,6 +31,11 @@ public class RyuAttackScript : MonoBehaviour {
 		inputScript.assignAButton (SpecialOne, null);
 		inputScript.assignBButton (SpecialTwo, null);
 		inputScript.assignRT (SpecialThree, null);
+
+		lightHitboxScript.SetOptFunc (LightHit);
+		mediumHitboxScript.SetOptFunc (MediumHit);
+		heavyHitboxScript.SetOptFunc (HeavyHit);
+		PMS.setAttackCancel (CancelAttacks);
 	}
 	
 	public void Light(){
@@ -38,27 +50,47 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlayLight ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 15; x++) {
+		for (int x = 0; x < 15;) {
+			// startup
+			// active
 			if (x == 4) {
 				lightHitbox.SetActive (true);
 			}
+			// recovery
 			if (x == 6) {
 				lightHitbox.SetActive (false);
 				state.SetState ("light recovery");
 			}
+
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
+		lightHitboxHit = false;
 		state.SetState ("neutral");
 	}
 	IEnumerator jumpLightEnum(){
 		spriteAnimator.PlayJumpLight ();
 		state.SetState ("jump attack");
-		for (int x = 0; x < 15; x++) {
+		for (int x = 0; x < 15; ) {
+			if (x == 4){
+				jumpLightHitbox.SetActive (true);
+			}
+			if (x == 10){
+				jumpLightHitbox.SetActive (false);
+			}
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 	}
 	public void Medium(){
-		if (state.GetState() == "neutral" || state.GetState() =="light recovery") {
+		if (state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit)) {
+			if (lightHitboxHit) {
+				lightHitboxHit = false;
+			}
 			StopAllCoroutines ();
 			StartCoroutine (mediumEnum ());
 		} else if (state.GetState () == "jumping") {
@@ -70,30 +102,47 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlayMedium ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
+		// startup
+		for (int x = 0; x < 27; ) {
 
-		for (int x = 0; x < 9; x++) {
-			yield return null;
-		}
-		mediumHitbox.SetActive (true);
-
-		for (int x = 0; x < 18; x++) {
-			if (x == 2) {
+			// active
+			if (x == 9) {
+				mediumHitbox.SetActive (true);
+			}
+			// recovery
+			if (x == 11){
 				mediumHitbox.SetActive (false);
 				state.SetState ("medium recovery");
 			}
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
+		mediumHitboxHit = false;
 		state.SetState ("neutral");
 	}
 	IEnumerator jumpMediumEnum(){
 		spriteAnimator.PlayJumpMedium ();
 		state.SetState ("jump attack");
-		for (int x = 0; x < 27; x++) {
+		for (int x = 0; x < 27;) {
+			if (x == 9) {
+				jumpMediumHitbox.SetActive (true);
+			}
+			if (x == 20) {
+				jumpMediumHitbox.SetActive (false);
+			}
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 	}
 	public void Heavy(){
-		if (state.GetState() == "neutral" || state.GetState() =="medium recovery") {
+		if (state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit)) {
+			if (mediumHitboxHit) {
+				mediumHitboxHit = false;
+			}
 			StopAllCoroutines ();
 			StartCoroutine (heavyEnum ());
 		} else if (state.GetState () == "jumping") {
@@ -106,31 +155,48 @@ public class RyuAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		PMS.MoveToward (10);
-		for (int x = 0; x < 22; x++) {
+		for (int x = 0; x < 42;) {
 			if (x == 18) {
 				heavyHitbox.SetActive (true);
 			}
-			yield return null;
-		}
 
-		PMS.StopMovement ();
-		heavyHitbox.SetActive (false);
-		state.SetState ("heavy recovery");
-		for (int x = 0; x < 20; x++) {
+			if (x == 22) {
+				PMS.StopMovement ();
+				heavyHitbox.SetActive (false);
+				state.SetState ("heavy recovery");
+			}
+
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
+		heavyHitboxHit = false;
 		state.SetState ("neutral");
 	}
 	IEnumerator jumpHeavyEnum(){
 		spriteAnimator.PlayJumpHeavy ();
 		state.SetState ("jump attack");
-		for (int x = 0; x < 21; x++) {
+		for (int x = 0; x < 21;) {
+			if (x == 7) {
+				jumpHeavyHitbox.SetActive (true);
+			}
+			if (x == 15) {
+				jumpHeavyHitbox.SetActive (false);
+			}
+
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 	}
 
 	public void SpecialOne(){
-		if ((state.GetState() == "neutral" || state.GetState() =="light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery") && !fireball.activeSelf) {
+		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() =="heavy recovery" && heavyHitboxHit)) && !fireball.activeSelf) {
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
 			StopAllCoroutines ();
 			StartCoroutine (SpecialOneEnum ());
 		}
@@ -140,26 +206,36 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 12; x++) {
-			yield return null;
-		}
-		fireball.transform.position = transform.position;
-		if (PMS.CheckIfOnLeft ()) {
-			fireball.GetComponentInChildren<SpriteRenderer> ().flipX = true;
-			fireballProjectileScript.direction = new Vector2 (1, 0);
-		} else {
-			fireball.GetComponentInChildren<SpriteRenderer> ().flipX = false;
-			fireballProjectileScript.direction = new Vector2 (-1, 0);
+		bool canShoot = true;
+		for (int x = 0; x < 26;) {
+			// active
+			if (x == 12 && canShoot) {
+				canShoot = false;
+				sounds.PlayExtra ();
+				fireball.transform.position = fireballGunpoint.transform.position;
+				if (PMS.CheckIfOnLeft ()) {
+					fireball.GetComponentInChildren<SpriteRenderer> ().flipX = true;
+					fireballProjectileScript.direction = new Vector2 (1, 0);
+				} else {
+					fireball.GetComponentInChildren<SpriteRenderer> ().flipX = false;
+					fireballProjectileScript.direction = new Vector2 (-1, 0);
 		
-		}
-		fireball.SetActive (true);
-		for (int x = 0; x < 24; x++) {
+				}
+				fireball.SetActive (true);
+			}
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+
 		}
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
 		if (state.GetState() == "neutral" || state.GetState() =="light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery"){
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
 			StopAllCoroutines ();
 			StartCoroutine (SpecialTwoEnum ());
 		}
@@ -169,32 +245,38 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialTwo ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 14; x++) {
+		// needs jumpbox turned off
+		for (int x = 0; x < 60;) {
 			if (x == 3) {
 				state.SetState ("invincible");
 				sp2HitboxPart1.SetActive (true);
 			}
 
-			yield return null;
-		}
+			if (x == 14) {
+				PMS.MoveToward (5, 25);
+			}
 
-
-		PMS.MoveToward (5, 25);
-		for (int x = 0; x < 46; x++) {
-			if (x == 1) {
+			if (x == 15){
 				state.SetState ("attack");
 				sp2HitboxPart1.SetActive (false);
 				sp2HitboxPart2.SetActive (true);
 			}
-			if (x == 15) {
+			if (x == 30) {
 				sp2HitboxPart2.SetActive (false);
 			}
+
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		state.SetState ("neutral");
 	}
 	public void SpecialThree(){
 		if (state.GetState() == "neutral" || state.GetState() == "light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery") {
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
 			StopAllCoroutines ();
 			StartCoroutine (SpecialthreeEnum ());
 		}
@@ -204,10 +286,13 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 6; x++) {
+		for (int x = 0; x < 6;) {
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
-		for (int x = 0; x < 80; x++) {
+		for (int x = 0; x < 80;) {
 			if (x == 9) {
 				sp3Hitbox.SetActive(true);
 			}
@@ -246,13 +331,41 @@ public class RyuAttackScript : MonoBehaviour {
 			}
 			PMS.MoveToward (8);
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		PMS.StopMovement ();
-		for (int x = 0; x < 10; x++) {
+			for (int x = 0; x < 10;) {
 			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
 		}
 		PMS.StopMovement ();
 		state.SetState ("neutral");
 	}
 
+
+	public void LightHit(){
+		lightHitboxHit = true;
+	}
+	public void MediumHit(){
+		mediumHitboxHit = true;
+	}
+	public void HeavyHit(){
+		heavyHitboxHit = true;
+	}
+	public void CancelAttacks(){
+		StopAllCoroutines ();
+		lightHitbox.SetActive (false);
+		mediumHitbox.SetActive (false);
+		heavyHitbox.SetActive (false);
+		jumpLightHitbox.SetActive (false);
+		jumpMediumHitbox.SetActive (false);
+		jumpHeavyHitbox.SetActive (false);
+		sp2HitboxPart1.SetActive (false);
+		sp2HitboxPart2.SetActive (false);
+		sp3Hitbox.SetActive (false);
+	}
 }
