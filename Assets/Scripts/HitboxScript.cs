@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HitboxScript : MonoBehaviour {
 	public int damage;
 	public int pnum;
 	public int hitstun;
 	public int blockstun;
-	public bool disableOnHit = false, isEnabled = true;
-	public string[] tagsToDamage;
+	public Vector2 hitPush, blockPush;
+	public bool disableOnHit = false, isEnabled = true, isProjectile = false, isThrow;
+	public List<string> tagsToDamage;
 	public delegate void voidDel();
+	public delegate void voidArgDel(Transform pos);
 	voidDel optionalFunc;
+	voidArgDel throwFunc;
 	TimeManagerScript timeManager;
 
 	// Use this for initialization
@@ -28,7 +32,9 @@ public class HitboxScript : MonoBehaviour {
 	public void SetOptFunc(voidDel newOptFunc){
 		optionalFunc = newOptFunc;
 	}
-
+	public void SetThrowFunc(voidArgDel newThrowFunc){
+		throwFunc = newThrowFunc;
+	}
 	void OnTriggerEnter2D(Collider2D other){
 		
 		bool match = false;
@@ -45,10 +51,12 @@ public class HitboxScript : MonoBehaviour {
 			if (optionalFunc != null){
 				optionalFunc ();
 			}
-
+			if (isThrow){
+				throwFunc (other.transform.parent.transform);
+			}
 			// deal the damage
 
-			other.GetComponent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position);
+			other.GetComponent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow);
 			
 
 			// turn off object
@@ -58,6 +66,9 @@ public class HitboxScript : MonoBehaviour {
 			}
 
 		}
+	}
+	public void AddTagToDamage(string newTag){
+		tagsToDamage.Add (newTag);
 	}
 
 }

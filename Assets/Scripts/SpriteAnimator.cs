@@ -6,7 +6,7 @@ public class SpriteAnimator : MonoBehaviour {
 	public delegate void AnimationDelegateInt(int x);
 	AnimationDelegate walkAnim, walkAwayAnim, stopAnimations, neutralAnim, jumpTowardAnim, jumpAwayAnim, jumpNeutralAnim,
 					  lightAnim, mediumAnim, heavyAnim, jumpLightAnim, jumpMediumAnim, jumpHeavyAnim, specialOneAnim,
-					  specialTwoAnim,specialThreeAnim, throwAnim, superAnim,  blockAnim;
+					  specialTwoAnim,specialThreeAnim, throwTryAnim,throwCompleteAnim, superAnim,  blockAnim;
 	AnimationDelegateInt hitAnim;
 	public string currentState = "blank";
 	// Use this for initialization
@@ -29,7 +29,9 @@ public class SpriteAnimator : MonoBehaviour {
 	}
 	public void PlayNeutralAnim(){
 		if (currentState != "neutral") {
-			neutralAnim ();
+			if (neutralAnim != null) {
+				neutralAnim ();
+			}
 			currentState = "neutral";
 		}
 	}
@@ -87,9 +89,13 @@ public class SpriteAnimator : MonoBehaviour {
 		currentState = "special three";
 		specialThreeAnim ();
 	}
-	public void PlayThrow(){
+	public void PlayThrowTry(){
 		currentState = "throw";
-		throwAnim ();
+		throwTryAnim ();
+	}
+	public void PlayThrowComplete(){
+		currentState = "throw";
+		throwCompleteAnim ();
 	}
 	public void PlaySuper(){
 		currentState = "super";
@@ -131,6 +137,7 @@ public class SpriteAnimator : MonoBehaviour {
 	}
 	public void SetNeutralAnimation(AnimationDelegate newAnim){
 		neutralAnim = newAnim;
+		PlayNeutralAnim ();
 	}
 	public void SetLightAnimation(AnimationDelegate newAnim){
 		lightAnim = newAnim;
@@ -159,9 +166,6 @@ public class SpriteAnimator : MonoBehaviour {
 	public void SetSpecialThreeAnimation(AnimationDelegate newAnim){
 		specialThreeAnim = newAnim;
 	}
-	public void SetThrowAnimation(AnimationDelegate newAnim){
-		throwAnim = newAnim;
-	}
 	public void SetSuperAnimation(AnimationDelegate newAnim){
 		superAnim = newAnim;
 	}
@@ -170,5 +174,11 @@ public class SpriteAnimator : MonoBehaviour {
 	}
 	public void SetBlockAnimation(AnimationDelegate newAnim){
 		blockAnim = newAnim;
+	}
+	public void SetThrowTryAnimation(AnimationDelegate newAnim){
+		throwTryAnim = newAnim;
+	}
+	public void SetThrowCompleteAnimation(AnimationDelegate newAnim){
+		throwCompleteAnim = newAnim;
 	}
 }

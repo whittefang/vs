@@ -39,8 +39,16 @@ public class PlayerMovementScript : MonoBehaviour {
 		} else {
 			otherPlayer = GameObject.FindGameObjectWithTag ("playerOne");
 		}
-	}
 
+		if (OnLeft) {
+			SR.flipX = true;
+			attacksObject.eulerAngles = new Vector2(0, 0);
+		}else {
+			SR.flipX = false;
+			attacksObject.eulerAngles = new Vector2(0, 180);
+		}
+		spriteAnimator.PlayNeutralAnim ();
+	}
 	// Update is called once per frame
 	void Update () {
 	
@@ -169,6 +177,7 @@ public class PlayerMovementScript : MonoBehaviour {
 			cancelAttacks();
 			state.SetState("neutral");
 			gameObject.layer = onGroundMask;
+			CheckFacing ();
 			grounded = true;
 		} else if (groundedBuffer > 0) {
 			groundedBuffer--;
@@ -199,9 +208,9 @@ public class PlayerMovementScript : MonoBehaviour {
 		return OnLeft;
 	}
 	public bool CheckIfBlocking(){
-		if (OnLeft && state.GetState () == "neutral" && IS.GetX () < -.25f) {
+		if (OnLeft && (state.GetState () == "neutral" || state.GetState() == "blockstun") && IS.GetX () < -.25f) {
 			return true;
-		}else if (!OnLeft && state.GetState() == "neutral" && IS.GetX() > .25f){
+		}else if (!OnLeft && (state.GetState() == "neutral" || state.GetState() == "blockstun") && IS.GetX() > .25f){
 			return true;
 		}else  {
 			return false;
@@ -210,7 +219,11 @@ public class PlayerMovementScript : MonoBehaviour {
 	public void EnableBodyBox(){
 		gameObject.layer = onGroundMask;
 	}
+	public void DsableBodyBox(){
+		gameObject.layer = jumpingMask;
+	}
 	public void setAttackCancel(vDelegate newFunc){
 		cancelAttacks = newFunc;
 	}
+
 }

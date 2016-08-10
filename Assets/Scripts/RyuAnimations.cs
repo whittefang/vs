@@ -8,6 +8,7 @@ public class RyuAnimations : MonoBehaviour {
 	public Sprite[] neutralJumpFrames;
 	public Sprite[] towardJumpFrames;
 	public Sprite[] awayJumpFrames;
+	public Sprite[] throwFrames;
 	public Sprite[] lightFrames;
 	public Sprite[] mediumFrames;
 	public Sprite[] heavyFrames;
@@ -20,6 +21,7 @@ public class RyuAnimations : MonoBehaviour {
 	public Sprite[] HitFrames;
 	public Sprite[] BlockFrames;
 	public SpriteAnimator spriteAnimator;
+
 
 	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
@@ -46,7 +48,9 @@ public class RyuAnimations : MonoBehaviour {
 		spriteAnimator.SetSpecialThreeAnimation (StartSpecialThreeAnim);
 		spriteAnimator.SetHitAnimation (StartHitAnim);
 		spriteAnimator.SetBlockAnimation (StartBlockAnim);
-
+		spriteAnimator.SetThrowTryAnimation (StartThrowTryAnim);
+		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
+		StartNeutralAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 	}
@@ -54,6 +58,7 @@ public class RyuAnimations : MonoBehaviour {
 
 	//IEnumerator 
 	IEnumerator loopAnimation(Sprite[] animationFrames){
+		Debug.Log ("neutral");
 		int currentFrame = 0;
 		while (true) {
 			
@@ -149,7 +154,7 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator Hit(int duration){
-		for (int i = 1; i < 4; i++) {
+		for (int i = 0; i < 3; i++) {
 			spriteRenderer.sprite = HitFrames [i];
 			for (int x = 0; x < 3;) {
 				 yield return null;
@@ -161,8 +166,11 @@ public class RyuAnimations : MonoBehaviour {
 		}
 		while (duration > 0) {
 			if ((duration / 3) <= 3) {
-				
-				spriteRenderer.sprite = HitFrames[duration/3];
+				int frame = 2 + (4 - (duration / 3));
+				if (frame >= 5) {
+					frame = 5;
+				}
+				spriteRenderer.sprite = HitFrames[frame ];
 				for (int x = 0; x < 3;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused ()) {
@@ -324,6 +332,29 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator ThrowTry(){
+		spriteRenderer.sprite = throwFrames [0];
+		for (int x = 0; x < 10;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+		}
+	}
+	IEnumerator ThrowComplete(){
+		Debug.Log ("throw");
+
+		for (int i = 1; i < 14; i++) {
+			spriteRenderer.sprite = throwFrames [i];
+
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+	}
 	public void StartLightAnim(){
 		EndAnimations ();
 		StartCoroutine (Light());
@@ -392,6 +423,14 @@ public class RyuAnimations : MonoBehaviour {
 	public void StartNeutralAnim(){
 		EndAnimations ();
 		StartCoroutine (loopAnimation (neutralFrames));
+	}
+	public void StartThrowTryAnim(){
+		EndAnimations ();
+		StartCoroutine (ThrowTry ());
+	}
+	public void StartThrowCompleteAnim(){
+		EndAnimations ();
+		StartCoroutine (ThrowComplete ());
 	}
 	public void EndAnimations(){
 		StopAllCoroutines ();
