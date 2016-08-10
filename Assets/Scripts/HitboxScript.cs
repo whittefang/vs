@@ -21,7 +21,11 @@ public class HitboxScript : MonoBehaviour {
 
 
 	}
-
+	void OnEnable(){
+		if (isProjectile) {
+			GetComponent<BoxCollider2D> ().enabled = true;
+		}
+	}
 	// Update is called once per frame
 	void Update () {
 	
@@ -61,8 +65,12 @@ public class HitboxScript : MonoBehaviour {
 
 			// turn off object
 			if (disableOnHit) {
-				Debug.Log ("turnoff");
+				//Debug.Log ("turnoff");
 				gameObject.SetActive (false);
+			}
+			if (isProjectile) {
+				GetComponent<BoxCollider2D> ().enabled = false;
+				GetComponentInParent<ProjectileScript>().Kill ();
 			}
 
 		}

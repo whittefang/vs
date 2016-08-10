@@ -20,6 +20,9 @@ public class ProjectileScript : MonoBehaviour {
 			}
 			Invoke("TurnOffSelf", lifeDuration);
 		}
+
+		movementEnabled = true;
+		GetComponent<BoxCollider2D> ().enabled = true;
 	}
 	void OnDisable(){
 		CancelInvoke ();
@@ -62,6 +65,15 @@ public class ProjectileScript : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other){
 		if (other.tag == "fireballKiller"){
 			gameObject.SetActive (false);
+		}else if (other.tag == "projectile"){
+			other.GetComponent<ProjectileScript> ().Kill ();
+			Kill ();
 		}
+	}
+	public void Kill(){
+		movementEnabled = false;
+		GetComponentInChildren<AnimationLoopScript> ().StopAnimation ();
+		GetComponentInChildren<AnimateOnce> ().Animate ();
+		GetComponent<BoxCollider2D> ().enabled = false;
 	}
 }

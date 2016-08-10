@@ -2,9 +2,10 @@
 using System.Collections;
 
 public class AnimateOnce : MonoBehaviour {
-	SpriteRenderer SR;
+	public SpriteRenderer SR;
 	public Sprite[] frames;
 	TimeManagerScript timeManager;
+	public bool startOnEnable = true;
 	// Use this for initialization
 	void Start () {
 	
@@ -15,12 +16,14 @@ public class AnimateOnce : MonoBehaviour {
 	
 	}
 	void OnEnable(){
-		if (SR == null) {
-			SR = GetComponent<SpriteRenderer> ();
-		}
 		if (timeManager == null) {
 			timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		}
+		if (startOnEnable) {
+			StartCoroutine (animate ());
+		}
+	}
+	public void Animate(){
 		StartCoroutine (animate ());
 	}
 	IEnumerator animate(){

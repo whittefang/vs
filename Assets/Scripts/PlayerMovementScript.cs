@@ -18,7 +18,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	int jumpingMask = 9;
 	public GameObject otherPlayer;
 	public Transform attacksObject;
-	public bool OnLeft;
+	public bool OnLeft, canProximityBlock;
 	TimeManagerScript timeManager;
 	public delegate void vDelegate();
 	 vDelegate cancelAttacks;
@@ -65,18 +65,25 @@ public class PlayerMovementScript : MonoBehaviour {
 			JumpCheck (x, y);
 			if (state.GetState () == "neutral") {
 				if (x > 0) {
-					RB.velocity = new Vector2 (currentSpeed, RB.velocity.y);
 					if (OnLeft) {
 						spriteAnimator.PlayWalkAnim ();
-					} else {
+						RB.velocity = new Vector2 (currentSpeed, RB.velocity.y);
+					} else if (!canProximityBlock){
 						spriteAnimator.PlayWalkAwayAnim ();
+						RB.velocity = new Vector2 (currentSpeed, RB.velocity.y);
+					}else {
+						RB.velocity = new Vector2 (0, RB.velocity.y);
 					}
 				} else if (x < 0) {
-					RB.velocity = new Vector2 (-currentSpeed, RB.velocity.y);
-					if (OnLeft) {
+					
+					if (OnLeft && !canProximityBlock) {
 						spriteAnimator.PlayWalkAwayAnim ();
-					}else  {
+						RB.velocity = new Vector2 (-currentSpeed, RB.velocity.y);
+					}else if (!OnLeft) {
 						spriteAnimator.PlayWalkAnim ();
+						RB.velocity = new Vector2 (-currentSpeed, RB.velocity.y);
+					}else {
+						RB.velocity = new Vector2 (0, RB.velocity.y);
 					}
 				} else if (x == 0) {
 					RB.velocity = new Vector2 (0, RB.velocity.y);
@@ -224,6 +231,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void setAttackCancel(vDelegate newFunc){
 		cancelAttacks = newFunc;
+	}
+	public void setProximityBlock(bool enable = false){
+		canProximityBlock = enable;
 	}
 
 }

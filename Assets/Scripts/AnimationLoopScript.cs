@@ -17,6 +17,9 @@ public class AnimationLoopScript : MonoBehaviour {
 	void FixedUpdate () {
 		
 	}
+	public void StopAnimation(){
+		StopAllCoroutines ();
+	}
 	IEnumerator loop(){
 		while (true) {
 			SR.sprite = frames [currentFrame];
