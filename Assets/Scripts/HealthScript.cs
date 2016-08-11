@@ -4,6 +4,8 @@ using System.Collections;
 public class HealthScript : MonoBehaviour {
 	public int healthAmount;
 	public int healthMax = 1000;
+	public int exMax = 1000;
+	public int exCurrent = 0;
 	public delegate void DeathEvent();
 	DeathEvent DeathFunc, HitFunc;
 	FighterStateMachineScript state;
@@ -83,7 +85,7 @@ public class HealthScript : MonoBehaviour {
 				comboDamage = amount;
 			}
 			healthAmount -= (int)(amount * comboScaling);
-
+			exCurrent += (int)((amount * comboScaling) *.7f);
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft (amount);
 			} else {
