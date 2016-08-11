@@ -36,6 +36,11 @@ public class RightHpBarChange : MonoBehaviour {
 		float floatChange = 0;
 		Debug.Log ("floatChange = " + floatChange + "newestHp = " + newestHpR + "damage = " + damageR + "maxHp = " + maxHpR);
 
+		// newestHpR -= damageR;
+		// newsetHpR < 0 
+		// (maxHpR - damageR)/ maxHpR
+		// newScale = (newestHpR/maxHpR) * 6
+		// newscal < 0
 
 		floatChange = (newestHpR/maxHpR) - ((newestHpR - damageR) / maxHpR);
 		newestHpR = newestHpR - damageR; 

@@ -26,6 +26,7 @@ public class RyuAnimations : MonoBehaviour {
 	public SpriteAnimator spriteAnimator;
 	public BoxCollider2D hurtbox;
 	public GameObject Bag;
+	public GameObject SuperBG;
 
 
 	TimeManagerScript timeManager;
@@ -55,6 +56,9 @@ public class RyuAnimations : MonoBehaviour {
 		spriteAnimator.SetBlockAnimation (StartBlockAnim);
 		spriteAnimator.SetThrowTryAnimation (StartThrowTryAnim);
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
+		spriteAnimator.SetSuperAnimation (StartSuperAnim);
+		spriteAnimator.setWinAnimation (StartWinAnim);
+		hurtbox.gameObject.GetComponent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
@@ -93,6 +97,18 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator DeathAnim(){
+		Debug.Log ("death");
+		sound.PlayDeath ();
+
+		timeManager.StopTimeForce (60);
+		for(int i = 0; i < deathFrames.Length; i++){
+			spriteRenderer.sprite = deathFrames [i];
+			for (int x = 0; x < 5; x++) {
+				yield return null;
+			}
+		}
+	}
 	IEnumerator introAnim(){
 		spriteRenderer.sprite = introFrames [0];
 		for (int x = 0; x < 60;) {
@@ -115,6 +131,7 @@ public class RyuAnimations : MonoBehaviour {
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){
+		hurtbox.offset = new Vector2 (0, 0);
 		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		spriteRenderer.sprite = towardJumpFrames [0];
 		for (int x = 0; x < 3;) {
@@ -140,8 +157,10 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 		hurtbox.size  = new Vector2 (1.15f, 3.3f);
+		hurtbox.offset = new Vector2 ( 0, -.66f);
 	}
 	IEnumerator JumpAway(){
+		hurtbox.offset = new Vector2 (0, 0);
 		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		spriteRenderer.sprite = towardJumpFrames [13];
 		for (int x = 0; x < 3;) {
@@ -168,9 +187,11 @@ public class RyuAnimations : MonoBehaviour {
 		}
 		spriteRenderer.sprite = towardJumpFrames [13];
 		hurtbox.size  = new Vector2 (1.15f, 3.3f);
+		hurtbox.offset = new Vector2 ( 0, -.66f);
 	}
 	IEnumerator JumpNeutral(){
 
+		hurtbox.offset = new Vector2 (0, 0);
 		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		spriteRenderer.sprite = neutralJumpFrames [0];
 		for (int x = 0; x < 3;) {
@@ -195,6 +216,7 @@ public class RyuAnimations : MonoBehaviour {
 			}
 			}
 		}
+		hurtbox.offset = new Vector2 ( 0, -.66f);
 		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 	}
 	IEnumerator Hit(int duration){
@@ -330,6 +352,8 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 	}
+
+
 	IEnumerator SpecialTwo(){
 		sound.PlaySP2 ();
 		for (int i = 0; i < 13; i++) {
@@ -407,6 +431,35 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator SuperAnim(){
+		// super anim
+		// super sound
+		sound.PlaySuperBg();
+		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
+		SuperBG.SetActive(true);
+		timeManager.StopTime (75);
+		sound.PlaySuperWord ();
+
+		//sound.PlaySP1 ();
+		for (int i = 0; i < 12; i++) {
+			spriteRenderer.sprite = SpecialOneFrames [i];
+			if (i == 9) {
+				sound.PlaySP1 ();
+				for (int x = 0; x < 12;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					}
+				}
+			}
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+	}
 	public void StartLightAnim(){
 		EndAnimations ();
 		StartCoroutine (Light());
@@ -473,6 +526,8 @@ public class RyuAnimations : MonoBehaviour {
 	}
 
 	public void StartNeutralAnim(){
+
+		Debug.Log ("neutral");
 		EndAnimations ();
 		StartCoroutine (loopAnimation (neutralFrames));
 	}
@@ -486,15 +541,20 @@ public class RyuAnimations : MonoBehaviour {
 	}
 	public void StartDeathAnim(){
 		EndAnimations ();
-		StartCoroutine (AnimateOnce(deathFrames));
+		StartCoroutine (DeathAnim());
 	}
 	public void StartWinAnim(){
+		Debug.Log ("win");
 		EndAnimations ();
 		StartCoroutine (AnimateOnce(winFrames));
 	}
 	public void StartIntroAnim(){
 		EndAnimations ();
 		StartCoroutine (introAnim());
+	}
+	public void StartSuperAnim(){
+		EndAnimations ();
+		StartCoroutine (SuperAnim());
 	}
 	public void EndAnimations(){
 		hurtbox.size  = new Vector2 (1.15f, 3.3f);

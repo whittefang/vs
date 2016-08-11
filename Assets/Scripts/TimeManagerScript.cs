@@ -25,6 +25,10 @@ public class TimeManagerScript : MonoBehaviour {
 	public void StopTime(int numberOfFrames){
 		StartCoroutine (StopTimeEnum (numberOfFrames));
 	}
+	public void StopTimeForce(int numberOfFrames){
+		StopAllCoroutines ();
+		StartCoroutine (StopTimeEnum (numberOfFrames));
+	}
 	IEnumerator StepFrame(){
 		timePaused = false;
 		yield return null;

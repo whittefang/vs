@@ -15,9 +15,14 @@ public class HealthScript : MonoBehaviour {
 	TextMesh comboCounterText, comboDamageText;
 	public int comboCounter = 0, comboDamage = 0;
 	float comboScaling = 1, leftBound = -4.8f, rightBound = 4.8f;
+	LeftHpBarChange hpLeft;
+	RightHpBarChange hpRight;
+
 	// Use this for initialization
 	void OnEnable () {
 		if (tag == "playerOneHurtbox") {
+			hpLeft = GameObject.Find ("LeftHpBar").GetComponent<LeftHpBarChange> ();
+			hpLeft.setHpLeft (healthMax);
 			sounds = GameObject.Find ("P2MasterObject").GetComponent<SoundsPlayer>();
 			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
 			blocksparksPool = GameObject.Find ("P2BlockSparksObject").GetComponent<ObjectPoolScript> ();
@@ -25,6 +30,8 @@ public class HealthScript : MonoBehaviour {
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = GameObject.FindWithTag ("playerTwo").GetComponent<PlayerMovementScript>();
 		} else if (tag == "playerTwoHurtbox"){
+			hpRight = GameObject.Find ("RightHpBar").GetComponent<RightHpBarChange> ();
+			hpRight.setHpRight (healthMax);
 			sounds = GameObject.Find ("P1MasterObject").GetComponent<SoundsPlayer>();
 			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();
 			blocksparksPool = GameObject.Find ("P1BlockSparksObject").GetComponent<ObjectPoolScript> ();
@@ -55,8 +62,10 @@ public class HealthScript : MonoBehaviour {
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false){
 
 		// check for invincible or blocking
-		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState() != "blockstun") || 
+		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState() != "blockstun" && !(state.GetState() == "projectile invulnerable" && isProjectile)) || 
 			( isThrow && state.GetState() != "hitstun" && state.GetState() != "blockstun" && state.GetState() != "jumping" && state.GetState() != "jump attack"  )) {
+
+
 			// player got hit
 			// deal damage
 			if (state.GetState () == "hitstun") {
@@ -74,6 +83,14 @@ public class HealthScript : MonoBehaviour {
 				comboDamage = amount;
 			}
 			healthAmount -= (int)(amount * comboScaling);
+
+			if (hpLeft != null) {
+				hpLeft.changeBarLeft (amount);
+			} else {
+				hpRight.changeBarRight (amount);
+			}
+
+
 
 			// play hit animation
 			if (isThrow) {
@@ -96,6 +113,11 @@ public class HealthScript : MonoBehaviour {
 			StopAllCoroutines();
 			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile));
 			healthAmount -= (int)((float)amount * .05f);
+			if (hpLeft != null) {
+				hpLeft.changeBarLeft ((int)((float)amount * .05f));
+			} else {
+				hpRight.changeBarRight ((int)((float)amount * .05f));
+			}
 		}
 	}
 	public void CheckHealth(){
@@ -103,7 +125,12 @@ public class HealthScript : MonoBehaviour {
 			if (DeathFunc != null) {
 				DeathFunc ();
 			}
-			gameObject.SetActive (false);
+			PMS.EndGame ();
+			otherPlayerMovementScript.gameObject.GetComponent<InputScript> ().inputEnabled = false;
+			otherPlayerMovementScript.EndGame ();
+			otherPlayerMovementScript.GetComponent<SpriteAnimator> ().PlayWin ();
+			GetComponentInParent<InputScript> ().inputEnabled = false;
+			//gameObject.SetActive (false);
 		}
 	}
 	IEnumerator InitiateBlockstun(int stunFrames, Vector3 position, Vector2 bockPush, bool isProjectile){
@@ -172,6 +199,9 @@ public class HealthScript : MonoBehaviour {
 	}
 	public void SetHitFunc(DeathEvent newFunc){
 		HitFunc = newFunc;
+	}
+	public void SetDeathFunc(DeathEvent newFunc){
+		DeathFunc = newFunc;
 	}
 
 }

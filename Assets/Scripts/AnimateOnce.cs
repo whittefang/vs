@@ -6,6 +6,8 @@ public class AnimateOnce : MonoBehaviour {
 	public Sprite[] frames;
 	TimeManagerScript timeManager;
 	public bool startOnEnable = true;
+	public bool animateDurtingPause = false;
+	public int speed = 3;
 	// Use this for initialization
 	void Start () {
 	
@@ -29,8 +31,10 @@ public class AnimateOnce : MonoBehaviour {
 	IEnumerator animate(){
 		for (int x = 0; x < frames.Length; x++) {
 			SR.sprite = frames [x];
-			for (int i =0; i < 3;){
+			for (int i =0; i < speed;){
 				if (!timeManager.CheckIfTimePaused()) {
+					i++;
+				}else if (animateDurtingPause){
 					i++;
 				}
 				yield return null;
