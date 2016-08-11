@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SoundsPlayer : MonoBehaviour {
 	AudioSource AS;
-	public AudioClip SP1, SP2, SP3, light, medium, heavy, extra, block, throwHit; 
+	public AudioClip SP1, SP2, SP3, light, medium, heavy, extra, block, throwHit, superBg, superWord, death; 
 	public AudioClip[] hits;
 	// Use this for initialization
 	void Start () {
@@ -45,5 +45,13 @@ public class SoundsPlayer : MonoBehaviour {
 	public void PlayThrowHit(){
 		AS.PlayOneShot (throwHit);
 	}
-
+	public void PlaySuperBg(){
+		AS.PlayOneShot (superBg);
+	}
+	public void PlaySuperWord(){
+		AS.PlayOneShot (superWord);
+	}
+	public void PlayDeath(){
+		AS.PlayOneShot (death);
+	}
 }

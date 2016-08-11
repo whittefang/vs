@@ -7,6 +7,7 @@ public class ProjectileScript : MonoBehaviour {
 	bool movementEnabled = true;
 	public float lifeDuration = 0;
 	public bool useLimitedLife = false;
+	public int projecttileStrength = 1;
 	public  GameObject bodyToTurnOff;
 	TimeManagerScript timeManager;
 
@@ -66,8 +67,16 @@ public class ProjectileScript : MonoBehaviour {
 		if (other.tag == "fireballKiller"){
 			gameObject.SetActive (false);
 		}else if (other.tag == "projectile"){
-			other.GetComponent<ProjectileScript> ().Kill ();
-			Kill ();
+			int otherStrength = other.GetComponent<ProjectileScript> ().projecttileStrength;
+			if (projecttileStrength > otherStrength) {
+				other.GetComponent<ProjectileScript> ().Kill ();
+			} else if (projecttileStrength == otherStrength) {
+
+				other.GetComponent<ProjectileScript> ().Kill ();
+				Kill ();
+			} else {
+				Kill ();
+			}
 		}
 	}
 	public void Kill(){

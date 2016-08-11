@@ -7,10 +7,10 @@ public class RyuAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject fireball, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
+	public GameObject fireball, superFireball, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
 					sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
 
-	ProjectileScript fireballProjectileScript ;
+	ProjectileScript fireballProjectileScript , superProjectileScript;
 	TimeManagerScript timeManager;
 
 	SoundsPlayer sounds;
@@ -18,6 +18,7 @@ public class RyuAttackScript : MonoBehaviour {
 	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false;
 	public GameObject ThrowPoint;
 
+	bool  mediumBuffer = false, sp2Buffer = false;
 	Transform otherPlayer;
 	// Use this for initialization
 	void Start () {
@@ -33,6 +34,7 @@ public class RyuAttackScript : MonoBehaviour {
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		fireballProjectileScript = fireball.GetComponent < ProjectileScript> ();
+		superProjectileScript = superFireball.GetComponent<ProjectileScript> ();
 		PMS = GetComponent<PlayerMovementScript> ();
 		inputScript = GetComponent<InputScript> ();
 		inputScript.assignAXButton (Throw);
@@ -44,10 +46,13 @@ public class RyuAttackScript : MonoBehaviour {
 		inputScript.assignBButton (SpecialTwo, null);
 		inputScript.assignRT (SpecialThree, null);
 
+		inputScript.assignBYButton (Super);
+
 		lightHitboxScript.SetOptFunc (LightHit);
 		mediumHitboxScript.SetOptFunc (MediumHit);
 		heavyHitboxScript.SetOptFunc (HeavyHit);
 		throwHitboxScript.SetThrowFunc (ThrowHit);
+
 		PMS.setAttackCancel (CancelAttacks);
 	}
 
@@ -194,13 +199,16 @@ public class RyuAttackScript : MonoBehaviour {
 
 	}
 	IEnumerator mediumEnum(){
+		mediumBuffer = true;
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayMedium ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		// startup
 		for (int x = 0; x < 27; ) {
-
+			if (x == 3){
+				mediumBuffer = false;	
+			}
 			// active
 			if (x == 9) {
 				mediumHitbox.SetActive (true);
@@ -350,20 +358,22 @@ public class RyuAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialTwo ();
 		PMS.StopMovement ();
-
+		sp2Buffer = true;
 		//state.SetState ("attack");
 		// needs jumpbox turned off
 		state.SetState ("invincible");
-		PMS.MoveToward (5,0);
+		PMS.MoveToward (5f,0);
+
+		PMS.DsableBodyBox ();
 		for (int x = 0; x < 50;) {
 			
 			if (x == 3) {
+				sp2Buffer = false;
 				//PMS.StopMovement ();
 				sp2HitboxPart1.SetActive (true);
 			}
 
 			if (x == 14) {
-				PMS.DsableBodyBox ();
 				PMS.MoveToward (5, 20);
 			}
 
@@ -399,7 +409,7 @@ public class RyuAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
-		state.SetState ("attack");
+		state.SetState ("projectile invulnerable");
 		for (int x = 0; x < 6;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -461,6 +471,49 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 
+	public void Super(){
+		Debug.Log ("super");
+		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() =="heavy recovery" && heavyHitboxHit)) || mediumBuffer || sp2Buffer) {
+			mediumBuffer = false;
+			sp2Buffer = false;
+			Debug.Log ("super2");
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
+			StopAllCoroutines ();
+			StartCoroutine (SuperEnum ());
+		}
+	}
+	IEnumerator SuperEnum(){
+		proximityBox.SetActive (true);
+		spriteAnimator.PlaySuper ();
+		PMS.StopMovement ();
+		state.SetState ("attack");
+		bool canShoot = true;
+		for (int x = 0; x < 45;) {
+			// active
+			if (x == 12 && canShoot) {
+				canShoot = false;
+				sounds.PlayExtra ();
+				superFireball.transform.position = fireballGunpoint.transform.position;
+				if (PMS.CheckIfOnLeft ()) {
+					superFireball.transform.eulerAngles = new Vector2(0, 0);
+					superProjectileScript.direction = new Vector2 (1, 0);
+				} else {
+					superFireball.transform.eulerAngles = new Vector2(0, 180);
+					superProjectileScript.direction = new Vector2 (-1, 0);
+				}
+				superFireball.SetActive (true);
+				proximityBox.SetActive (false);
+			}
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+
+		}
+		state.SetState ("neutral");
+	}
 
 	public void LightHit(){
 		lightHitboxHit = true;
@@ -472,6 +525,8 @@ public class RyuAttackScript : MonoBehaviour {
 		heavyHitboxHit = true;
 	}
 	public void CancelAttacks(){
+		mediumBuffer = false;
+		sp2Buffer = false;
 		StopAllCoroutines ();
 		lightHitbox.SetActive (false);
 		mediumHitbox.SetActive (false);
@@ -500,6 +555,7 @@ public class RyuAttackScript : MonoBehaviour {
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			fireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			superFireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 
 		} else {
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
@@ -514,6 +570,7 @@ public class RyuAttackScript : MonoBehaviour {
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			fireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			superFireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 		}
 	}
 }

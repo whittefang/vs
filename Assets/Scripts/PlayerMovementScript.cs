@@ -205,6 +205,9 @@ public class PlayerMovementScript : MonoBehaviour {
 		RB.velocity = Vector2.zero;
 	}
 	public void MoveToward(float speedx, float speedy = 0){
+		if (speedy == 0) {
+			speedy = RB.velocity.y;
+		}
 		if (OnLeft) {
 			RB.velocity = new Vector2 (speedx, speedy);
 		} else {
@@ -234,6 +237,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void setProximityBlock(bool enable = false){
 		canProximityBlock = enable;
+	}
+	public void EndGame(){
+		canMove = false;
 	}
 
 }
