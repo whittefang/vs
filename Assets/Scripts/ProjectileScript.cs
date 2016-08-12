@@ -6,7 +6,7 @@ public class ProjectileScript : MonoBehaviour {
 	public float speed = .1f;
 	bool movementEnabled = true;
 	public float lifeDuration = 0;
-	public bool useLimitedLife = false;
+	public bool useLimitedLife = false, enableFireballKiller = true;
 	public int projecttileStrength = 1;
 	public  GameObject bodyToTurnOff;
 	TimeManagerScript timeManager;
@@ -64,7 +64,7 @@ public class ProjectileScript : MonoBehaviour {
 		speed = newSpeed;
 	}
 	void OnTriggerEnter2D(Collider2D other){
-		if (other.tag == "fireballKiller"){
+		if (other.tag == "fireballKiller" && enableFireballKiller){
 			gameObject.SetActive (false);
 		}else if (other.tag == "projectile"){
 			int otherStrength = other.GetComponent<ProjectileScript> ().projecttileStrength;

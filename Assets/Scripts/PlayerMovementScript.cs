@@ -16,9 +16,10 @@ public class PlayerMovementScript : MonoBehaviour {
 	int groundMask = 1 << 8;
 	int onGroundMask = 10;
 	int jumpingMask = 9;
+	public int landingRecoveryFrames = 0;
 	public GameObject otherPlayer;
 	public Transform attacksObject;
-	public bool OnLeft, canProximityBlock;
+	public bool OnLeft, canProximityBlock, jumpAway = false;
 	TimeManagerScript timeManager;
 	public delegate void vDelegate();
 	 vDelegate cancelAttacks;
@@ -135,6 +136,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		if (y > .4f) {
 			if (x > .25f) {
 				// forward
+				jumpAway = false;
 				TowardJump();
 
 			} else if (x < -.25f) {
@@ -142,6 +144,7 @@ public class PlayerMovementScript : MonoBehaviour {
 				AwayJump();
 			} else {
 				// neutral
+				jumpAway = false;
 				NeutralJump();
 			} 
 		}
@@ -163,8 +166,12 @@ public class PlayerMovementScript : MonoBehaviour {
 			gameObject.layer = jumpingMask;
 			// prejump frames
 			if (OnLeft) {
+
+				jumpAway = false;
 				spriteAnimator.PlayJumpToward ();
 			}else{
+
+				jumpAway = true;
 				spriteAnimator.PlayJumpAway ();
 			}
 			RB.velocity = Vector2.zero;
@@ -178,8 +185,12 @@ public class PlayerMovementScript : MonoBehaviour {
 			gameObject.layer = jumpingMask;
 			// prejump frames
 			if (OnLeft) {
+				jumpAway = true;
+
 				spriteAnimator.PlayJumpAway();
 			}else{
+
+				jumpAway = false;
 				spriteAnimator.PlayJumpToward ();
 			}
 			RB.velocity = Vector2.zero;
@@ -196,7 +207,12 @@ public class PlayerMovementScript : MonoBehaviour {
 
 			// landing frames
 			cancelAttacks();
-			state.SetState("neutral");
+			if (landingRecoveryFrames > 0) {
+				StopMovement ();
+				landingRecoveryFrames--;
+			} else {
+				state.SetState ("neutral");
+			}
 			gameObject.layer = onGroundMask;
 			CheckFacing ();
 		} else if (groundedBuffer > 0) {
@@ -204,6 +220,7 @@ public class PlayerMovementScript : MonoBehaviour {
 
 		}
 	}
+
 	public bool ForceGroundCheck(){
 		RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, groundDistance, groundMask);
 

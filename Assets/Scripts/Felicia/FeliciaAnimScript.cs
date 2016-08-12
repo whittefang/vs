@@ -25,6 +25,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 	public Sprite[] introFrames;
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
+	public Sprite[] SuperFrames;
 	public SpriteAnimator spriteAnimator;
 	public BoxCollider2D hurtbox;
 	public GameObject SuperBG;
@@ -445,27 +446,31 @@ public class FeliciaAnimScript : MonoBehaviour {
 		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
 		SuperBG.SetActive(true);
 		timeManager.StopTime (75);
-		sound.PlaySuperWord ();
+		//sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
-		for (int i = 0; i < 12; i++) {
-			spriteRenderer.sprite = SpecialOneFrames [i];
-			if (i == 9) {
-				sound.PlaySP1 ();
-				for (int x = 0; x < 12;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
-						x++;
-					}
-				}
-			}
-			for (int x = 0; x < 3;) {
+		for (int i = 4; i < 11; i++) {
+			spriteRenderer.sprite = SuperFrames [i];
+			for (int x = 0; x < 5;) {
 				yield return null;
-				if (!timeManager.CheckIfTimePaused()) {
-					x++;
+				//if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+				//}
+			}
+		}
+
+		for (int ii = 0; ii < 2; ii++) {
+			for (int i = 0; i < 4; i++) {
+				spriteRenderer.sprite = SuperFrames [i];
+				for (int x = 0; x < 5;) {
+					yield return null;
+					//if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					//}
 				}
 			}
 		}
+
 	}
 	public void StartLightAnim(){
 		EndAnimations ();

@@ -8,7 +8,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject lightHitbox, mediumHitbox,mediumHitboxPart2, heavyHitbox, jumpLightHitbox,jumpLightHitboxPart2, jumpMediumHitbox, jumpHeavyHitbox,
-	sp1Hitbox, sp1HitboxPart2, sp1HitboxPart3, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
+	sp1Hitbox, sp1HitboxPart2, sp1HitboxPart3, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox, fireballGunpoint, throwHitbox, superHitbox, proximityBox;
 
 	TimeManagerScript timeManager;
 
@@ -274,7 +274,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			}
 			StopAllCoroutines ();
 			StartCoroutine (heavyEnum ());
-		} else if (state.GetState () == "jumping") {
+		} else if (state.GetState () == "jumping" && transform.position.y > 1.2f && !PMS.jumpAway) {
 			StartCoroutine (jumpHeavyEnum ());
 		}
 
@@ -311,6 +311,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayJumpHeavy ();
 		state.SetState ("jump attack");
+		PMS.landingRecoveryFrames = 4;
 		for (int x = 0; x < 21;) {
 			if (x == 4) {
 
@@ -433,9 +434,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.DsableBodyBox ();
 		state.SetState ("attack");
 		for (int x = 0; x < 18;) {
-			if (x < 15) {
-				PMS.MoveToward (15f,0);
-			}
+			
 			if (x == 3) {
 				sp2Buffer = false;
 			}
@@ -443,7 +442,12 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x < 15) {
+					PMS.MoveToward (15f, 0);
+				} 
 				x++;
+			}else {
+				PMS.StopMovement ();
 			}
 		}
 		transform.position  = new Vector3(transform.position.x, transform.position.y, 0);
@@ -469,9 +473,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		state.SetState ("projectile invulnerable");
 
 		for (int x = 0; x < 27;) {
-			if (x > 6) {
-				PMS.MoveToward (15);
-			}
+			
 			if (x == 9) {
 				sp3Hitbox.SetActive(true);
 			}
@@ -481,7 +483,12 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x > 6) {
+					PMS.MoveToward (15);
+				}
 				x++;
+			} else {
+				PMS.StopMovement ();
 			}
 		}
 		PMS.StopMovement ();
@@ -489,14 +496,13 @@ public class FeliciaAttackScript : MonoBehaviour {
 	}
 
 	public void Super(){
-		Debug.Log ("super");
+		health.exCurrent = 1000;
 		if (health.exCurrent >= 1000 && ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || 
 			(state.GetState() =="medium recovery" && mediumHitboxHit) || 
 			(state.GetState() =="heavy recovery" && heavyHitboxHit)) || mediumBuffer || sp2Buffer)) {
 			health.AddMeter (-1000);
 			mediumBuffer = false;
 			sp2Buffer = false;
-			Debug.Log ("super2");
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -505,18 +511,22 @@ public class FeliciaAttackScript : MonoBehaviour {
 		}
 	}
 	IEnumerator SuperEnum(){
-		proximityBox.SetActive (true);
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		bool canShoot = true;
 		for (int x = 0; x < 45;) {
 			// active
-			if (x == 12 && canShoot) {
-				canShoot = false;
-				sounds.PlayExtra ();
-
-				proximityBox.SetActive (false);
+			if (x == 1) {
+				if (PMS.CheckIfOnLeft ()) {
+					superHitbox.transform.position = new Vector3( GameObject.Find ("Camera").transform.position.x - 8.25f, -2.5f, 0);
+					superHitbox.transform.eulerAngles = new Vector2(0, 0);
+					superHitbox.GetComponent<ProjectileScript>().direction = new Vector2 (1, 0);
+				} else {
+					superHitbox.transform.position = new Vector3( GameObject.Find ("Camera").transform.position.x + 8.25f, -2.5f, 0);
+					superHitbox.transform.eulerAngles = new Vector2(0, 180);
+					superHitbox.GetComponent<ProjectileScript>().direction = new Vector2 (-1, 0);
+				}
+				superHitbox.SetActive (true);
 			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -574,6 +584,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			sp2HitboxPart2.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			superHitbox.GetComponentInChildren<HitboxScript> ().AddTagToDamage ("playerTwoHurtbox");
 
 		} else {
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
@@ -591,6 +602,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			sp2HitboxPart2.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			superHitbox.GetComponentInChildren<HitboxScript> ().AddTagToDamage ("playerOneHurtbox");
 		}
 	}
 }
