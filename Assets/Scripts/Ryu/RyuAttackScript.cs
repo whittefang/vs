@@ -19,6 +19,7 @@ public class RyuAttackScript : MonoBehaviour {
 	public GameObject ThrowPoint;
 
 	bool  mediumBuffer = false, sp2Buffer = false;
+	HealthScript health;
 	Transform otherPlayer;
 	// Use this for initialization
 	void Start () {
@@ -28,7 +29,8 @@ public class RyuAttackScript : MonoBehaviour {
 			SetPlayer (false);
 		}
 			
-		GetComponentInChildren<HealthScript> ().SetHitFunc (CancelAttacks);
+		health = GetComponentInChildren<HealthScript> ();
+		health.SetHitFunc (CancelAttacks);
 		sounds = GetComponent<SoundsPlayer>();
 		state = GetComponent<FighterStateMachineScript>();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
@@ -143,6 +145,7 @@ public class RyuAttackScript : MonoBehaviour {
 
 	}
 	IEnumerator lightEnum(){
+		health.AddMeter (10);
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayLight ();
 		PMS.StopMovement ();
@@ -199,6 +202,7 @@ public class RyuAttackScript : MonoBehaviour {
 
 	}
 	IEnumerator mediumEnum(){
+		health.AddMeter (15);
 		mediumBuffer = true;
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayMedium ();
@@ -258,6 +262,8 @@ public class RyuAttackScript : MonoBehaviour {
 
 	}
 	IEnumerator heavyEnum(){
+
+		health.AddMeter (20);
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayHeavy ();
 		PMS.StopMovement ();
@@ -314,6 +320,8 @@ public class RyuAttackScript : MonoBehaviour {
 
 	}
 	IEnumerator SpecialOneEnum(){
+
+		health.AddMeter (30);
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
@@ -355,6 +363,8 @@ public class RyuAttackScript : MonoBehaviour {
 
 	}
 	IEnumerator SpecialTwoEnum(){
+
+		health.AddMeter (30);
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialTwo ();
 		PMS.StopMovement ();
@@ -406,6 +416,8 @@ public class RyuAttackScript : MonoBehaviour {
 
 	}
 	IEnumerator SpecialthreeEnum(){
+
+		health.AddMeter (30);
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
@@ -473,7 +485,10 @@ public class RyuAttackScript : MonoBehaviour {
 
 	public void Super(){
 		Debug.Log ("super");
-		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() =="heavy recovery" && heavyHitboxHit)) || mediumBuffer || sp2Buffer) {
+		if (health.exCurrent >= 1000 && ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || 
+			(state.GetState() =="medium recovery" && mediumHitboxHit) || 
+			(state.GetState() =="heavy recovery" && heavyHitboxHit)) || mediumBuffer || sp2Buffer)) {
+			health.AddMeter (-1000);
 			mediumBuffer = false;
 			sp2Buffer = false;
 			Debug.Log ("super2");

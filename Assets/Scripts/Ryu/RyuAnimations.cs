@@ -86,7 +86,6 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator AnimateOnce (Sprite[] animationFrames){
-		int currentFrame = 0;
 		for(int i = 0; i < animationFrames.Length; i++){
 			spriteRenderer.sprite = animationFrames [i];
 			for (int x = 0; x < 3;) {
@@ -128,6 +127,7 @@ public class RyuAnimations : MonoBehaviour {
 		}
 		Bag.transform.position = transform.position;
 		Bag.SetActive (true);
+		GetComponent<InputScript> ().inputEnabled = true;
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){

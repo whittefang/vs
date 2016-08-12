@@ -23,7 +23,7 @@ public class HealthScript : MonoBehaviour {
 	// Use this for initialization
 	void OnEnable () {
 		if (tag == "playerOneHurtbox") {
-			hpLeft = GameObject.Find ("LeftHpBar").GetComponent<LeftHpBarChange> ();
+			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
 			hpLeft.setHpLeft (healthMax);
 			sounds = GameObject.Find ("P2MasterObject").GetComponent<SoundsPlayer>();
 			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
@@ -32,7 +32,7 @@ public class HealthScript : MonoBehaviour {
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = GameObject.FindWithTag ("playerTwo").GetComponent<PlayerMovementScript>();
 		} else if (tag == "playerTwoHurtbox"){
-			hpRight = GameObject.Find ("RightHpBar").GetComponent<RightHpBarChange> ();
+			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
 			hpRight.setHpRight (healthMax);
 			sounds = GameObject.Find ("P1MasterObject").GetComponent<SoundsPlayer>();
 			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();
@@ -61,7 +61,7 @@ public class HealthScript : MonoBehaviour {
 	
 	}
 	public void DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
-		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false){
+		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, bool useCornerKnockback = true){
 
 		// check for invincible or blocking
 		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState() != "blockstun" && !(state.GetState() == "projectile invulnerable" && isProjectile)) || 
@@ -85,11 +85,13 @@ public class HealthScript : MonoBehaviour {
 				comboDamage = amount;
 			}
 			healthAmount -= (int)(amount * comboScaling);
-			exCurrent += (int)((amount * comboScaling) *.7f);
+
+			Debug.Log (healthAmount);
+			exCurrent += (int)((amount * comboScaling) * 1.3f);
 			if (hpLeft != null) {
-				hpLeft.changeBarLeft (amount);
+				hpLeft.changeBarLeft ((int)(amount * comboScaling));
 			} else {
-				hpRight.changeBarRight (amount);
+				hpRight.changeBarRight ((int)(amount * comboScaling));
 			}
 
 
@@ -103,7 +105,7 @@ public class HealthScript : MonoBehaviour {
 			spriteAnimator.PlayHit (hitstun);
 			// set hitstun
 			StopAllCoroutines();
-			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile));
+			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback));
 
 			// check for death
 			CheckHealth ();
@@ -113,7 +115,7 @@ public class HealthScript : MonoBehaviour {
 			// player is blocking
 			spriteAnimator.PlayBlock();
 			StopAllCoroutines();
-			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile));
+			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback));
 			healthAmount -= (int)((float)amount * .05f);
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft ((int)((float)amount * .05f));
@@ -127,6 +129,8 @@ public class HealthScript : MonoBehaviour {
 			if (DeathFunc != null) {
 				DeathFunc ();
 			}
+			Debug.Log ("died");
+			GetComponent<BoxCollider2D> ().enabled = false;
 			PMS.EndGame ();
 			otherPlayerMovementScript.gameObject.GetComponent<InputScript> ().inputEnabled = false;
 			otherPlayerMovementScript.EndGame ();
@@ -135,7 +139,7 @@ public class HealthScript : MonoBehaviour {
 			//gameObject.SetActive (false);
 		}
 	}
-	IEnumerator InitiateBlockstun(int stunFrames, Vector3 position, Vector2 bockPush, bool isProjectile){
+	IEnumerator InitiateBlockstun(int stunFrames, Vector3 position, Vector2 bockPush, bool isProjectile, bool useCornerKockback = true){
 		state.SetState ("blockstun");
 		sounds.PlayBlock ();
 		GameObject sparks = blocksparksPool.FetchObject ();
@@ -143,7 +147,7 @@ public class HealthScript : MonoBehaviour {
 		sparks.SetActive(true);
 		PMS.MoveToward (-bockPush.x, bockPush.y);
 		// if in the corner push attacker back
-		if((transform.position.x > rightBound || transform.position.x < leftBound) && !isProjectile){
+		if((transform.position.x > rightBound || transform.position.x < leftBound) && (!isProjectile || useCornerKockback)){
 			Debug.Log ("pushcorner");
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
@@ -164,7 +168,7 @@ public class HealthScript : MonoBehaviour {
 		}
 
 	}
-	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile){
+	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true){
 		state.SetState ("hitstun");
 		if (HitFunc != null) {
 			HitFunc ();
@@ -176,7 +180,7 @@ public class HealthScript : MonoBehaviour {
 		timeManager.StopTime (5);
 		PMS.MoveToward (-hitPush.x, hitPush.y);
 		// if in the corner push attacker back
-		if((transform.position.x > rightBound || transform.position.x < leftBound) && !isProjectile){
+		if((transform.position.x > rightBound || transform.position.x < leftBound) && (!isProjectile || useCornerKockback)){
 			Debug.Log ("pushcorner");
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
@@ -204,6 +208,9 @@ public class HealthScript : MonoBehaviour {
 	}
 	public void SetDeathFunc(DeathEvent newFunc){
 		DeathFunc = newFunc;
+	}
+	public void AddMeter(int amountToAdd){
+		exCurrent += amountToAdd;
 	}
 
 }

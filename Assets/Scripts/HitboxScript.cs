@@ -8,7 +8,7 @@ public class HitboxScript : MonoBehaviour {
 	public int hitstun;
 	public int blockstun;
 	public Vector2 hitPush, blockPush;
-	public bool disableOnHit = false, isEnabled = true, isProjectile = false, isThrow, multiHit = false;
+	public bool disableOnHit = false, isEnabled = true, isProjectile = false, isThrow, multiHit = false, useCornerPushback = true;
 	public int multihitAmount = 0;
 	public List<string> tagsToDamage;
 	public delegate void voidDel();
@@ -69,7 +69,7 @@ public class HitboxScript : MonoBehaviour {
 			}
 			// deal the damage
 
-			other.GetComponent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow);
+			other.GetComponent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback);
 			
 			if (multiHit && multihitFlag) {
 				StartCoroutine (multiHitEnum());

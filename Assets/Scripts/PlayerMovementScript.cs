@@ -9,9 +9,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	SpriteRenderer SR;
 	FighterStateMachineScript state;
-	BoxCollider2D bodyBox;
 	float deadSize = .15f;
-	bool canMove = true, grounded = true;
+	bool canMove = true;
+	public bool LeftFacingSprites = true;
 	int groundedBuffer = 0;
 	int groundMask = 1 << 8;
 	int onGroundMask = 10;
@@ -31,7 +31,6 @@ public class PlayerMovementScript : MonoBehaviour {
 		IS = GetComponent<InputScript> ();
 		RB = GetComponent<Rigidbody2D> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
-		bodyBox = GetComponent<BoxCollider2D> ();
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
 		if (tag == "playerOne") {
@@ -41,10 +40,18 @@ public class PlayerMovementScript : MonoBehaviour {
 		}
 
 		if (OnLeft) {
-			SR.flipX = true;
+			if (LeftFacingSprites) {
+				SR.flipX = true;
+			} else {
+				SR.flipX = false;
+			}
 			attacksObject.eulerAngles = new Vector2(0, 0);
 		}else {
-			SR.flipX = false;
+			if (LeftFacingSprites) {
+				SR.flipX = false;
+			} else {
+				SR.flipX = true;
+			}
 			attacksObject.eulerAngles = new Vector2(0, 180);
 		}
 		spriteAnimator.PlayNeutralAnim ();
@@ -72,6 +79,7 @@ public class PlayerMovementScript : MonoBehaviour {
 						spriteAnimator.PlayWalkAwayAnim ();
 						RB.velocity = new Vector2 (currentSpeed, RB.velocity.y);
 					}else {
+						spriteAnimator.PlayBlock ();
 						RB.velocity = new Vector2 (0, RB.velocity.y);
 					}
 				} else if (x < 0) {
@@ -83,6 +91,7 @@ public class PlayerMovementScript : MonoBehaviour {
 						spriteAnimator.PlayWalkAnim ();
 						RB.velocity = new Vector2 (-currentSpeed, RB.velocity.y);
 					}else {
+						spriteAnimator.PlayBlock ();
 						RB.velocity = new Vector2 (0, RB.velocity.y);
 					}
 				} else if (x == 0) {
@@ -106,11 +115,19 @@ public class PlayerMovementScript : MonoBehaviour {
 		
 		if (transform.position.x > otherPlayer.transform.position.x && state.GetState() == "neutral" && OnLeft == true) {
 			OnLeft = false;
-			SR.flipX = false;
+			if (LeftFacingSprites) {
+				SR.flipX = false;
+			} else {
+				SR.flipX = true;
+			}
 			attacksObject.eulerAngles = new Vector2(0, 180);
 		} else if (transform.position.x < otherPlayer.transform.position.x && state.GetState() == "neutral" && OnLeft == false){
 			OnLeft = true;
-			SR.flipX = true;
+			if (LeftFacingSprites) {
+				SR.flipX = true;
+			} else {
+				SR.flipX = false;
+			}
 			attacksObject.eulerAngles = new Vector2(0, 0);
 		}
 	}
@@ -137,7 +154,6 @@ public class PlayerMovementScript : MonoBehaviour {
 			spriteAnimator.PlayJumpNeutral();
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2 (0, jumpForce));
-			grounded = false;
 			groundedBuffer = 3;
 		}
 	}
@@ -153,7 +169,6 @@ public class PlayerMovementScript : MonoBehaviour {
 			}
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2(jumpDistance, jumpForce));
-			grounded = false;
 			groundedBuffer = 3;
 		}
 	}
@@ -169,7 +184,6 @@ public class PlayerMovementScript : MonoBehaviour {
 			}
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2 (-jumpDistance, jumpForce));
-			grounded = false;
 			groundedBuffer = 3;
 		}
 	}
@@ -185,7 +199,6 @@ public class PlayerMovementScript : MonoBehaviour {
 			state.SetState("neutral");
 			gameObject.layer = onGroundMask;
 			CheckFacing ();
-			grounded = true;
 		} else if (groundedBuffer > 0) {
 			groundedBuffer--;
 
