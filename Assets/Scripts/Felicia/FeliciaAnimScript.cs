@@ -100,7 +100,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 	}
 	IEnumerator DeathAnim(){
 		sound.PlayDeath ();
-
+		GetComponent<PlayerMovementScript> ().MoveToward (-15, 15);
 		timeManager.StopTimeForce (60);
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];

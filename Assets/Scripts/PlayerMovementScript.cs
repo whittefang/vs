@@ -10,7 +10,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	SpriteRenderer SR;
 	FighterStateMachineScript state;
 	float deadSize = .15f;
-	bool canMove = true;
+	bool canMove = true, allowMoveTowards = true;
 	public bool LeftFacingSprites = true;
 	int groundedBuffer = 0;
 	int groundMask = 1 << 8;
@@ -235,13 +235,17 @@ public class PlayerMovementScript : MonoBehaviour {
 		RB.velocity = Vector2.zero;
 	}
 	public void MoveToward(float speedx, float speedy = 0){
-		if (speedy == 0) {
-			speedy = RB.velocity.y;
-		}
-		if (OnLeft) {
-			RB.velocity = new Vector2 (speedx, speedy);
-		} else {
-			RB.velocity = new Vector2 (-speedx, speedy);
+		if (allowMoveTowards) {
+		
+		
+			if (speedy == 0) {
+				speedy = RB.velocity.y;
+			}
+			if (OnLeft) {
+				RB.velocity = new Vector2 (speedx, speedy);
+			} else {
+				RB.velocity = new Vector2 (-speedx, speedy);
+			}
 		}
 	}
 	public bool CheckIfOnLeft(){
@@ -265,10 +269,20 @@ public class PlayerMovementScript : MonoBehaviour {
 	public void setAttackCancel(vDelegate newFunc){
 		cancelAttacks = newFunc;
 	}
+	public void MoveTowardsEnabled(bool enabled){
+		if (!enabled) {
+			RB.isKinematic = true;
+		} else {
+			RB.isKinematic = false;
+			
+		}
+		allowMoveTowards = enabled;
+	}
 	public void setProximityBlock(bool enable = false){
 		canProximityBlock = enable;
 	}
 	public void EndGame(){
+		cancelAttacks ();
 		canMove = false;
 	}
 

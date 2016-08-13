@@ -8,6 +8,7 @@ public class FeliciaSuperScript : MonoBehaviour {
 	FollowScript followScript;
 	TimeManagerScript timeManager;
 
+	GameObject target;
 	// Use this for initialization
 	void Awake () {
 		followScript = GetComponent<FollowScript> ();
@@ -44,6 +45,7 @@ public class FeliciaSuperScript : MonoBehaviour {
 		StartCoroutine (CompleteAttackEnum());
 	}
 	IEnumerator CompleteAttackEnum(){
+		target.GetComponent<PlayerMovementScript> ().MoveTowardsEnabled (false);
 		foreach (GameObject g in helpers) {
 			g.SetActive (true);
 		}
@@ -54,6 +56,16 @@ public class FeliciaSuperScript : MonoBehaviour {
 			}
 		}
 		cloud.SetActive (true);
-
+		for (int x = 0; x < 60;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+		}
+		Debug.Log ("enable box");
+		target.GetComponent<PlayerMovementScript> ().MoveTowardsEnabled (true);
+	}
+	public void SetTarget(GameObject otherPlayer){
+		target = otherPlayer;	
 	}
 }

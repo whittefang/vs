@@ -490,6 +490,9 @@ public class FeliciaAttackScript : MonoBehaviour {
 				if (x > 6) {
 					PMS.MoveToward (15);
 				}
+				if (x == 6) {
+					PMS.MoveToward (15,12);
+				}
 				x++;
 			} else {
 				PMS.StopMovement ();
@@ -521,6 +524,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		for (int x = 0; x < 10;) {
 			// active
 			if (x == 1) {
+				superHitbox.GetComponent<FeliciaSuperScript> ().SetTarget (otherPlayer.gameObject);
 				superHitbox.GetComponent<FollowScript>().transformToFollow = otherPlayer.gameObject;
 				superHitbox.SetActive (true);
 			}
@@ -558,6 +562,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		sp3Hitbox.SetActive (false);
 		throwHitbox.SetActive (false);
 		proximityBox.SetActive (false);
+		sp1Hitbox.SetActive (false);
 		sp1HitboxPart2.SetActive (false);
 		sp1HitboxPart3.SetActive (false);
 	}

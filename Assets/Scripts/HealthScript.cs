@@ -22,25 +22,7 @@ public class HealthScript : MonoBehaviour {
 
 	// Use this for initialization
 	void OnEnable () {
-		if (tag == "playerOneHurtbox") {
-			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
-			hpLeft.setHpLeft (healthMax);
-			sounds = GameObject.Find ("P2MasterObject").GetComponent<SoundsPlayer>();
-			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
-			blocksparksPool = GameObject.Find ("P2BlockSparksObject").GetComponent<ObjectPoolScript> ();
-			comboCounterText = GameObject.Find ("P1ComboCount").GetComponent<TextMesh> ();
-			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
-			otherPlayerMovementScript = GameObject.FindWithTag ("playerTwo").GetComponent<PlayerMovementScript>();
-		} else if (tag == "playerTwoHurtbox"){
-			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
-			hpRight.setHpRight (healthMax);
-			sounds = GameObject.Find ("P1MasterObject").GetComponent<SoundsPlayer>();
-			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();
-			blocksparksPool = GameObject.Find ("P1BlockSparksObject").GetComponent<ObjectPoolScript> ();
-			comboCounterText = GameObject.Find ("P2ComboCount").GetComponent<TextMesh> ();
-			comboDamageText = GameObject.Find ("P2Damage").GetComponent<TextMesh> ();
-			otherPlayerMovementScript = GameObject.FindWithTag ("playerOne").GetComponent<PlayerMovementScript>();
-		}
+			
 		if (timeManager == null) {
 			timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		}
@@ -54,8 +36,36 @@ public class HealthScript : MonoBehaviour {
 			spriteAnimator = transform.parent.GetComponent<SpriteAnimator> ();
 		}
 		healthAmount = healthMax ;
+
 	}
-	
+
+	public void SetPlayer(string player){
+		if (player == "playerOne") {
+			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
+			hpLeft.setHpLeft (healthMax);
+			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
+			blocksparksPool = GameObject.Find ("P2BlockSparksObject").GetComponent<ObjectPoolScript> ();
+			comboCounterText = GameObject.Find ("P1ComboCount").GetComponent<TextMesh> ();
+			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
+			otherPlayerMovementScript = GameObject.FindWithTag ("playerTwo").GetComponent<PlayerMovementScript> ();
+		} else {
+			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
+			hpRight.setHpRight (healthMax);
+			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();
+			blocksparksPool = GameObject.Find ("P1BlockSparksObject").GetComponent<ObjectPoolScript> ();
+			comboCounterText = GameObject.Find ("P2ComboCount").GetComponent<TextMesh> ();
+			comboDamageText = GameObject.Find ("P2Damage").GetComponent<TextMesh> ();
+			otherPlayerMovementScript = GameObject.FindWithTag ("playerOne").GetComponent<PlayerMovementScript> ();
+		}
+		Invoke ("SetSound", .2f);
+	}
+	void SetSound(string player){
+		if (tag == "playerOneHurtbox") {
+			sounds = GameObject.FindWithTag ("P2Sound").GetComponent<SoundsPlayer> ();
+		} else {
+			sounds = GameObject.FindWithTag ("P1Sound").GetComponent<SoundsPlayer> ();
+		}
+	}
 	// Update is called once per frame
 	void Update () {
 	
@@ -132,6 +142,7 @@ public class HealthScript : MonoBehaviour {
 			}
 			Debug.Log ("died");
 			GetComponent<BoxCollider2D> ().enabled = false;
+
 			PMS.EndGame ();
 			otherPlayerMovementScript.gameObject.GetComponent<InputScript> ().inputEnabled = false;
 			otherPlayerMovementScript.EndGame ();
