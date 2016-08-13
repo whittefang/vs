@@ -179,7 +179,7 @@ public class HealthScript : MonoBehaviour {
 		sparks.transform.position = position + new Vector3(Random.Range(-.75f, .75f), Random.Range(-1f, 1f),0);
 		sparks.SetActive(true);
 
-		timeManager.StopTime (7);
+		timeManager.StopTime (5);
 		PMS.MoveToward (-hitPush.x, hitPush.y);
 		// if in the corner push attacker back
 		if((transform.position.x > rightBound || transform.position.x < leftBound) && (!isProjectile || useCornerKockback)){

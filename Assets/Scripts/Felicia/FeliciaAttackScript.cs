@@ -17,6 +17,8 @@ public class FeliciaAttackScript : MonoBehaviour {
 	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false;
 	public GameObject ThrowPoint;
 
+
+
 	bool  mediumBuffer = false, sp2Buffer = false;
 	HealthScript health;
 	Transform otherPlayer;
@@ -24,8 +26,10 @@ public class FeliciaAttackScript : MonoBehaviour {
 	void Start () {
 		if (tag == "playerOne") {
 			SetPlayer (true);
+			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
 			SetPlayer (false);
+			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
 
 		health = GetComponentInChildren<HealthScript> ();
@@ -514,25 +518,16 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 10;) {
 			// active
 			if (x == 1) {
-				if (PMS.CheckIfOnLeft ()) {
-					superHitbox.transform.position = new Vector3( GameObject.Find ("Camera").transform.position.x - 8.25f, -2.5f, 0);
-					superHitbox.transform.eulerAngles = new Vector2(0, 0);
-					superHitbox.GetComponent<ProjectileScript>().direction = new Vector2 (1, 0);
-				} else {
-					superHitbox.transform.position = new Vector3( GameObject.Find ("Camera").transform.position.x + 8.25f, -2.5f, 0);
-					superHitbox.transform.eulerAngles = new Vector2(0, 180);
-					superHitbox.GetComponent<ProjectileScript>().direction = new Vector2 (-1, 0);
-				}
+				superHitbox.GetComponent<FollowScript>().transformToFollow = otherPlayer.gameObject;
 				superHitbox.SetActive (true);
 			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				x++;
 			}
-
 		}
 		state.SetState ("neutral");
 	}
@@ -584,8 +579,10 @@ public class FeliciaAttackScript : MonoBehaviour {
 			sp2HitboxPart2.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
-			superHitbox.GetComponentInChildren<HitboxScript> ().AddTagToDamage ("playerTwoHurtbox");
-
+			HitboxScript[] hits = superHitbox.GetComponentsInChildren<HitboxScript> (true);
+			foreach (HitboxScript h in hits) {
+				h.AddTagToDamage ("playerTwoHurtbox");
+			}
 		} else {
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			jumpLightHitboxPart2.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
@@ -602,7 +599,10 @@ public class FeliciaAttackScript : MonoBehaviour {
 			sp2HitboxPart2.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
-			superHitbox.GetComponentInChildren<HitboxScript> ().AddTagToDamage ("playerOneHurtbox");
+			HitboxScript[] hits = superHitbox.GetComponentsInChildren<HitboxScript> (true);
+			foreach (HitboxScript h in hits) {
+				h.AddTagToDamage ("playerOneHurtbox");
+			}	
 		}
 	}
 }
