@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class Rounds : MonoBehaviour {
+	public bool FalseMeansTest = false;
 	int RoundFlag = 0;
 	int P1W = 0;
 	int P2W = 0;
@@ -14,7 +15,10 @@ public class Rounds : MonoBehaviour {
 	delegate void voidDel();
 	voidDel win;
 	void Awake(){
-		DontDestroyOnLoad(gameObject);
+		if (FalseMeansTest == true) {
+			Debug.Log("object can not be destroyed");
+			DontDestroyOnLoad(gameObject);
+		}
 	}
 	// Use this for initialization
 	void Start () {
@@ -26,7 +30,9 @@ public class Rounds : MonoBehaviour {
 		P2Star1.SetActive(false);
 		P2Star2 = GameObject.Find("Player2Star2");
 		P2Star2.SetActive(false);
-		RoundChange();
+		if (FalseMeansTest == true){
+			RoundChange();
+		}
 	}
 	public void	RoundChange(){
 		RoundFlag ++;
