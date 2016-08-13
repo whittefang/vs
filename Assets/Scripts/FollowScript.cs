@@ -11,9 +11,9 @@ public class FollowScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (followY) {
+		if (followY && transformToFollow != null) {
 			transform.position = transformToFollow.transform.position;
-		} else {
+		} else if ( transformToFollow != null){
 			transform.position = new Vector3(transformToFollow.transform.position.x , transform.position.y, transform.position.z);
 		}
 	}

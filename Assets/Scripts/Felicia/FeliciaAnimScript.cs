@@ -322,6 +322,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpHeavy(){
+		sound.PlayHeavy ();
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = jumpHeavyFrames [i];
 			for (int x = 0; x < 3;) {
@@ -334,6 +335,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 	}
 	IEnumerator SpecialOne(){
 		sound.PlaySP1 ();
+		sound.PlayExtra ();
 		// intro
 		for (int i = 0; i < 3; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
@@ -445,8 +447,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 		sound.PlaySuperBg();
 		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
 		SuperBG.SetActive(true);
-		timeManager.StopTime (75);
-		//sound.PlaySuperWord ();
+		timeManager.StopTime (60);
+		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
 		for (int i = 4; i < 11; i++) {

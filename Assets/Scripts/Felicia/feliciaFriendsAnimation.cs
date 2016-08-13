@@ -27,10 +27,10 @@ public class feliciaFriendsAnimation : MonoBehaviour {
 
 	//IEnumerator 
 	IEnumerator loopAnimation(){
-
+		transform.localPosition = startPos;
 		// intro animation
 		int currentFrame = 0;
-		while (transform.position != endPos) {
+		while (transform.localPosition != endPos) {
 
 			if (currentFrame >= startLoop.Length) {
 				currentFrame = 0;
@@ -38,10 +38,10 @@ public class feliciaFriendsAnimation : MonoBehaviour {
 			spriteRenderer.sprite = startLoop [currentFrame];
 			currentFrame++;
 			// number of frames to wait
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 2;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
-					transform.position = Vector2.MoveTowards (transform.position, endPos, .2f);
+					transform.localPosition = Vector2.MoveTowards (transform.localPosition, endPos,.7f);
 					x++;
 				}
 			}
@@ -57,6 +57,15 @@ public class feliciaFriendsAnimation : MonoBehaviour {
 				}
 			}
 		}
+
+		// wait to deal damage
+		for (int x = 0; x < 60;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+			}
+		}
+
 		// recover anitation
 		for(int i = 0; i < recovery.Length; i++){
 			spriteRenderer.sprite = recovery [i];
@@ -69,7 +78,7 @@ public class feliciaFriendsAnimation : MonoBehaviour {
 		}
 		// leave animation
 		currentFrame = 0;
-		while (transform.position != endPos) {
+		while (transform.localPosition != startPos) {
 			if (currentFrame >= leaveLoop.Length) {
 				currentFrame = 0;
 			}
@@ -79,11 +88,13 @@ public class feliciaFriendsAnimation : MonoBehaviour {
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
-					transform.position = Vector2.MoveTowards ( endPos, transform.position, .2f);
+					transform.localPosition = Vector2.MoveTowards ( transform.localPosition, startPos, .7f);
 					x++;
 				}
 			}
 		}
+	
+		gameObject.SetActive (false);
 	}
 
 

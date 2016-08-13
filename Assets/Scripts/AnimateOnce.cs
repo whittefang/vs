@@ -7,6 +7,8 @@ public class AnimateOnce : MonoBehaviour {
 	TimeManagerScript timeManager;
 	public bool startOnEnable = true;
 	public bool animateDurtingPause = false;
+	public bool useDelay = false;
+	public float delay = 0;
 	public int speed = 3;
 	// Use this for initialization
 	void Start () {
@@ -24,11 +26,15 @@ public class AnimateOnce : MonoBehaviour {
 		if (startOnEnable) {
 			StartCoroutine (animate ());
 		}
+
 	}
 	public void Animate(){
 		StartCoroutine (animate ());
 	}
 	IEnumerator animate(){
+		if (useDelay) {
+			yield return new WaitForSeconds (delay);	
+		}
 		for (int x = 0; x < frames.Length; x++) {
 			SR.sprite = frames [x];
 			for (int i =0; i < speed;){

@@ -10,6 +10,7 @@ public class HitboxScript : MonoBehaviour {
 	public Vector2 hitPush, blockPush;
 	public bool disableOnHit = false, isEnabled = true, isProjectile = false, isThrow, multiHit = false, useCornerPushback = true;
 	public int multihitAmount = 0;
+	public int multihitFrameBetween = 1;
 	public List<string> tagsToDamage;
 	public delegate void voidDel();
 	public delegate void voidArgDel(Transform pos);
@@ -95,7 +96,7 @@ public class HitboxScript : MonoBehaviour {
 		for (int x = 0; x < multihitAmount; x++) {
 			hitbox.enabled = false;
 			hitbox.enabled = true;
-			for (int i = 0; i < 1;) {
+			for (int i = 0; i < multihitAmount;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused ()) {
 					i++;
