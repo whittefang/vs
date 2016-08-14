@@ -34,11 +34,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
-		if (tag == "playerOne") {
-			otherPlayer = GameObject.FindGameObjectWithTag ("playerTwo");
-		} else {
-			otherPlayer = GameObject.FindGameObjectWithTag ("playerOne");
-		}
+		
 
 		if (OnLeft) {
 			if (LeftFacingSprites) {

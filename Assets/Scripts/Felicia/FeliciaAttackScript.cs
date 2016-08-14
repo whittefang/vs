@@ -289,7 +289,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayHeavy ();
 		state.SetState ("attack");
-		PMS.MoveToward (7.5f);
+		//PMS.MoveToward (7.5f);
 		for (int x = 0; x < 27;) {
 			if (x == 9) {
 				heavyHitbox.SetActive (true);
@@ -353,8 +353,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 60;) {
-			PMS.MoveToward (10);
+		for (int x = 0; x < 63;) {
 			// active
 			if (x == 9) {
 				sp1Hitbox.SetActive (true);
@@ -386,7 +385,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			if (x == 36) {
 				sp1Hitbox.SetActive (false);
 				PMS.DsableBodyBox ();
-				PMS.MoveToward (10, 15);
+				PMS.MoveToward (05, 15);
 				sp1HitboxPart2.SetActive (true);
 			}
 			if (x == 37) {
@@ -404,11 +403,17 @@ public class FeliciaAttackScript : MonoBehaviour {
 			}
 			if (x == 51) {
 				sp1HitboxPart3.SetActive (false);
+				proximityBox.SetActive (false);
 			}
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				x++;
+				if (x < 35 ){
+					PMS.MoveToward (10f, 0);
+				}
+				
+
 			}
 
 		}
@@ -474,24 +479,28 @@ public class FeliciaAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
-		state.SetState ("projectile invulnerable");
 
+		state.SetState ("attack");
 		for (int x = 0; x < 27;) {
 			
 			if (x == 9) {
 				sp3Hitbox.SetActive(true);
+				state.SetState ("projectile invulnerable");
 			}
 			if (x == 16) {
 				sp3Hitbox.SetActive(false);
+				state.SetState ("attack");
+				proximityBox.SetActive (false);
+
 			}
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x > 6) {
-					PMS.MoveToward (15);
+					PMS.MoveToward (10);
 				}
 				if (x == 6) {
-					PMS.MoveToward (15,12);
+					PMS.MoveToward (10,12);
 				}
 				x++;
 			} else {
@@ -585,6 +594,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			HitboxScript[] hits = superHitbox.GetComponentsInChildren<HitboxScript> (true);
+			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerTwo";
 			foreach (HitboxScript h in hits) {
 				h.AddTagToDamage ("playerTwoHurtbox");
 			}
@@ -605,6 +615,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			HitboxScript[] hits = superHitbox.GetComponentsInChildren<HitboxScript> (true);
+			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerOne";
 			foreach (HitboxScript h in hits) {
 				h.AddTagToDamage ("playerOneHurtbox");
 			}	

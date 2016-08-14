@@ -268,7 +268,7 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlayHeavy ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		PMS.MoveToward (10);
+		PMS.MoveToward (15);
 		for (int x = 0; x < 42;) {
 			if (x == 18) {
 				heavyHitbox.SetActive (true);
@@ -371,24 +371,28 @@ public class RyuAttackScript : MonoBehaviour {
 		sp2Buffer = true;
 		//state.SetState ("attack");
 		// needs jumpbox turned off
-		state.SetState ("invincible");
 		PMS.MoveToward (5f,0);
 
+		state.SetState ("attack");
 		PMS.DsableBodyBox ();
 		for (int x = 0; x < 50;) {
 			
 			if (x == 3) {
+				state.SetState ("invincible");
 				sp2Buffer = false;
 				//PMS.StopMovement ();
 				sp2HitboxPart1.SetActive (true);
 			}
 
+			if (x == 10){
+				state.SetState ("attack");
+			}
 			if (x == 14) {
 				PMS.MoveToward (5, 20);
 			}
 
 			if (x == 15){
-				state.SetState ("attack");
+				//state.SetState ("attack");
 				sp2HitboxPart1.SetActive (false);
 				sp2HitboxPart2.SetActive (true);
 			}
@@ -571,6 +575,8 @@ public class RyuAttackScript : MonoBehaviour {
 			fireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			superFireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			fireball.GetComponentInChildren<ProximityBlockScript>().tagToDamage = "playerTwo";
+			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerTwo";
 
 		} else {
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
@@ -586,6 +592,8 @@ public class RyuAttackScript : MonoBehaviour {
 			fireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			superFireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			fireball.GetComponentInChildren<ProximityBlockScript>().tagToDamage = "playerOne";
+			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerOne";
 		}
 	}
 }

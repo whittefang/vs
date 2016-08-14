@@ -13,7 +13,7 @@ public class HealthScript : MonoBehaviour {
 	public PlayerMovementScript PMS, otherPlayerMovementScript;
 	TimeManagerScript timeManager;
 	ObjectPoolScript hitsparksPool, blocksparksPool;
-	SoundsPlayer sounds;
+	public SoundsPlayer sounds;
 	TextMesh comboCounterText, comboDamageText;
 	public int comboCounter = 0, comboDamage = 0;
 	float comboScaling = 1, leftBound = -4.8f, rightBound = 4.8f;
@@ -39,7 +39,7 @@ public class HealthScript : MonoBehaviour {
 
 	}
 
-	public void SetPlayer(string player){
+	public void SetPlayer(string player, GameObject otherPlayer){
 		if (player == "playerOne") {
 			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
 			hpLeft.setHpLeft (healthMax);
@@ -47,7 +47,7 @@ public class HealthScript : MonoBehaviour {
 			blocksparksPool = GameObject.Find ("P2BlockSparksObject").GetComponent<ObjectPoolScript> ();
 			comboCounterText = GameObject.Find ("P1ComboCount").GetComponent<TextMesh> ();
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
-			otherPlayerMovementScript = GameObject.FindWithTag ("playerTwo").GetComponent<PlayerMovementScript> ();
+			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		} else {
 			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
 			hpRight.setHpRight (healthMax);
@@ -55,15 +55,7 @@ public class HealthScript : MonoBehaviour {
 			blocksparksPool = GameObject.Find ("P1BlockSparksObject").GetComponent<ObjectPoolScript> ();
 			comboCounterText = GameObject.Find ("P2ComboCount").GetComponent<TextMesh> ();
 			comboDamageText = GameObject.Find ("P2Damage").GetComponent<TextMesh> ();
-			otherPlayerMovementScript = GameObject.FindWithTag ("playerOne").GetComponent<PlayerMovementScript> ();
-		}
-		Invoke ("SetSound", .2f);
-	}
-	void SetSound(string player){
-		if (tag == "playerOneHurtbox") {
-			sounds = GameObject.FindWithTag ("P2Sound").GetComponent<SoundsPlayer> ();
-		} else {
-			sounds = GameObject.FindWithTag ("P1Sound").GetComponent<SoundsPlayer> ();
+			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		}
 	}
 	// Update is called once per frame
