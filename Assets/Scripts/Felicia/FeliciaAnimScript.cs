@@ -100,7 +100,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 	}
 	IEnumerator DeathAnim(){
 		sound.PlayDeath ();
-		GetComponent<PlayerMovementScript> ().MoveToward (-15, 15);
+		GetComponent<PlayerMovementScript> ().MoveToward (-10, 12);
 		timeManager.StopTimeForce (60);
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];
@@ -299,6 +299,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 		spriteRenderer.sprite = heavyFrames [0];
 	}
 	IEnumerator JumpLight(){
+		hurtbox.offset = new Vector2 (0, 0);
+		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		for (int i = 0; i < 6; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -310,6 +312,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpMedium(){
+		hurtbox.offset = new Vector2 (0, 0);
+		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
@@ -322,6 +326,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpHeavy(){
+		hurtbox.offset = new Vector2 (0, 0);
+		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		sound.PlayHeavy ();
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = jumpHeavyFrames [i];

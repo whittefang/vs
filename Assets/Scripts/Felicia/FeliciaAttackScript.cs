@@ -131,11 +131,12 @@ public class FeliciaAttackScript : MonoBehaviour {
 				otherPlayer.GetComponent<BoxCollider2D> ().enabled = true;
 				otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (15, 15);
 			}
-			if (x == 50){
-				PMS.MoveToward (10, 0);
-			}
+
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 50){
+					PMS.MoveToward (10, 0);
+				}
 				x++;
 			}
 		}
@@ -291,12 +292,12 @@ public class FeliciaAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		//PMS.MoveToward (7.5f);
 		for (int x = 0; x < 27;) {
-			if (x == 9) {
+			if (x == 11) {
 				heavyHitbox.SetActive (true);
 				PMS.StopMovement ();
 			}
 
-			if (x == 14) {
+			if (x == 12) {
 				PMS.StopMovement ();
 				heavyHitbox.SetActive (false);
 				state.SetState ("heavy recovery");
@@ -317,10 +318,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		state.SetState ("jump attack");
 		PMS.landingRecoveryFrames = 4;
 		for (int x = 0; x < 21;) {
-			if (x == 4) {
-
-				PMS.MoveToward (20, -10);
-			}
+			
 			if (x == 7) {
 				jumpHeavyHitbox.SetActive (true);
 			}
@@ -331,6 +329,9 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 7) {
+					PMS.MoveToward (20, -10);
+				}
 				x++;
 			}
 		}
@@ -353,7 +354,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 63;) {
+		for (int x = 0; x < 78;) {
 			// active
 			if (x == 9) {
 				sp1Hitbox.SetActive (true);
@@ -385,7 +386,6 @@ public class FeliciaAttackScript : MonoBehaviour {
 			if (x == 36) {
 				sp1Hitbox.SetActive (false);
 				PMS.DsableBodyBox ();
-				PMS.MoveToward (05, 15);
 				sp1HitboxPart2.SetActive (true);
 			}
 			if (x == 37) {
@@ -399,7 +399,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 				sp1HitboxPart2.SetActive (false);
 			}
 			if (x == 46) {
-				sp1HitboxPart3.SetActive (true);
+				//sp1HitboxPart3.SetActive (true);
 			}
 			if (x == 51) {
 				sp1HitboxPart3.SetActive (false);
@@ -409,15 +409,20 @@ public class FeliciaAttackScript : MonoBehaviour {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				x++;
+				if (x == 36) {
+					PMS.MoveToward (1f, 25);
+				}
 				if (x < 35 ){
 					PMS.MoveToward (10f, 0);
+				}
+				if (x == 51) {
+					PMS.MoveToward (-1.5f, 0);
 				}
 				
 
 			}
 
 		}
-		//PMS.StopMovement ();
 		PMS.EnableBodyBox ();
 		state.SetState ("neutral");
 	}
@@ -484,8 +489,11 @@ public class FeliciaAttackScript : MonoBehaviour {
 		for (int x = 0; x < 27;) {
 			
 			if (x == 9) {
-				sp3Hitbox.SetActive(true);
 				state.SetState ("projectile invulnerable");
+			}
+			if (x == 12) {
+
+				sp3Hitbox.SetActive(true);
 			}
 			if (x == 16) {
 				sp3Hitbox.SetActive(false);
@@ -499,9 +507,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 				if (x > 6) {
 					PMS.MoveToward (10);
 				}
-				if (x == 6) {
-					PMS.MoveToward (10,12);
-				}
+
 				x++;
 			} else {
 				PMS.StopMovement ();

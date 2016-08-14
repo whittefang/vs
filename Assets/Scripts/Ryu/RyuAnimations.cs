@@ -299,6 +299,8 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpLight(){
+		hurtbox.offset = new Vector2 (0, 0);
+		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -310,6 +312,8 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpMedium(){
+		hurtbox.offset = new Vector2 (0, 0);
+		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		for (int i = 0; i < 9; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
@@ -322,6 +326,8 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpHeavy(){
+		hurtbox.offset = new Vector2 (0, 0);
+		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = jumpHeavyFrames [i];
 			for (int x = 0; x < 3;) {
@@ -355,8 +361,10 @@ public class RyuAnimations : MonoBehaviour {
 
 
 	IEnumerator SpecialTwo(){
-		sound.PlaySP2 ();
 		for (int i = 0; i < 13; i++) {
+			if (i == 1) {
+				sound.PlaySP2 ();
+			}
 			spriteRenderer.sprite = SpecialTwoFrames [i];
 			// hold on rising uppercut
 			if (i == 5) {

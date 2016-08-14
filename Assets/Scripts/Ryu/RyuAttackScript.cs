@@ -206,7 +206,7 @@ public class RyuAttackScript : MonoBehaviour {
 		mediumBuffer = true;
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayMedium ();
-		PMS.StopMovement ();
+		PMS.MoveToward (5f,0);
 		state.SetState ("attack");
 		// startup
 		for (int x = 0; x < 27; ) {
@@ -215,6 +215,7 @@ public class RyuAttackScript : MonoBehaviour {
 			}
 			// active
 			if (x == 9) {
+				PMS.StopMovement ();
 				mediumHitbox.SetActive (true);
 			}
 			// recovery
@@ -376,9 +377,10 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		PMS.DsableBodyBox ();
 		for (int x = 0; x < 50;) {
-			
-			if (x == 3) {
+			if (x == 2) {
 				state.SetState ("invincible");
+			}
+			if (x == 3) {
 				sp2Buffer = false;
 				//PMS.StopMovement ();
 				sp2HitboxPart1.SetActive (true);
@@ -387,22 +389,23 @@ public class RyuAttackScript : MonoBehaviour {
 			if (x == 10){
 				state.SetState ("attack");
 			}
-			if (x == 14) {
-				PMS.MoveToward (5, 20);
-			}
+
 
 			if (x == 15){
 				//state.SetState ("attack");
 				sp2HitboxPart1.SetActive (false);
 				sp2HitboxPart2.SetActive (true);
 			}
-			if (x == 30) {
+			if (x == 23) {
 				sp2HitboxPart2.SetActive (false);
 				proximityBox.SetActive (false);
 			}
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 14) {
+					PMS.MoveToward (2.5f, 20);
+				}
 				x++;
 			}
 		}
@@ -470,9 +473,10 @@ public class RyuAttackScript : MonoBehaviour {
 				sp3Hitbox.SetActive(false);
 				proximityBox.SetActive (false);
 			}
-			PMS.MoveToward (5);
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+
+				PMS.MoveToward (7.5f);
 				x++;
 			}
 		}

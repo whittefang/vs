@@ -16,7 +16,7 @@ public class HealthScript : MonoBehaviour {
 	public SoundsPlayer sounds;
 	TextMesh comboCounterText, comboDamageText;
 	public int comboCounter = 0, comboDamage = 0;
-	float comboScaling = 1, leftBound = -4.8f, rightBound = 4.8f;
+	float comboScaling = 1, leftBound = -10.2f, rightBound = 10.2f;
 	LeftHpBarChange hpLeft;
 	RightHpBarChange hpRight;
 
@@ -152,7 +152,7 @@ public class HealthScript : MonoBehaviour {
 		timeManager.StopTime (7);
 		PMS.MoveToward (-bockPush.x, bockPush.y);
 		// if in the corner push attacker back
-		if((transform.position.x > rightBound || transform.position.x < leftBound) && (!isProjectile || useCornerKockback)){
+		if((transform.position.x > rightBound || transform.position.x < leftBound) && useCornerKockback){
 			Debug.Log ("pushcorner");
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
@@ -185,7 +185,7 @@ public class HealthScript : MonoBehaviour {
 		timeManager.StopTime (5);
 		PMS.MoveToward (-hitPush.x, hitPush.y);
 		// if in the corner push attacker back
-		if((transform.position.x > rightBound || transform.position.x < leftBound) && (!isProjectile || useCornerKockback)){
+		if((transform.position.x > rightBound || transform.position.x < leftBound) && useCornerKockback){
 			Debug.Log ("pushcorner");
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
