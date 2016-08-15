@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FollowScript : MonoBehaviour {
 	public GameObject transformToFollow;
-	public bool followY = true;
+	public bool followY = true, followZ = true;
 	// Use this for initialization
 	void Start () {
 	
@@ -11,10 +11,12 @@ public class FollowScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (followY && transformToFollow != null) {
+		if (followY && followZ && transformToFollow != null) {
 			transform.position = transformToFollow.transform.position;
-		} else if ( transformToFollow != null){
-			transform.position = new Vector3(transformToFollow.transform.position.x , transform.position.y, transform.position.z);
+		} else if (!followY && followZ && transformToFollow != null) {
+			transform.position = new Vector3 (transformToFollow.transform.position.x, transform.position.y, transform.position.z);
+		} else if (!followZ && transformToFollow != null) {
+			transform.position = new Vector3 (transformToFollow.transform.position.x, transformToFollow.transform.position.y, transform.position.z);
 		}
 	}
 }

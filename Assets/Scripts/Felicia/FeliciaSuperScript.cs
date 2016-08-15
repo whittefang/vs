@@ -46,6 +46,7 @@ public class FeliciaSuperScript : MonoBehaviour {
 	}
 	IEnumerator CompleteAttackEnum(){
 		target.GetComponent<PlayerMovementScript> ().MoveTowardsEnabled (false);
+		attack.GetComponent<feliciaFriendsAnimation> ().Stay = true;
 		foreach (GameObject g in helpers) {
 			g.SetActive (true);
 		}
@@ -64,6 +65,15 @@ public class FeliciaSuperScript : MonoBehaviour {
 		}
 		Debug.Log ("enable box");
 		target.GetComponent<PlayerMovementScript> ().MoveTowardsEnabled (true);
+		for (int x = 0; x < 60;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+		}
+
+		attack.GetComponent<feliciaFriendsAnimation> ().Stay = false;
+		gameObject.SetActive (false);
 	}
 	public void SetTarget(GameObject otherPlayer){
 		target = otherPlayer;	

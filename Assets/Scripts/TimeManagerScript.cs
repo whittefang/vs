@@ -23,6 +23,7 @@ public class TimeManagerScript : MonoBehaviour {
 		}
 	}
 	public void StopTime(int numberOfFrames){
+		StopAllCoroutines ();
 		StartCoroutine (StopTimeEnum (numberOfFrames));
 	}
 	public void StopTimeForce(int numberOfFrames){

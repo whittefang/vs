@@ -4,14 +4,14 @@ using System.Collections;
 public class CameraMoveScript : MonoBehaviour {
 	Transform p1, p2;
 	public float LeftBound, rightBound, lowPoint, HighPoint;
-	bool playersAreSet = false;
+	bool playersAreSet = false, cameraEnabled = true;
 	// Use this for initialization
 	void Start (){
 
 	}
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (playersAreSet){
+		if (playersAreSet && cameraEnabled){
 
 			Vector3 newPosition = new Vector3 (((p1.position.x + p2.position.x) / 2), ((p1.position.y + p2.position.y) / 2), -100);
 			if (newPosition.x < LeftBound) {
@@ -35,6 +35,8 @@ public class CameraMoveScript : MonoBehaviour {
 		p1 = playerOne.transform.GetChild(0).transform;
 		p2 = playerTwo.transform.GetChild(0).transform;
 		playersAreSet = true;
-		Debug.Log("camera set");
+	}
+	public void EnableCameraMovement(bool enabled){
+		cameraEnabled = enabled;
 	}
 }

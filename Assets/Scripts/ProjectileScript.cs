@@ -4,7 +4,7 @@ using System.Collections;
 public class ProjectileScript : MonoBehaviour {
 	public Vector2 direction;
 	public float speed = .1f;
-	bool movementEnabled = true;
+	public bool movementEnabled = true;
 	public float lifeDuration = 0;
 	public bool useLimitedLife = false, enableFireballKiller = true;
 	public int projecttileStrength = 1;

@@ -9,18 +9,21 @@ public class feliciaFriendsAnimation : MonoBehaviour {
 	SpriteRenderer spriteRenderer;
 	TimeManagerScript timeManager;
 	public Vector3 startPos, endPos;
+	public bool Stay = true;
 	// Use this for initialization
 	void Awake () {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
-		Animate ();
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
-
+	void OnEnable(){
+		Animate ();
+	}
 	public void Animate(){
 		StartCoroutine (loopAnimation ());
 	}
@@ -59,10 +62,19 @@ public class feliciaFriendsAnimation : MonoBehaviour {
 		}
 
 		// wait to deal damage
-		for (int x = 0; x < 60;) {
+		for (int x = 0; x < 2;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused ()) {
 				x++;
+			}
+		}
+
+		if (Stay) {
+			for (int x = 0; x < 60;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
 			}
 		}
 

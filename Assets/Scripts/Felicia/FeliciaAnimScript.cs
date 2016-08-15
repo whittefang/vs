@@ -26,16 +26,19 @@ public class FeliciaAnimScript : MonoBehaviour {
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
 	public Sprite[] SuperFrames;
+	public Sprite landingSprite;
 	public SpriteAnimator spriteAnimator;
 	public BoxCollider2D hurtbox;
 	public GameObject SuperBG;
 
 
+	CameraMoveScript cameraMove;
 	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
 	SoundsPlayer sound;
 	// Use this for initialization
 	void Start () {
+		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		spriteAnimator.SetNeutralAnimation (StartNeutralAnim);
@@ -60,6 +63,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
+		spriteAnimator.setLandingAnimation (StartLandingAnim);
 		hurtbox.gameObject.GetComponent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
@@ -138,10 +142,18 @@ public class FeliciaAnimScript : MonoBehaviour {
 		hurtbox.offset = new Vector2 (0, 0);
 		hurtbox.size  = new Vector2 (1.15f, 1.5f);
 		spriteRenderer.sprite = towardJumpFrames [0];
-
-		for (int i = 0; i < 11; i++) {
+		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = towardJumpFrames [i];
-			if (i == 9) {
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		for (int ii = 0; ii < 2; ii++){			
+			for (int i = 2; i < 7; i++) {
+				spriteRenderer.sprite = towardJumpFrames [i];
 				for (int x = 0; x < 3;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused()) {
@@ -149,6 +161,10 @@ public class FeliciaAnimScript : MonoBehaviour {
 					}
 				}
 			}
+		}
+		for (int i = 7; i < 10; i++) {
+			spriteRenderer.sprite = towardJumpFrames [i];
+
 
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -262,7 +278,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Medium(){
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 10; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -375,12 +391,13 @@ public class FeliciaAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		for (int x = 0; x < 12;) {
+		for (int x = 0; x < 22;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused ()) {
 				x++;
 			}
 		}
+		spriteRenderer.sprite = landingSprite;
 	}
 
 
@@ -428,10 +445,11 @@ public class FeliciaAnimScript : MonoBehaviour {
 	}
 	IEnumerator ThrowComplete(){
 		Debug.Log ("throw");
-
+		cameraMove.EnableCameraMovement (false);
 		for (int i = 0; i < 17; i++) {
 			spriteRenderer.sprite = throwCompleteFrames [i];
 			if (i == 8) {
+				cameraMove.EnableCameraMovement (true);
 				for (int x = 0; x < 12;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused()) {
@@ -451,7 +469,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 		// super anim
 		// super sound
 		sound.PlaySuperBg();
-		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
+		SuperBG.transform.position = new Vector3(cameraMove.transform.position.x, cameraMove.transform.position.y,2);
 		SuperBG.SetActive(true);
 		timeManager.StopTime (60);
 		sound.PlaySuperWord ();
@@ -572,7 +590,6 @@ public class FeliciaAnimScript : MonoBehaviour {
 
 	public void StartNeutralAnim(){
 
-		Debug.Log ("neutral");
 		EndAnimations ();
 		StartCoroutine (loopAnimation (neutralFrames));
 	}
@@ -604,5 +621,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 	public void EndAnimations(){
 		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 		StopAllCoroutines ();
+	}
+	public void StartLandingAnim(){
+		spriteRenderer.sprite = landingSprite;
 	}
 }

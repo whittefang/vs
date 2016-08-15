@@ -6,7 +6,7 @@ public class SpriteAnimator : MonoBehaviour {
 	public delegate void AnimationDelegateInt(int x);
 	AnimationDelegate walkAnim, walkAwayAnim, stopAnimations, neutralAnim, jumpTowardAnim, jumpAwayAnim, jumpNeutralAnim,
 					  lightAnim, mediumAnim, heavyAnim, jumpLightAnim, jumpMediumAnim, jumpHeavyAnim, specialOneAnim,
-					  specialTwoAnim,specialThreeAnim, throwTryAnim,throwCompleteAnim, superAnim,  blockAnim, winAnimation;
+					  specialTwoAnim,specialThreeAnim, throwTryAnim,throwCompleteAnim, superAnim,  blockAnim, winAnimation, landingAnimation;
 	AnimationDelegateInt hitAnim;
 	public string currentState = "blank";
 	// Use this for initialization
@@ -113,6 +113,9 @@ public class SpriteAnimator : MonoBehaviour {
 		currentState = "win";
 		winAnimation();
 	}
+	public void PlayLanding(){
+		landingAnimation();
+	}
 
 
 	public void StopAnimations(){
@@ -187,5 +190,8 @@ public class SpriteAnimator : MonoBehaviour {
 	}
 	public void setWinAnimation(AnimationDelegate newAnim){
 		winAnimation = newAnim;
+	}
+	public void setLandingAnimation(AnimationDelegate newAnim){
+		landingAnimation = newAnim;
 	}
 }

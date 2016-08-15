@@ -6,7 +6,7 @@ public class AnimateOnce : MonoBehaviour {
 	public Sprite[] frames;
 	TimeManagerScript timeManager;
 	public bool startOnEnable = true;
-	public bool animateDurtingPause = false;
+	public bool animateDurtingPause = false, loopBackToBeginning = false;
 	public bool useDelay = false;
 	public float delay = 0;
 	public int speed = 3;
@@ -44,6 +44,19 @@ public class AnimateOnce : MonoBehaviour {
 					i++;
 				}
 				yield return null;
+			}
+		}
+		if (loopBackToBeginning) {
+			for (int x = frames.Length-1; x > 0; x--) {
+				SR.sprite = frames [x];
+				for (int i =0; i < speed;){
+					if (!timeManager.CheckIfTimePaused()) {
+						i++;
+					}else if (animateDurtingPause){
+						i++;
+					}
+					yield return null;
+				}
 			}
 		}
 		gameObject.SetActive (false);

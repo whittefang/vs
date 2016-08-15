@@ -29,6 +29,7 @@ public class RyuAnimations : MonoBehaviour {
 	public GameObject SuperBG;
 
 
+	CameraMoveScript cameraMove;
 	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
 	SoundsPlayer sound;
@@ -62,6 +63,8 @@ public class RyuAnimations : MonoBehaviour {
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
+
+		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
 	}
 	
 
@@ -339,14 +342,17 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator SpecialOne(){
-		sound.PlaySP1 ();
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
+
 			if (i == 9) {
 				for (int x = 0; x < 12;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused ()) {
 						x++;
+						if (i == 2) {
+							sound.PlaySP1 ();
+						}
 					}
 				}
 			}
@@ -428,6 +434,7 @@ public class RyuAnimations : MonoBehaviour {
 	IEnumerator ThrowComplete(){
 		Debug.Log ("throw");
 
+		cameraMove.EnableCameraMovement (false);
 		for (int i = 1; i < 14; i++) {
 			spriteRenderer.sprite = throwFrames [i];
 
@@ -438,6 +445,8 @@ public class RyuAnimations : MonoBehaviour {
 				}
 			}
 		}
+
+		cameraMove.EnableCameraMovement (true);
 	}
 	IEnumerator SuperAnim(){
 		// super anim
@@ -534,8 +543,6 @@ public class RyuAnimations : MonoBehaviour {
 	}
 
 	public void StartNeutralAnim(){
-
-		Debug.Log ("neutral");
 		EndAnimations ();
 		StartCoroutine (loopAnimation (neutralFrames));
 	}

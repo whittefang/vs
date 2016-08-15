@@ -14,7 +14,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 	SoundsPlayer sounds;
 	public HitboxScript lightHitboxScript, mediumHitboxScript, heavyHitboxScript, throwHitboxScript;
-	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false;
+	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false, specialHitboxHit = false;
 	public GameObject ThrowPoint;
 
 
@@ -55,10 +55,15 @@ public class FeliciaAttackScript : MonoBehaviour {
 		mediumHitboxScript.SetOptFunc (MediumHit);
 		heavyHitboxScript.SetOptFunc (HeavyHit);
 		throwHitboxScript.SetThrowFunc (ThrowHit);
-
+		sp1Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
+		sp3Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
 		PMS.setAttackCancel (CancelAttacks);
 	}
-
+	void Update(){
+		if (Input.GetKeyDown (KeyCode.UpArrow)) {
+			health.exCurrent = 1000;
+		}
+	}
 	public void Throw(){
 		if (state.GetState () == "neutral") {
 			StartCoroutine (ThrowEnum ());
@@ -146,6 +151,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 	public void Light(){
 		if (state.GetState () == "neutral") {
+			PMS.CheckFacing ();
 			StartCoroutine (lightEnum ());
 		} else if (state.GetState () == "jumping") {
 			StartCoroutine (jumpLightEnum ());
@@ -192,7 +198,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 				jumpLightHitboxPart2.SetActive (true);
 				proximityBox.SetActive (false);
 			}
-			if (x == 14){
+			if (x == 13){
 				jumpLightHitbox.SetActive (false);
 				jumpLightHitboxPart2.SetActive (true);
 				proximityBox.SetActive (false);
@@ -202,12 +208,15 @@ public class FeliciaAttackScript : MonoBehaviour {
 				x++;
 			}
 		}
+
+		jumpLightHitboxPart2.SetActive (false);
 	}
 	public void Medium(){
 		if (state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit)) {
 			if (lightHitboxHit) {
 				lightHitboxHit = false;
 			}
+			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (mediumEnum ());
 		} else if (state.GetState () == "jumping") {
@@ -223,7 +232,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		// startup
-		for (int x = 0; x < 27; ) {
+		for (int x = 0; x < 33; ) {
 			if (x == 3){
 				mediumBuffer = false;	
 			}
@@ -277,9 +286,10 @@ public class FeliciaAttackScript : MonoBehaviour {
 			if (mediumHitboxHit) {
 				mediumHitboxHit = false;
 			}
+			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (heavyEnum ());
-		} else if (state.GetState () == "jumping" && transform.position.y > 1.2f && !PMS.jumpAway) {
+		} else if (state.GetState () == "jumping" && transform.position.y > 2.5f && !PMS.jumpAway) {
 			StartCoroutine (jumpHeavyEnum ());
 		}
 
@@ -297,8 +307,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 				PMS.StopMovement ();
 			}
 
-			if (x == 12) {
-				PMS.StopMovement ();
+			if (x == 14) {
 				heavyHitbox.SetActive (false);
 				state.SetState ("heavy recovery");
 				proximityBox.SetActive (false);
@@ -316,13 +325,15 @@ public class FeliciaAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayJumpHeavy ();
 		state.SetState ("jump attack");
-		PMS.landingRecoveryFrames = 4;
+		PMS.landingRecoveryFrames = 10;
+		PMS.GetComponent<BoxCollider2D>().offset = new Vector2 (0, 0);
+		PMS.GetComponent<BoxCollider2D>().size  = new Vector2 (1.15f, 1.5f);
 		for (int x = 0; x < 21;) {
 			
 			if (x == 7) {
 				jumpHeavyHitbox.SetActive (true);
 			}
-			if (x == 15) {
+			if (x == 20) {
 				jumpHeavyHitbox.SetActive (false);
 				proximityBox.SetActive (false);
 			}
@@ -342,6 +353,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
+			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (SpecialOneEnum ());
 		}
@@ -354,7 +366,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 78;) {
+		for (int x = 0; x < 81;) {
 			// active
 			if (x == 9) {
 				sp1Hitbox.SetActive (true);
@@ -380,36 +392,28 @@ public class FeliciaAttackScript : MonoBehaviour {
 			if (x == 30) {
 				sp1Hitbox.SetActive (false);
 			}
-			if (x == 33) {
-				sp1Hitbox.SetActive (true);
-			}
-			if (x == 36) {
-				sp1Hitbox.SetActive (false);
-				PMS.DsableBodyBox ();
+
+			if (x == 35) {
 				sp1HitboxPart2.SetActive (true);
 			}
-			if (x == 37) {
+			if (x == 38) {
 				sp1HitboxPart2.SetActive (false);
 			}
 
-			if (x == 42) {
-				sp1HitboxPart2.SetActive (true);
+			if (x == 41) {
+				sp1HitboxPart3.SetActive (true);
 			}
-			if (x == 45) {
-				sp1HitboxPart2.SetActive (false);
-			}
-			if (x == 46) {
-				//sp1HitboxPart3.SetActive (true);
-			}
-			if (x == 51) {
+			if (x == 43) {
 				sp1HitboxPart3.SetActive (false);
 				proximityBox.SetActive (false);
 			}
+
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				x++;
 				if (x == 36) {
+					PMS.DsableBodyBox ();
 					PMS.MoveToward (1f, 25);
 				}
 				if (x < 35 ){
@@ -431,6 +435,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
+			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (SpecialTwoEnum ());
 		}
@@ -473,6 +478,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
+			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (SpecialthreeEnum ());
 		}
@@ -518,11 +524,13 @@ public class FeliciaAttackScript : MonoBehaviour {
 	}
 
 	public void Super(){
-		health.exCurrent = 1000;
 		if (health.exCurrent >= 1000 && ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || 
 			(state.GetState() =="medium recovery" && mediumHitboxHit) || 
-			(state.GetState() =="heavy recovery" && heavyHitboxHit)) || mediumBuffer || sp2Buffer)) {
+			(state.GetState() =="heavy recovery" && heavyHitboxHit) ||
+			specialHitboxHit) || mediumBuffer || sp2Buffer)) {
 			health.AddMeter (-1000);
+			CancelAttacks ();
+			PMS.CheckFacing ();
 			mediumBuffer = false;
 			sp2Buffer = false;
 			lightHitboxHit = false;
@@ -550,7 +558,9 @@ public class FeliciaAttackScript : MonoBehaviour {
 		}
 		state.SetState ("neutral");
 	}
-
+	public void SpecialHit(){
+		specialHitboxHit = true;
+	}
 	public void LightHit(){
 		lightHitboxHit = true;
 	}
@@ -580,6 +590,10 @@ public class FeliciaAttackScript : MonoBehaviour {
 		sp1Hitbox.SetActive (false);
 		sp1HitboxPart2.SetActive (false);
 		sp1HitboxPart3.SetActive (false);
+		specialHitboxHit = false;
+		lightHitboxHit = false;
+		mediumHitboxHit = false;
+		heavyHitboxHit = false;
 	}
 
 	public void SetPlayer(bool playerOne){

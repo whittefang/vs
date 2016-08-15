@@ -62,7 +62,8 @@ public class HealthScript : MonoBehaviour {
 	void Update () {
 	
 	}
-	public void DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
+	// if attack is blocked returns true else it returns false
+	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, bool useCornerKnockback = true){
 
 		// check for invincible or blocking
@@ -88,7 +89,6 @@ public class HealthScript : MonoBehaviour {
 			}
 			healthAmount -= (int)(amount * comboScaling);
 
-			Debug.Log (healthAmount);
 			exCurrent += (int)((amount * comboScaling) * 1.3f);
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft ((int)(amount * comboScaling));
@@ -113,6 +113,7 @@ public class HealthScript : MonoBehaviour {
 			// check for death
 			CheckHealth ();
 			//
+			return false;
 
 		} else if (PMS.CheckIfBlocking () || state.GetState() == "blockstun") {
 			// player is blocking
@@ -125,7 +126,9 @@ public class HealthScript : MonoBehaviour {
 			} else {
 				hpRight.changeBarRight ((int)((float)amount * .05f));
 			}
+			return true;
 		}
+		return false;
 	}
 	public void CheckHealth(){
 		if (healthAmount <= 0) {

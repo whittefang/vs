@@ -23,9 +23,11 @@ public class PlayerMovementScript : MonoBehaviour {
 	TimeManagerScript timeManager;
 	public delegate void vDelegate();
 	 vDelegate cancelAttacks;
+	BoxCollider2D movementBox;
 
 	// Use this for initialization
 	void Awake () {
+		movementBox = GetComponent<BoxCollider2D> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		SR = GetComponent<SpriteRenderer> ();
 		state = GetComponent<FighterStateMachineScript>();
@@ -205,10 +207,13 @@ public class PlayerMovementScript : MonoBehaviour {
 			cancelAttacks();
 			if (landingRecoveryFrames > 0) {
 				StopMovement ();
+				spriteAnimator.PlayLanding ();
 				landingRecoveryFrames--;
 			} else {
 				state.SetState ("neutral");
 			}
+			movementBox.offset = new Vector2 (0, -1);
+			movementBox.size  = new Vector2 (1.6f, 2.2f);
 			gameObject.layer = onGroundMask;
 			CheckFacing ();
 		} else if (groundedBuffer > 0) {
@@ -263,6 +268,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		gameObject.layer = jumpingMask;
 	}
 	public void setAttackCancel(vDelegate newFunc){
+		Debug.Log ("setcancel");
 		cancelAttacks = newFunc;
 	}
 	public void MoveTowardsEnabled(bool enabled){
