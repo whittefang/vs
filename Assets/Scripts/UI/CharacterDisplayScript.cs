@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class CharacterDisplayScript : MonoBehaviour {
+	
 
 	// Use this for initialization
 	void Start () {
@@ -10,9 +11,8 @@ public class CharacterDisplayScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
-	public void UpdatePreview(string character){
-		
-	}
+
+
 }

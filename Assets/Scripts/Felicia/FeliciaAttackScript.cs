@@ -19,7 +19,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 
 
-	bool  mediumBuffer = false, sp2Buffer = false;
+	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false;
 	HealthScript health;
 	Transform otherPlayer;
 	// Use this for initialization
@@ -65,7 +65,8 @@ public class FeliciaAttackScript : MonoBehaviour {
 		}
 	}
 	public void Throw(){
-		if (state.GetState () == "neutral") {
+		if (state.GetState () == "neutral"  || lightBuffer || sp1Buffer) {
+			CancelAttacks ();
 			StartCoroutine (ThrowEnum ());
 		}
 	}
@@ -162,11 +163,15 @@ public class FeliciaAttackScript : MonoBehaviour {
 		health.AddMeter (10);
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayLight ();
+		lightBuffer = true;
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 12;) {
 			// startup
 			// active
+			if (x == 2){
+				lightBuffer = false;
+			}
 			if (x == 3) {
 				lightHitbox.SetActive (true);
 			}
@@ -362,11 +367,15 @@ public class FeliciaAttackScript : MonoBehaviour {
 	IEnumerator SpecialOneEnum(){
 
 		health.AddMeter (45);
+		sp1Buffer = true;
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 81;) {
+			if (x == 3){
+				sp1Buffer = false;
+			}
 			// active
 			if (x == 9) {
 				sp1Hitbox.SetActive (true);
@@ -573,6 +582,8 @@ public class FeliciaAttackScript : MonoBehaviour {
 	public void CancelAttacks(){
 		mediumBuffer = false;
 		sp2Buffer = false;
+		lightBuffer = false;
+		sp1Buffer = false;
 		StopAllCoroutines ();
 		lightHitbox.SetActive (false);
 		jumpLightHitboxPart2.SetActive (false);

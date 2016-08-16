@@ -28,7 +28,7 @@ public class Rounds : MonoBehaviour {
 	}
 	void loadx(Scene x, Scene y){
 		Debug.Log("i loaded");
-		if (SceneManager.GetActiveScene().buildIndex == 4) {
+		if (SceneManager.GetActiveScene().buildIndex == 2) {
 			PlayersSpawn();
 		}
 
@@ -44,7 +44,11 @@ public class Rounds : MonoBehaviour {
 		P2Star2 = GameObject.Find("Player2Star2");
 		P2Star2.SetActive(false);
 		if (FalseMeansTest == true){
-			RoundChange();
+			//RoundChange();
+
+			//instead load into character select
+
+			SceneManager.LoadScene(1);
 		}
 
 	}
@@ -160,7 +164,7 @@ public class Rounds : MonoBehaviour {
 		p2 = CharacterSpawn(false);
 		p1.GetComponent<PlayerNumberSetScript>().SetPlayer("playerOne", p2);
 		p2.GetComponent<PlayerNumberSetScript>().SetPlayer("playerTwo", p1);
-		p2.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = Color.grey;
+		p2.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f , .7f);
 		GameObject.Find("Camera").GetComponent<CameraMoveScript>().SetPlayers(p1, p2);
 	}
 
