@@ -8,7 +8,7 @@ public class HitboxScript : MonoBehaviour {
 	public int hitstun;
 	public int blockstun;
 	public Vector2 hitPush, blockPush;
-	public bool disableOnHit = false, isEnabled = true, isProjectile = false, isThrow, multiHit = false, useCornerPushback = true, omitOptFuncOnBlock = false;
+	public bool disableOnHit = false, isEnabled = true, isProjectile = false, isThrow, multiHit = false, useCornerPushback = true, omitOptFuncOnBlock = false, isFreezingAttack = false;
 	public int multihitAmount = 0;
 	public int multihitFrameBetween = 1;
 	public List<string> tagsToDamage;
@@ -67,7 +67,7 @@ public class HitboxScript : MonoBehaviour {
 			}
 			// deal the damage
 
-			bool blocked = other.GetComponent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback);
+			bool blocked = other.GetComponent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback, isFreezingAttack);
 			// run optional function
 			if (optionalFunc != null){
 				// only run when opt is allowed on block and move is not blocked or hits

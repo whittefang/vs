@@ -20,6 +20,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	public GameObject otherPlayer;
 	public Transform attacksObject;
 	public bool OnLeft, canProximityBlock, jumpAway = false;
+	public float moveboxOffsetY = -1, moveboxSizeX = 1.6f;
 	TimeManagerScript timeManager;
 	public delegate void vDelegate();
 	 vDelegate cancelAttacks;
@@ -212,8 +213,8 @@ public class PlayerMovementScript : MonoBehaviour {
 			} else {
 				state.SetState ("neutral");
 			}
-			movementBox.offset = new Vector2 (0, -1);
-			movementBox.size  = new Vector2 (1.6f, 2.2f);
+			movementBox.offset = new Vector2 (0, moveboxOffsetY);
+			movementBox.size  = new Vector2 (moveboxSizeX, 2.2f);
 			gameObject.layer = onGroundMask;
 			CheckFacing ();
 		} else if (groundedBuffer > 0) {

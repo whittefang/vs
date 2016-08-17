@@ -15,14 +15,16 @@ public class HealthScript : MonoBehaviour {
 	ObjectPoolScript hitsparksPool, blocksparksPool;
 	public SoundsPlayer sounds;
 	TextMesh comboCounterText, comboDamageText;
-	public int comboCounter = 0, comboDamage = 0;
+	public int comboCounter = 0, comboDamage = 0, freezingCounter = 0;
 	float comboScaling = 1, leftBound = -10.2f, rightBound = 10.2f;
 	LeftHpBarChange hpLeft;
 	RightHpBarChange hpRight;
-
+	SpriteRenderer SR;
 	// Use this for initialization
 	void OnEnable () {
-			
+		if (SR == null) {
+			SR = GetComponentInParent<SpriteRenderer> ();
+		}
 		if (timeManager == null) {
 			timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		}
@@ -64,7 +66,7 @@ public class HealthScript : MonoBehaviour {
 	}
 	// if attack is blocked returns true else it returns false
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
-		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, bool useCornerKnockback = true){
+		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, bool useCornerKnockback = true, bool freezingAttack = false){
 
 		// check for invincible or blocking
 		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState() != "blockstun" && !(state.GetState() == "projectile invulnerable" && isProjectile)) || 
@@ -76,6 +78,7 @@ public class HealthScript : MonoBehaviour {
 			if (state.GetState () == "hitstun") {
 				comboCounter++;
 				comboScaling -= .1f;
+
 				if (comboScaling < .4f) {
 					comboScaling = .4f;
 				}
@@ -85,7 +88,11 @@ public class HealthScript : MonoBehaviour {
 			} else {
 				comboCounter = 1;
 				comboScaling = 1;
+				freezingCounter = 0;
 				comboDamage = amount;
+			}
+			if (freezingAttack) {
+				freezingCounter++;
 			}
 			healthAmount -= (int)(amount * comboScaling);
 
@@ -108,7 +115,17 @@ public class HealthScript : MonoBehaviour {
 			// set hitstun
 			StopAllCoroutines();
 			PMS.landingRecoveryFrames = 0;
-			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback));
+
+			if (freezingAttack && freezingCounter <= 1) {
+				SR.color = Color.blue;
+			} else if (freezingCounter > 1) {
+				hitstun = 5;
+				SR.color = Color.white;
+			} else {
+				SR.color = Color.white;
+			}
+
+			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack));
 
 			// check for death
 			CheckHealth ();
@@ -176,11 +193,14 @@ public class HealthScript : MonoBehaviour {
 		}
 
 	}
-	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true){
+	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false){
 		state.SetState ("hitstun");
 		if (HitFunc != null) {
 			HitFunc ();
 		}
+			
+
+
 		GameObject sparks = hitsparksPool.FetchObject ();
 		sparks.transform.position = position + new Vector3(Random.Range(-.75f, .75f), Random.Range(-1f, 1f),0);
 		sparks.SetActive(true);
@@ -209,7 +229,9 @@ public class HealthScript : MonoBehaviour {
 		} else {
 			state.SetState ("falling hit");
 		}
-			
+		if (freezingAttack) {
+			SR.color = Color.white;
+		}
 	}
 	public void SetHitFunc(DeathEvent newFunc){
 		HitFunc = newFunc;

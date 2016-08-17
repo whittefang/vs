@@ -7,7 +7,7 @@ public class ProjectileScript : MonoBehaviour {
 	public bool movementEnabled = true;
 	public float lifeDuration = 0;
 	public bool useLimitedLife = false, enableFireballKiller = true;
-	public int projecttileStrength = 1;
+	public int projecttileStrength = 1, projectileOwner = 0;
 	public  GameObject bodyToTurnOff;
 	TimeManagerScript timeManager;
 
@@ -28,9 +28,7 @@ public class ProjectileScript : MonoBehaviour {
 	void OnDisable(){
 		CancelInvoke ();
 	}
-	void TurnOffSelf(){
-		bodyToTurnOff.SetActive (false);
-	}
+
 	public bool MovementEnabled{
 		get{
 			return movementEnabled;
@@ -63,10 +61,13 @@ public class ProjectileScript : MonoBehaviour {
 	public void SetSpeed(float newSpeed){
 		speed = newSpeed;
 	}
+	void TurnOffSelf(){
+		Kill ();
+	}
 	void OnTriggerEnter2D(Collider2D other){
 		if (other.tag == "fireballKiller" && enableFireballKiller){
 			gameObject.SetActive (false);
-		}else if (other.tag == "projectile"){
+		}else if (other.tag == "projectile" && projectileOwner != other.GetComponent<ProjectileScript>().projectileOwner){
 			int otherStrength = other.GetComponent<ProjectileScript> ().projecttileStrength;
 			if (projecttileStrength > otherStrength) {
 				other.GetComponent<ProjectileScript> ().Kill ();
@@ -81,7 +82,9 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	public void Kill(){
 		movementEnabled = false;
-		GetComponentInChildren<AnimationLoopScript> ().StopAnimation ();
+		if (GetComponentInChildren<AnimationLoopScript> () != null) {
+			GetComponentInChildren<AnimationLoopScript> ().StopAnimation ();
+		}
 		GetComponentInChildren<AnimateOnce> ().Animate ();
 		GetComponent<BoxCollider2D> ().enabled = false;
 	}

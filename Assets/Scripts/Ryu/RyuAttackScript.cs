@@ -599,6 +599,8 @@ public class RyuAttackScript : MonoBehaviour {
 
 	public void SetPlayer(bool playerOne){
 		if (playerOne) {
+			fireball.GetComponent<ProjectileScript> ().projectileOwner = 0;
+			superFireball.GetComponent<ProjectileScript> ().projectileOwner = 0;
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			jumpMediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			jumpHeavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
@@ -616,6 +618,8 @@ public class RyuAttackScript : MonoBehaviour {
 			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerTwo";
 
 		} else {
+			fireball.GetComponent<ProjectileScript> ().projectileOwner = 1;
+			superFireball.GetComponent<ProjectileScript> ().projectileOwner = 1;
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			jumpMediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			jumpHeavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");

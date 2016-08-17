@@ -10,10 +10,13 @@ public class PlayerNumberSetScript : MonoBehaviour {
 	voidDel optFunc;
 
 	public GameObject body, hurtbox,  soundPlayer;
-
+	public bool testMode = false;
+	public GameObject testOtherPlayer;
 	// Use this for initialization
 	void Start () {
-		//SetPlayer(Player);
+		if (testMode){
+			SetPlayer(Player,testOtherPlayer );
+		}
 
 	}
 	public void SetPlayer(string playerTag, GameObject otherPlayer){
