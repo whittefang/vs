@@ -6,10 +6,10 @@ public class SubzeroAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject fireball, superFireball, clone,lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox,jumpLightBackHitbox, jumpMediumHitbox, jumpHeavyHitbox,
+	public GameObject fireball, superIce, clone,lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox,jumpLightBackHitbox, jumpMediumHitbox, jumpHeavyHitbox,
 	sp1Hitbox, sp2Hitbox, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
 
-	ProjectileScript fireballProjectileScript , superProjectileScript;
+	ProjectileScript fireballProjectileScript;
 	TimeManagerScript timeManager;
 
 	SoundsPlayer sounds;
@@ -35,7 +35,6 @@ public class SubzeroAttackScript : MonoBehaviour {
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		fireballProjectileScript = fireball.GetComponent < ProjectileScript> ();
-		superProjectileScript = superFireball.GetComponent<ProjectileScript> ();
 		PMS = GetComponent<PlayerMovementScript> ();
 		PMS.setAttackCancel (CancelAttacks);
 		inputScript = GetComponent<InputScript> ();
@@ -108,25 +107,17 @@ public class SubzeroAttackScript : MonoBehaviour {
 		otherPlayer.position = ThrowPoint.transform.position;
 		Vector2 endPoint = new Vector2(1f,0);
 		for (int x = 0; x < 42;) {
-			if (x < 24) {
+			if (x < 15) {
 				Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
 				ThrowPoint.transform.localPosition = newPoint;
 				otherPlayer.position = ThrowPoint.transform.position;
 			}
-			if (x == 1) {
-				endPoint= new Vector2 (-3f, 0);
-			}
-			if (x == 15) {
+			if (x == 9) {
 				endPoint = new Vector2 (-3, 2f);
 			}
-			if (x == 18) {
-				endPoint = new Vector2 (-2f, 1.5f);
-			}
-			if (x == 21) {
-				endPoint = new Vector2 (1,1f);
-			}
-			if (x == 24) {
-				endPoint = new Vector2 (1,-1f);
+			if (x == 15) {
+				otherPlayer.GetComponent<BoxCollider2D> ().enabled = true;
+				otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (5, 10);
 			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -218,7 +209,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 		PMS.MoveToward (7.5f,0);
 		state.SetState ("attack");
 		// startup
-		for (int x = 0; x < 22; ) {
+		for (int x = 0; x < 32; ) {
 			if (x == 3){
 				mediumBuffer = false;	
 			}
@@ -279,7 +270,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 		spriteAnimator.PlayHeavy ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 30;) {
+		for (int x = 0; x < 45;) {
 			if (x == 8) {
 				heavyHitbox.SetActive (true);
 			}
@@ -341,6 +332,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 			// active
 			if (x == 3){
 				sp1Buffer = false;
+				sounds.PlaySP1 ();
 			}
 			if (x == 12 && canShoot) {
 				canShoot = false;
@@ -474,22 +466,13 @@ public class SubzeroAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		bool canShoot = true;
 		for (int x = 0; x < 45;) {
 			// active
-			if (x == 12 && canShoot) {
-				canShoot = false;
-				sounds.PlayExtra ();
-				superFireball.transform.position = fireballGunpoint.transform.position;
+			if (x == 15) {
 				if (PMS.CheckIfOnLeft ()) {
-					superFireball.transform.eulerAngles = new Vector2(0, 0);
-					superProjectileScript.direction = new Vector2 (1, 0);
 				} else {
-					superFireball.transform.eulerAngles = new Vector2(0, 180);
-					superProjectileScript.direction = new Vector2 (-1, 0);
 				}
-				superFireball.SetActive (true);
-				proximityBox.SetActive (false);
+				superIce.SetActive (true);
 			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -552,7 +535,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 			clone.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			clone.GetComponent<ProjectileScript> ().projectileOwner = 0;
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
-			//superFireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			superIce.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			fireball.GetComponentInChildren<ProximityBlockScript>().tagToDamage = "playerTwo";
 			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerTwo";
 			 
@@ -571,7 +554,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 			clone.GetComponent<ProjectileScript> ().projectileOwner = 1;
 			clone.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
-			//superFireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			superIce.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			fireball.GetComponentInChildren<ProximityBlockScript>().tagToDamage = "playerOne";
 			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerOne";
 		}

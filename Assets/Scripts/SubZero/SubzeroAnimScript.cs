@@ -16,6 +16,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	public Sprite[] SpecialOneFrames;
 	public Sprite[] SpecialTwoFrames;
 	public Sprite[] SpecialThreeFrames;
+	public Sprite[] superFrames;
 	public Sprite[] HitFrames;
 	public Sprite[] BlockFrames;
 	public Sprite[] introFrames;
@@ -233,6 +234,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	}
 	// depricated
 	IEnumerator Light(){
+		sound.PlayHit ();
 		spriteRenderer.sprite = lightFrames [0];
 		for (int x = 0; x < 4;) {
 			yield return null;
@@ -250,9 +252,10 @@ public class SubzeroAnimScript : MonoBehaviour {
 		spriteRenderer.sprite = lightFrames [0];
 	}
 	IEnumerator Medium(){
+		sound.PlayHit ();
 		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 4;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
@@ -261,6 +264,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Heavy(){
+		sound.PlayHit ();
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
 			for (int x = 0; x < 3;) {
@@ -383,22 +387,14 @@ public class SubzeroAnimScript : MonoBehaviour {
 		sound.PlaySuperBg();
 		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
 		SuperBG.SetActive(true);
-		timeManager.StopTime (75);
+		timeManager.StopTime (30);
 		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
-		for (int i = 0; i < 12; i++) {
-			spriteRenderer.sprite = SpecialOneFrames [i];
-			if (i == 9) {
-				sound.PlaySP1 ();
-				for (int x = 0; x < 12;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
-						x++;
-					}
-				}
-			}
-			for (int x = 0; x < 3;) {
+		for (int i = 0; i < 3; i++) {
+			spriteRenderer.sprite = superFrames [i];
+
+			for (int x = 0; x < 5;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
