@@ -3,10 +3,10 @@ using System.Collections;
 
 public class AnimationLoopScript : MonoBehaviour {
 	public Sprite[] frames, introFrames;
-	public bool useTransition = false;
+	public bool useTransition = false, useDelay = false;
 	SpriteRenderer  SR;
 	int currentFrame = 0;
-	public int timeBetweenFrames = 4;
+	public int timeBetweenFrames = 4, delay = 0;
 	// Use this for initialization
 	void OnEnable () {
 		if (SR == null) {
@@ -33,6 +33,12 @@ public class AnimationLoopScript : MonoBehaviour {
 		StartCoroutine(loop());
 	}
 	IEnumerator loop(){
+		if (useDelay) {
+			SR.sprite = null;
+			for (int x = 0; x < delay; x++) {
+				yield return null;
+			}
+		}
 		while (true) {
 			SR.sprite = frames [currentFrame];
 			currentFrame++;

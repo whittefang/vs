@@ -5,6 +5,7 @@ public class UIsounds : MonoBehaviour {
 
 	AudioSource AS;
 	public AudioClip change, confirm, back; 
+	public AudioClip[] selectSounds;
 	// Use this for initialization
 	void Start () {
 		AS = GetComponent<AudioSource> ();
@@ -17,5 +18,8 @@ public class UIsounds : MonoBehaviour {
 	}
 	public void PlayBack(){
 		AS.PlayOneShot (back);
+	}
+	public void PlayCharacterSelect(int character){
+		AS.PlayOneShot (selectSounds [character]);
 	}
 }

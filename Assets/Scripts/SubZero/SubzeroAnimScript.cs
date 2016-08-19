@@ -24,7 +24,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	public Sprite[] deathFrames;
 	public SpriteAnimator spriteAnimator;
 	public BoxCollider2D hurtbox;
-	public GameObject Bag;
+	public GameObject head;
 	public GameObject SuperBG;
 
 
@@ -32,6 +32,13 @@ public class SubzeroAnimScript : MonoBehaviour {
 	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
 	SoundsPlayer sound;
+
+	void Update(){
+		if (Input.GetKeyDown (KeyCode.DownArrow)) {
+			StartDeathAnim ();
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -146,6 +153,9 @@ public class SubzeroAnimScript : MonoBehaviour {
 		sound.PlayDeath ();
 
 		timeManager.StopTimeForce (60);
+		head.transform.position = transform.position;
+		head.SetActive (true);
+		head.GetComponent<Rigidbody2D> ().AddForceAtPosition (new Vector2(0, 250), new Vector2(.01f,1));
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];
 			for (int x = 0; x < 5; x++) {

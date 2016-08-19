@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Rounds : MonoBehaviour {
 	//variable for prefab
-	public GameObject FeliciaPrefab, RyuPrefab;
+	public GameObject FeliciaPrefab, RyuPrefab, SubzeroPrefab;
 	public string player1character = "ryu";
 	public string player2character = "ryu";
 
@@ -148,6 +148,9 @@ public class Rounds : MonoBehaviour {
 			break;
 		case "felicia":
 			player = Instantiate(FeliciaPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			break;
+		case "subzero":
+			player = Instantiate(SubzeroPrefab, spawnPosition, Quaternion.identity) as GameObject;
 			break;
 		default :
 			player = new GameObject();

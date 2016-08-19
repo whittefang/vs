@@ -108,21 +108,25 @@ public class HealthScript : MonoBehaviour {
 			// play hit animation
 			if (isThrow) {
 				sounds.PlayThrowHit ();	
+				spriteAnimator.PlayHit (hitstun);
 			} else if (!freezingAttack) {
 				sounds.PlayHit ();
+				spriteAnimator.PlayHit (hitstun);
 			}
-			spriteAnimator.PlayHit (hitstun);
 			// set hitstun
 			StopAllCoroutines();
 			PMS.landingRecoveryFrames = 0;
 
 			if (freezingAttack && freezingCounter <= 1) {
-				SR.color = Color.blue;
+				SR.material.SetFloat ("_EffectAmount", 1);
+				spriteAnimator.StopAnimations ();
 			} else if (freezingCounter > 1) {
 				hitstun = 5;
-				SR.color = Color.white;
+				SR.material.SetFloat ("_EffectAmount", 0);
+				spriteAnimator.PlayHit (hitstun);
 			} else {
-				SR.color = Color.white;
+				SR.material.SetFloat ("_EffectAmount", 0);
+				spriteAnimator.PlayHit (hitstun);
 			}
 
 			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher));
@@ -237,7 +241,8 @@ public class HealthScript : MonoBehaviour {
 			state.SetState ("falling hit");
 		}
 		if (freezingAttack) {
-			SR.color = Color.white;
+			SR.material.SetFloat ("_EffectAmount", 0);
+			spriteAnimator.PlayNeutralAnim ();
 		}
 	}
 	public void SetHitFunc(DeathEvent newFunc){

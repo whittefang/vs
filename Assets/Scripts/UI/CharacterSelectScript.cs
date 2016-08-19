@@ -11,6 +11,7 @@ public class CharacterSelectScript : MonoBehaviour {
 	GamePadState state;
 	GamePadState prevState;
 	UIsounds sound;
+
 	SceneTransistionScript sceneLoader;
 	bool buffer = true, selectionMade = false, lockedIn = false;
 	public GameObject[] previewsLoop;
@@ -101,7 +102,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		case 3: 
 			return "random";
 		case 4: 
-			return "random";
+			return "subzero";
 		case 5: 
 			return "random";
 		case 6: 
@@ -133,5 +134,6 @@ public class CharacterSelectScript : MonoBehaviour {
 			g.SetActive (false);
 		}
 		selectedsLoop [character].SetActive (true);
+		sound.PlayCharacterSelect (character);
 	}
 }

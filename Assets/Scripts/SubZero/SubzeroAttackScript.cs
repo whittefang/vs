@@ -7,7 +7,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject fireball, superIce, clone,lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox,jumpLightBackHitbox, jumpMediumHitbox, jumpHeavyHitbox,
-	sp1Hitbox, sp2Hitbox, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
+	sp1Hitbox, sp2Hitbox, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox, iceProjectilePre;
 
 	ProjectileScript fireballProjectileScript;
 	TimeManagerScript timeManager;
@@ -335,6 +335,8 @@ public class SubzeroAttackScript : MonoBehaviour {
 				sounds.PlaySP1 ();
 			}
 			if (x == 12 && canShoot) {
+				iceProjectilePre.transform.position = fireballGunpoint.transform.position;
+				iceProjectilePre.SetActive (true);
 				canShoot = false;
 				sounds.PlayExtra ();
 				fireball.transform.position = fireballGunpoint.transform.position;
@@ -396,7 +398,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 						clone.transform.eulerAngles = new Vector2(0, 180);
 
 					}
-					clone.transform.position = new Vector3 (transform.position.x, -1.4f, 0);
+					clone.transform.position = new Vector3 (transform.position.x, -1.2f, 0);
 					clone.SetActive (true);
 				}
 				x++;
@@ -423,18 +425,18 @@ public class SubzeroAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
 		state.SetState ("projectile invulnerable");
-		for (int x = 0; x < 45;) {			
+		for (int x = 0; x < 35;) {			
 			yield return null;
 			if (x == 8) {
 				sp3Hitbox.SetActive (true);
 			}
-			if (x == 25) {
+			if (x == 15) {
 				sp3Hitbox.SetActive (false);
 				PMS.StopMovement ();				
 			}
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x < 25) {
-					PMS.MoveToward (15f);
+				if (x < 15) {
+					PMS.MoveToward (20f);
 				}
 				x++;
 			}
