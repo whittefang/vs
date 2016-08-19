@@ -3,7 +3,7 @@ using System.Collections;
 
 public class AnimationLoopScript : MonoBehaviour {
 	public Sprite[] frames, introFrames;
-	public bool useTransition = false, useDelay = false;
+	public bool useTransition = false, useDelay = false, loopBackwardsAfterFinish = false;
 	SpriteRenderer  SR;
 	int currentFrame = 0;
 	public int timeBetweenFrames = 4, delay = 0;
@@ -40,14 +40,23 @@ public class AnimationLoopScript : MonoBehaviour {
 			}
 		}
 		while (true) {
-			SR.sprite = frames [currentFrame];
-			currentFrame++;
-			if (currentFrame >= frames.Length) {
-				currentFrame = 0;
+			for (int i = 0; i < frames.Length; i++) {
+				SR.sprite = frames [i];
+
+				for (int x = 0; x < timeBetweenFrames; x++) {
+					yield return null;
+				}
 			}
-			for (int x = 0; x < timeBetweenFrames; x++) {
-				yield return null;
+			if (loopBackwardsAfterFinish) {
+				for (int i = frames.Length-1; i > 0; i--) {
+					SR.sprite = frames [i];
+
+					for (int x = 0; x < timeBetweenFrames; x++) {
+						yield return null;
+					}
+				}
 			}
+
 		}
 	}
 
