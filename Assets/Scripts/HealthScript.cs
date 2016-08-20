@@ -20,7 +20,7 @@ public class HealthScript : MonoBehaviour {
 	LeftHpBarChange hpLeft;
 	RightHpBarChange hpRight;
 	SpriteRenderer SR;
-	//ExMeter exBar;
+	ExMeter exBar;
 	// Use this for initialization
 	void OnEnable () {
 		if (SR == null) {
@@ -43,9 +43,9 @@ public class HealthScript : MonoBehaviour {
 	}
 
 	public void SetPlayer(string player, GameObject otherPlayer){
-		//exBar = GameObject.Find("DoNotDestroy").GetComponent<ExMeter>();
+		exBar = GameObject.Find("DoNotDestroy").GetComponent<ExMeter>();
 		if (player == "playerOne") {
-			// exBar.GetEx(true)
+			exBar.GetEx(true);
 			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
 			hpLeft.setHpLeft (healthMax);
 			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
@@ -54,7 +54,7 @@ public class HealthScript : MonoBehaviour {
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		} else {
-			// exBar.GetEx(false)
+			exBar.GetEx(false);
 			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
 			hpRight.setHpRight (healthMax);
 			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();
@@ -262,9 +262,9 @@ public class HealthScript : MonoBehaviour {
 			exCurrent = 1000;
 		}
 		if (hpLeft != null) {
-			//exBar.ExMeterChange(amountToAdd, true);
+			exBar.ExMeterChange(amountToAdd, true);
 		}else {
-			//exBar.ExMeterChange(amountToAdd, false);
+			exBar.ExMeterChange(amountToAdd, false);
 
 		}
 	}

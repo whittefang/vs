@@ -13,8 +13,7 @@ public class ExMeter : MonoBehaviour {
  	float originalRightSpot;
 
 	void Start () {
-		originalLeftSpot = exLeftRenderer.bounds.min.x;
-		originalRightSpot = exRightRenderer.bounds.max.x;
+		
 	}
 	
 	// Update is called once per frame
@@ -35,6 +34,8 @@ public class ExMeter : MonoBehaviour {
 	public void setExMetersToZero(){
 		currentExLeft = 0;
 		currentExRight = 0;
+		ExMeterChange(0,true);
+		ExMeterChange(0,false);
 	}
 	//returns the ammount as a float for start of eatch round to dalts script.
 	public float GetEx(bool isP1){
@@ -48,6 +49,8 @@ public class ExMeter : MonoBehaviour {
 
 	public void ExMeterChange(int meter, bool isPlayerOne){
 		float tempMeter = meter;
+		originalLeftSpot = exLeftRenderer.bounds.min.x;
+		originalRightSpot = exRightRenderer.bounds.max.x;
 
 		if (isPlayerOne){
 				currentExLeft += meter;
@@ -57,7 +60,7 @@ public class ExMeter : MonoBehaviour {
 			exLeftRenderer.transform.localScale = new Vector3(currentExLeft / 1000 * 4, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
 			float newLeftSpot = exLeftRenderer.bounds.min.x;
 			float findNewLeftSpot = newLeftSpot - originalLeftSpot;
-			exLeftRenderer.transform.Translate(new Vector3 (-findNewLeftSpot, 0f, 0f));
+			exLeftRenderer.transform.Translate(new Vector3 (-findNewLeftSpot, 0f, 0f),Space.Self);
 
 		}
 		else {
@@ -68,7 +71,7 @@ public class ExMeter : MonoBehaviour {
 			exRightRenderer.transform.localScale = new Vector3(currentExRight / 1000 * 4, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
 			float newRightSpot = exRightRenderer.bounds.max.x;
 			float findNewRightSpot = newRightSpot - originalRightSpot;
-			exRightRenderer.transform.Translate(new Vector3 (-findNewRightSpot, 0f, 0f));
+			exRightRenderer.transform.Translate(new Vector3 (-findNewRightSpot, 0f, 0f), Space.Self);
 		}
 
 

@@ -19,17 +19,25 @@ public class Rounds : MonoBehaviour {
 	GameObject P2Star2;
 	delegate void voidDel();
 	voidDel win;
+	ExMeter ex;
+	FollowScript fs;
 	void Awake(){
 		if (FalseMeansTest == true) {
 			Debug.Log("object can not be destroyed");
 			DontDestroyOnLoad(gameObject);
 			SceneManager.activeSceneChanged += loadx;
 		}
+		ex = GetComponent<ExMeter>();
+		fs = GetComponent<FollowScript>();
 	}
 	void loadx(Scene x, Scene y){
 		Debug.Log("i loaded");
 		if (SceneManager.GetActiveScene().buildIndex == 2) {
+			if (RoundFlag == 1){
+				StartCoroutine(SetRoundText("Round 1"));
+			}
 			PlayersSpawn();
+			fs.transformToFollow = GameObject.Find("Camera");
 		}
 
 	}
@@ -62,29 +70,39 @@ public class Rounds : MonoBehaviour {
 				P2Star1.SetActive (false);
 				P2Star2.SetActive (false);
 				SceneManager.LoadScene(sceneToload);
-				GetComponentInChildren<TextMesh>().text = "Round 1";
+				
 				break;
 			case 2:
 				SceneManager.LoadScene(sceneToload);
-				GetComponentInChildren<TextMesh>().text = "Round 2";
+				StartCoroutine(SetRoundText("Round 2"));
 				break;
 			case 3:
 				SceneManager.LoadScene(sceneToload);
-				GetComponentInChildren<TextMesh>().text = "Round 3";
+				StartCoroutine(SetRoundText("Round 3"));
 				break;
 			case 4:
-				GetComponentInChildren<TextMesh> ().text = "Player 1 Won!";
+				
 				P1W = 0;
 				P2W = 0;
 				RoundFlag = 1;
 				SceneManager.LoadScene(1);
+				ex.setExMetersToZero();
+				P1Star1.SetActive (false);
+				P1Star2.SetActive (false);
+				P2Star1.SetActive (false);
+				P2Star2.SetActive (false);
 				break;
 			case 5:
-				GetComponentInChildren<TextMesh> ().text = "Player 2 Won!";
+				
 				P1W = 0;
 				P2W = 0;
 				RoundFlag = 1;
 				SceneManager.LoadScene(1);
+				ex.setExMetersToZero();
+				P1Star1.SetActive (false);
+				P1Star2.SetActive (false);
+				P2Star1.SetActive (false);
+				P2Star2.SetActive (false);
 				break;
 			default:
 				Debug.Log("Something went out of range inside round.");
@@ -93,6 +111,7 @@ public class Rounds : MonoBehaviour {
 	}
 	public void PlayerOneWin(){
 		Debug.Log ("p1Win");
+		StartCoroutine(SetRoundText("Player 1 Wins!"));
 		StartCoroutine (wait (P1WinFunc));
 
 	}
@@ -112,6 +131,7 @@ public class Rounds : MonoBehaviour {
 		}
 	}
 	public void PlayerTwoWin(){
+		StartCoroutine(SetRoundText("Player 2 Wins!"));
 		Debug.Log ("p2Win");
 		StartCoroutine(wait(P2WinFunc));
 
@@ -171,7 +191,11 @@ public class Rounds : MonoBehaviour {
 		GameObject.Find("Camera").GetComponent<CameraMoveScript>().SetPlayers(p1, p2);
 	}
 
-
+	IEnumerator SetRoundText(string roundText){
+		GetComponentInChildren<TextMesh> ().text = roundText;
+		yield return new WaitForSeconds(2f);
+		GetComponentInChildren<TextMesh> ().text = "";
+	}
 
 }
 
