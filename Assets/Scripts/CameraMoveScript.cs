@@ -26,7 +26,15 @@ public class CameraMoveScript : MonoBehaviour {
 			if (newPosition.y < lowPoint) {
 				newPosition.y = lowPoint;
 			}
-			transform.position = newPosition;
+			
+			bool playerCornered = false;
+			if (p1.position.x < newPosition.x - 4.85f || p1.position.x > newPosition.x + 4.85f || 
+				p2.position.x < newPosition.x - 4.85f || p2.position.x > newPosition.x + 4.85f){
+				newPosition.x = transform.position.x;
+			}
+
+			transform.position = Vector3.Lerp(transform.position, newPosition, .5f);
+			
 		}
 
 

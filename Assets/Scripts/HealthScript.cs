@@ -20,6 +20,7 @@ public class HealthScript : MonoBehaviour {
 	LeftHpBarChange hpLeft;
 	RightHpBarChange hpRight;
 	SpriteRenderer SR;
+	//ExMeter exBar;
 	// Use this for initialization
 	void OnEnable () {
 		if (SR == null) {
@@ -42,7 +43,9 @@ public class HealthScript : MonoBehaviour {
 	}
 
 	public void SetPlayer(string player, GameObject otherPlayer){
+		//exBar = GameObject.Find("DoNotDestroy").GetComponent<ExMeter>();
 		if (player == "playerOne") {
+			// exBar.GetEx(true)
 			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
 			hpLeft.setHpLeft (healthMax);
 			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
@@ -51,6 +54,7 @@ public class HealthScript : MonoBehaviour {
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		} else {
+			// exBar.GetEx(false)
 			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
 			hpRight.setHpRight (healthMax);
 			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();
@@ -66,7 +70,8 @@ public class HealthScript : MonoBehaviour {
 	}
 	// if attack is blocked returns true else it returns false
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
-		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false){
+		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
+		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false){
 
 		// check for invincible or blocking
 		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState() != "blockstun" && !(state.GetState() == "projectile invulnerable" && isProjectile)) || 
@@ -96,7 +101,7 @@ public class HealthScript : MonoBehaviour {
 			}
 			healthAmount -= (int)(amount * comboScaling);
 
-			exCurrent += (int)((amount * comboScaling) * 1.3f);
+			AddMeter((int)((amount * comboScaling) * 1.3f));
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft ((int)(amount * comboScaling));
 			} else {
@@ -253,6 +258,15 @@ public class HealthScript : MonoBehaviour {
 	}
 	public void AddMeter(int amountToAdd){
 		exCurrent += amountToAdd;
+		if (exCurrent > 1000){
+			exCurrent = 1000;
+		}
+		if (hpLeft != null) {
+			//exBar.ExMeterChange(amountToAdd, true);
+		}else {
+			//exBar.ExMeterChange(amountToAdd, false);
+
+		}
 	}
 
 }

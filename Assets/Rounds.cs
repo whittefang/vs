@@ -9,7 +9,7 @@ public class Rounds : MonoBehaviour {
 	public string player2character = "ryu";
 
 	public bool FalseMeansTest = false;
-	int RoundFlag = 0;
+	int RoundFlag = 1;
 	int P1W = 0;
 	int P2W = 0;
 	public int sceneToload = 2;
@@ -76,15 +76,15 @@ public class Rounds : MonoBehaviour {
 				GetComponentInChildren<TextMesh> ().text = "Player 1 Won!";
 				P1W = 0;
 				P2W = 0;
-				RoundFlag = 0;
-				RoundChange ();
+				RoundFlag = 1;
+				SceneManager.LoadScene(1);
 				break;
 			case 5:
 				GetComponentInChildren<TextMesh> ().text = "Player 2 Won!";
 				P1W = 0;
 				P2W = 0;
-				RoundFlag = 0;	
-				RoundChange ();
+				RoundFlag = 1;
+				SceneManager.LoadScene(1);
 				break;
 			default:
 				Debug.Log("Something went out of range inside round.");
@@ -93,10 +93,10 @@ public class Rounds : MonoBehaviour {
 	}
 	public void PlayerOneWin(){
 		Debug.Log ("p1Win");
-		StartCoroutine (wait (P2WinFunc));
+		StartCoroutine (wait (P1WinFunc));
 
 	}
-	void P2WinFunc(){
+	void P1WinFunc(){
 		
 		P1W ++;
 		switch(P1W){
@@ -113,10 +113,10 @@ public class Rounds : MonoBehaviour {
 	}
 	public void PlayerTwoWin(){
 		Debug.Log ("p2Win");
-		StartCoroutine(wait(P1WinFunc));
+		StartCoroutine(wait(P2WinFunc));
 
 	}
-	void P1WinFunc(){
+	void P2WinFunc(){
 		P2W ++;
 		switch(P2W){
 		case 1:

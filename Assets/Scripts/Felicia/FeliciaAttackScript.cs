@@ -19,7 +19,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 
 
-	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false;
+	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false, sp3movement = true;
 	HealthScript health;
 	Transform otherPlayer;
 	// Use this for initialization
@@ -499,7 +499,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
-
+		sp3movement = true;
 		state.SetState ("attack");
 		for (int x = 0; x < 27;) {
 			
@@ -519,7 +519,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x > 6) {
+				if (x > 6 ) {
 					PMS.MoveToward (10);
 				}
 
@@ -605,6 +605,8 @@ public class FeliciaAttackScript : MonoBehaviour {
 		lightHitboxHit = false;
 		mediumHitboxHit = false;
 		heavyHitboxHit = false;
+		PMS.GetComponent<BoxCollider2D>().offset = new Vector2 (0, -1.2f);
+		PMS.GetComponent<BoxCollider2D>().size  = new Vector2 (1.6f, 2f);
 	}
 
 	public void SetPlayer(bool playerOne){

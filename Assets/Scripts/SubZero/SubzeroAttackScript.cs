@@ -17,7 +17,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false, specialHitboxHit = false;
 	public GameObject ThrowPoint;
 
-	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false;
+	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false, sp3movement = true;
 	HealthScript health;
 	Transform otherPlayer;
 	// Use this for initialization
@@ -328,13 +328,13 @@ public class SubzeroAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		bool canShoot = true;
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 60;) {
 			// active
 			if (x == 3){
 				sp1Buffer = false;
 				sounds.PlaySP1 ();
 			}
-			if (x == 12 && canShoot) {
+			if (x == 18 && canShoot) {
 				iceProjectilePre.transform.position = fireballGunpoint.transform.position;
 				iceProjectilePre.SetActive (true);
 				canShoot = false;
@@ -374,7 +374,6 @@ public class SubzeroAttackScript : MonoBehaviour {
 	IEnumerator SpecialTwoEnum(){
 
 		health.AddMeter (30);
-		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialTwo ();
 		PMS.StopMovement ();
 		sp2Buffer = true;
@@ -390,7 +389,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 6) {
+				if (x == 12) {
 					PMS.MoveToward (-10, 5);
 					if (PMS.CheckIfOnLeft ()) {
 						clone.transform.eulerAngles = new Vector2(0, 0);
@@ -424,7 +423,8 @@ public class SubzeroAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
-		state.SetState ("projectile invulnerable");
+		state.SetState ("attack");
+		sp3movement = true;
 		for (int x = 0; x < 35;) {			
 			yield return null;
 			if (x == 8) {
@@ -432,10 +432,11 @@ public class SubzeroAttackScript : MonoBehaviour {
 			}
 			if (x == 15) {
 				sp3Hitbox.SetActive (false);
+				proximityBox.SetActive (false);
 				PMS.StopMovement ();				
 			}
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x < 15) {
+				if (x < 15 && sp3movement) {
 					PMS.MoveToward (20f);
 				}
 				x++;
@@ -496,6 +497,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 	}
 	public void SpecialHit(){
 		specialHitboxHit = true;
+		sp3movement = false;
 	}
 	public void CancelAttacks(){
 		mediumBuffer = false;
@@ -518,6 +520,9 @@ public class SubzeroAttackScript : MonoBehaviour {
 		lightHitboxHit = false;
 		mediumHitboxHit = false;
 		heavyHitboxHit = false;
+		if(state.GetState() == "hitstun"){
+			clone.SetActive(false);
+		}
 
 	}
 
