@@ -9,6 +9,7 @@ public class ProjectileScript : MonoBehaviour {
 	public bool useLimitedLife = false, enableFireballKiller = true;
 	public int projecttileStrength = 1, projectileOwner = 0;
 	public  GameObject bodyToTurnOff;
+	public BoxCollider2D[] hitboxsToTurnOff;
 	TimeManagerScript timeManager;
 
 	void OnEnable(){
@@ -23,7 +24,9 @@ public class ProjectileScript : MonoBehaviour {
 		}
 
 		movementEnabled = true;
-		GetComponent<BoxCollider2D> ().enabled = true;
+		foreach (BoxCollider2D b in hitboxsToTurnOff) {
+			b.enabled = true;
+		}
 	}
 	void OnDisable(){
 		CancelInvoke ();
@@ -82,10 +85,12 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	public void Kill(){
 		movementEnabled = false;
+		GetComponentInChildren<AnimateOnce> ().Animate ();
+		foreach (BoxCollider2D b in hitboxsToTurnOff) {
+			b.enabled = false;
+		}
 		if (GetComponentInChildren<AnimationLoopScript> () != null) {
 			GetComponentInChildren<AnimationLoopScript> ().StopAnimation ();
 		}
-		GetComponentInChildren<AnimateOnce> ().Animate ();
-		GetComponent<BoxCollider2D> ().enabled = false;
 	}
 }

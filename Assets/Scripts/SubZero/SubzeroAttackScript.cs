@@ -76,21 +76,21 @@ public class SubzeroAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 10;) {
-			// startup
-			// active
-			if (x == 6) {
-				throwHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 8) {
-				throwHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				// startup
+				// active
+				if (x == 6) {
+					throwHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 8) {
+					throwHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 		state.SetState ("neutral");
 	}
@@ -103,26 +103,24 @@ public class SubzeroAttackScript : MonoBehaviour {
 
 		spriteAnimator.PlayThrowComplete ();
 		PMS.DsableBodyBox ();
-		ThrowPoint.transform.localPosition = new Vector2 (-1, 0);
+		ThrowPoint.transform.localPosition = new Vector2 (1, 0);
 		otherPlayer.position = ThrowPoint.transform.position;
 		Vector2 endPoint = new Vector2(1f,0);
 		for (int x = 0; x < 42;) {
-			if (x < 15) {
-				Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
-				ThrowPoint.transform.localPosition = newPoint;
-				otherPlayer.position = ThrowPoint.transform.position;
-			}
-			if (x == 9) {
-				endPoint = new Vector2 (-3, 2f);
-			}
-			if (x == 15) {
-				otherPlayer.GetComponent<BoxCollider2D> ().enabled = true;
-				otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (5, 10);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x < 7) {
+					Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
+					ThrowPoint.transform.localPosition = newPoint;
+					otherPlayer.position = ThrowPoint.transform.position;
+				}
+
+				if (x == 7) {
+					otherPlayer.GetComponent<BoxCollider2D> ().enabled = true;
+					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (15, 15);
+				}
 				x++;
 			}
+			yield return null;
 		}
 		PMS.EnableBodyBox ();
 		state.SetState ("neutral");
@@ -145,25 +143,26 @@ public class SubzeroAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 15;) {
-			// startup
-			// active
-			if (x == 3){
-				lightBuffer = false;
-			}
-			if (x == 4) {
-				lightHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 6) {
-				lightHitbox.SetActive (false);
-				state.SetState ("light recovery");
-				proximityBox.SetActive (false);
+
+			if (!timeManager.CheckIfTimePaused()) {
+				// startup
+				// active
+				if (x == 3){
+					lightBuffer = false;
+				}
+				if (x == 4) {
+					lightHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 6) {
+					lightHitbox.SetActive (false);
+					state.SetState ("light recovery");
+					proximityBox.SetActive (false);
+				}
+				x++;
 			}
 
 			yield return null;
-			if (!timeManager.CheckIfTimePaused()) {
-				x++;
-			}
 		}
 		lightHitboxHit = false;
 		state.SetState ("neutral");
@@ -173,19 +172,19 @@ public class SubzeroAttackScript : MonoBehaviour {
 		spriteAnimator.PlayJumpLight ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 15; ) {
-			if (x == 4){
-				jumpLightBackHitbox.SetActive (true);
-				jumpLightHitbox.SetActive (true);
-			}
-			if (x == 10){
-				jumpLightBackHitbox.SetActive (false);
-				jumpLightHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 4){
+					jumpLightBackHitbox.SetActive (true);
+					jumpLightHitbox.SetActive (true);
+				}
+				if (x == 10){
+					jumpLightBackHitbox.SetActive (false);
+					jumpLightHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 		}
 	}
 	public void Medium(){
@@ -206,48 +205,48 @@ public class SubzeroAttackScript : MonoBehaviour {
 		mediumBuffer = true;
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayMedium ();
-		PMS.MoveToward (7.5f,0);
+		PMS.MoveToward (10f,0);
 		state.SetState ("attack");
 		// startup
 		for (int x = 0; x < 32; ) {
-			if (x == 3){
-				mediumBuffer = false;	
-			}
-			// active
-			if (x == 10) {
-				PMS.StopMovement ();
-				mediumHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 12){
-				mediumHitbox.SetActive (false);
-				state.SetState ("medium recovery");
-				proximityBox.SetActive (false);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					mediumBuffer = false;	
+				}
+				// active
+				if (x == 10) {
+					PMS.StopMovement ();
+					mediumHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 12){
+					mediumHitbox.SetActive (false);
+					state.SetState ("medium recovery");
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 		}
 		mediumHitboxHit = false;
 		state.SetState ("neutral");
 	}
-	IEnumerator jumpMediumEnum(){
+	IEnumerator jumpHeavyEnum(){
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayJumpMedium ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 27;) {
-			if (x == 5) {
-				jumpMediumHitbox.SetActive (true);
-			}
-			if (x == 20) {
-				jumpMediumHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 5) {
+					jumpMediumHitbox.SetActive (true);
+				}
+				if (x == 20) {
+					jumpMediumHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 		}
 	}
 	public void Heavy(){
@@ -271,41 +270,41 @@ public class SubzeroAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 45;) {
-			if (x == 8) {
-				heavyHitbox.SetActive (true);
-			}
-
-			if (x == 11) {
-				heavyHitbox.SetActive (false);
-				state.SetState ("heavy recovery");
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 8) {
+					heavyHitbox.SetActive (true);
+				}
+
+				if (x == 11) {
+					heavyHitbox.SetActive (false);
+					state.SetState ("heavy recovery");
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 		heavyHitboxHit = false;
 		state.SetState ("neutral");
 	}
-	IEnumerator jumpHeavyEnum(){
+	IEnumerator jumpMediumEnum(){
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayJumpHeavy ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 21;) {
-			if (x == 4) {
-				jumpHeavyHitbox.SetActive (true);
-			}
-			if (x == 15) {
-				jumpHeavyHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 4) {
+					jumpHeavyHitbox.SetActive (true);
+				}
+				if (x == 15) {
+					jumpHeavyHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 	}
 
@@ -329,39 +328,40 @@ public class SubzeroAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		bool canShoot = true;
 		for (int x = 0; x < 60;) {
-			// active
-			if (x == 3){
-				sp1Buffer = false;
-				sounds.PlaySP1 ();
-			}
-			if (x == 18 && canShoot) {
-				iceProjectilePre.transform.position = fireballGunpoint.transform.position;
-				iceProjectilePre.SetActive (true);
-				canShoot = false;
-				sounds.PlayExtra ();
-				fireball.transform.position = fireballGunpoint.transform.position;
-				if (PMS.CheckIfOnLeft ()) {
-					fireball.transform.eulerAngles = new Vector2(0, 0);
-					fireballProjectileScript.direction = new Vector2 (1, 0);
-				} else {
-					fireball.transform.eulerAngles = new Vector2(0, 180);
-					fireballProjectileScript.direction = new Vector2 (-1, 0);
-
-				}
-				fireball.SetActive (true);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				// active
+				if (x == 3){
+					sp1Buffer = false;
+					sounds.PlaySP1 ();
+				}
+				if (x == 18 && canShoot) {
+					iceProjectilePre.transform.position = fireballGunpoint.transform.position;
+					iceProjectilePre.SetActive (true);
+					canShoot = false;
+					sounds.PlayExtra ();
+					fireball.transform.position = fireballGunpoint.transform.position;
+					if (PMS.CheckIfOnLeft ()) {
+						fireball.transform.eulerAngles = new Vector2(0, 0);
+						fireballProjectileScript.direction = new Vector2 (1, 0);
+					} else {
+						fireball.transform.eulerAngles = new Vector2(0, 180);
+						fireballProjectileScript.direction = new Vector2 (-1, 0);
+
+					}
+					fireball.SetActive (true);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 
 		}
 		specialHitboxHit = false;
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
-		if ((state.GetState() == "neutral" || state.GetState() =="light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery" )&& !clone.activeSelf){
+		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) && !clone.activeSelf){
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -383,12 +383,11 @@ public class SubzeroAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		PMS.DsableBodyBox ();
 		for (int x = 0; x < 20;) {
-			if (x == 3) {
-				sp2Buffer = false;
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3) {
+					sp2Buffer = false;
+				}
+
 				if (x == 12) {
 					PMS.MoveToward (-10, 5);
 					if (PMS.CheckIfOnLeft ()) {
@@ -402,12 +401,14 @@ public class SubzeroAttackScript : MonoBehaviour {
 				}
 				x++;
 			}
+			yield return null;
 		}
 		state.SetState ("neutral");
 		PMS.EnableBodyBox ();
 	}
 	public void SpecialThree(){
-		if (state.GetState() == "neutral" || state.GetState() == "light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery") {
+		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -425,22 +426,22 @@ public class SubzeroAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		sp3movement = true;
-		for (int x = 0; x < 35;) {			
-			yield return null;
-			if (x == 8) {
-				sp3Hitbox.SetActive (true);
-			}
-			if (x == 15) {
-				sp3Hitbox.SetActive (false);
-				proximityBox.SetActive (false);
-				PMS.StopMovement ();				
-			}
-			if (!timeManager.CheckIfTimePaused()) {
+		for (int x = 0; x < 35;) {
+			if (!timeManager.CheckIfTimePaused()) {		
+				if (x == 8) {
+					sp3Hitbox.SetActive (true);
+				}
+				if (x == 15) {
+					sp3Hitbox.SetActive (false);
+					proximityBox.SetActive (false);
+					PMS.StopMovement ();				
+				}
 				if (x < 15 && sp3movement) {
 					PMS.MoveToward (20f);
 				}
 				x++;
-			}
+			}	
+			yield return null;
 		}
 		specialHitboxHit = false;
 		state.SetState ("neutral");
@@ -470,17 +471,17 @@ public class SubzeroAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 45;) {
-			// active
-			if (x == 15) {
-				if (PMS.CheckIfOnLeft ()) {
-				} else {
-				}
-				superIce.SetActive (true);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				// active
+				if (x == 15) {
+					if (PMS.CheckIfOnLeft ()) {
+					} else {
+					}
+					superIce.SetActive (true);
+				}
 				x++;
 			}
+			yield return null;
 
 		}
 		state.SetState ("neutral");

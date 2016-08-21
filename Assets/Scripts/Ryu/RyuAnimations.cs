@@ -99,6 +99,23 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator WinAnim(){
+		for (int x = 0; x < 10;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+			}
+		}
+		for(int i = 0; i < winFrames.Length; i++){
+			spriteRenderer.sprite = winFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+			}
+		}
+	}
 	IEnumerator DeathAnim(){
 		Debug.Log ("death");
 		sound.PlayDeath ();
@@ -113,7 +130,7 @@ public class RyuAnimations : MonoBehaviour {
 	}
 	IEnumerator introAnim(){
 		spriteRenderer.sprite = introFrames [0];
-		for (int x = 0; x < 60;) {
+		for (int x = 0; x < 70;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused ()) {
 				x++;
@@ -561,7 +578,7 @@ public class RyuAnimations : MonoBehaviour {
 	public void StartWinAnim(){
 		Debug.Log ("win");
 		EndAnimations ();
-		StartCoroutine (AnimateOnce(winFrames));
+		StartCoroutine (WinAnim());
 	}
 	public void StartIntroAnim(){
 		EndAnimations ();

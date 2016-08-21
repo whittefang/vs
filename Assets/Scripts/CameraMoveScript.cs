@@ -33,8 +33,8 @@ public class CameraMoveScript : MonoBehaviour {
 				newPosition.x = transform.position.x;
 			}
 
-			transform.position = Vector3.Lerp(transform.position, newPosition, .5f);
-			
+			//transform.position = Vector3.Lerp(transform.position, newPosition, .5f);
+			transform.position = newPosition;
 		}
 
 

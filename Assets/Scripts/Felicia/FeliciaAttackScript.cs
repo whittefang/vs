@@ -76,21 +76,22 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 10;) {
-			// startup
-			// active
-			if (x == 6) {
-				throwHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 8) {
-				throwHitbox.SetActive (false);
-				proximityBox.SetActive (false);
+			if (!timeManager.CheckIfTimePaused()) {
+				// startup
+				// active
+				if (x == 6) {
+					throwHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 8) {
+					throwHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
+				x++;
 			}
 
 			yield return null;
-			if (!timeManager.CheckIfTimePaused()) {
-				x++;
-			}
 		}
 		state.SetState ("neutral");
 	}
@@ -108,43 +109,43 @@ public class FeliciaAttackScript : MonoBehaviour {
 		otherPlayer.GetComponent<BoxCollider2D> ().enabled = false;
 		Vector2 endPoint = new Vector2(1.75f,0);
 		for (int x = 0; x < 76;) {
-			Debug.Log (x);
-			if (x < 24) {
-				Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
-				ThrowPoint.transform.localPosition = newPoint;
-				otherPlayer.position = ThrowPoint.transform.position;
-			}
-			if (x == 3) {
-				endPoint= new Vector2 (0, 1f);
-			}	
-			if (x == 7) {
-				endPoint= new Vector2 (-2.5f, -1f);
-			}
-			if (x == 12) {
-				endPoint = new Vector2 (0, -2f);
-			}
-			if (x == 16) {
-				endPoint = new Vector2 (1.75f, 0);
-			}
-			if (x == 19) {
-				endPoint= new Vector2 (0, .75f);
-			}
-			if (x == 22) {
-				endPoint= new Vector2 (-2.8f, -.25f);
-			}
-
-			if (x == 24) {
-				otherPlayer.GetComponent<BoxCollider2D> ().enabled = true;
-				otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (15, 15);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				
+				if (x < 24) {
+					Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
+					ThrowPoint.transform.localPosition = newPoint;
+					otherPlayer.position = ThrowPoint.transform.position;
+				}
+				if (x == 3) {
+					endPoint= new Vector2 (0, 1f);
+				}	
+				if (x == 7) {
+					endPoint= new Vector2 (-2.5f, -1f);
+				}
+				if (x == 12) {
+					endPoint = new Vector2 (0, -2f);
+				}
+				if (x == 16) {
+					endPoint = new Vector2 (1.75f, 0);
+				}
+				if (x == 19) {
+					endPoint= new Vector2 (0, .75f);
+				}
+				if (x == 22) {
+					endPoint= new Vector2 (-2.8f, -.25f);
+				}
+
+				if (x == 24) {
+					otherPlayer.GetComponent<BoxCollider2D> ().enabled = true;
+					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (15, 15);
+				}
+
 				if (x == 50){
 					PMS.MoveToward (10, 0);
 				}
 				x++;
 			}
+			yield return null;
 		}
 		PMS.EnableBodyBox ();
 		state.SetState ("neutral");
@@ -167,25 +168,25 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 12;) {
-			// startup
-			// active
-			if (x == 2){
-				lightBuffer = false;
-			}
-			if (x == 3) {
-				lightHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 6) {
-				lightHitbox.SetActive (false);
-				state.SetState ("light recovery");
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				// startup
+				// active
+				if (x == 2){
+					lightBuffer = false;
+				}
+				if (x == 3) {
+					lightHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 6) {
+					lightHitbox.SetActive (false);
+					state.SetState ("light recovery");
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 		lightHitboxHit = false;
 		state.SetState ("neutral");
@@ -195,28 +196,29 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlayJumpLight ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 15; ) {
-			if (x == 9){
-				jumpLightHitbox.SetActive (true);
-			}
-			if (x == 11){
-				jumpLightHitbox.SetActive (false);
-				jumpLightHitboxPart2.SetActive (true);
-				proximityBox.SetActive (false);
-			}
-			if (x == 13){
-				jumpLightHitbox.SetActive (false);
-				jumpLightHitboxPart2.SetActive (true);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 9){
+					jumpLightHitbox.SetActive (true);
+				}
+				if (x == 11){
+					jumpLightHitbox.SetActive (false);
+					jumpLightHitboxPart2.SetActive (true);
+					proximityBox.SetActive (false);
+				}
+				if (x == 13){
+					jumpLightHitbox.SetActive (false);
+					jumpLightHitboxPart2.SetActive (true);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 		}
 
 		jumpLightHitboxPart2.SetActive (false);
 	}
 	public void Medium(){
+		
 		if (state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit)) {
 			if (lightHitboxHit) {
 				lightHitboxHit = false;
@@ -238,32 +240,32 @@ public class FeliciaAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		// startup
 		for (int x = 0; x < 33; ) {
-			if (x == 3){
-				mediumBuffer = false;	
-			}
-			// active
-			if (x == 9) {
-				mediumHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 11){
-				mediumHitbox.SetActive (false);
-			}
-
-			if (x == 16) {
-				mediumHitboxPart2.SetActive (true);
-			}
-			if (x == 18){
-				mediumHitboxPart2.SetActive (false);
-				state.SetState ("medium recovery");
-				proximityBox.SetActive (false);
-			}
-
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					mediumBuffer = false;	
+				}
+				// active
+				if (x == 9) {
+					mediumHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 11){
+					mediumHitbox.SetActive (false);
+				}
+
+				if (x == 16) {
+					mediumHitboxPart2.SetActive (true);
+				}
+				if (x == 18){
+					mediumHitboxPart2.SetActive (false);
+					state.SetState ("medium recovery");
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+
+			yield return null;
 		}
 		mediumHitboxHit = false;
 		state.SetState ("neutral");
@@ -273,17 +275,17 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlayJumpMedium ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 27;) {
-			if (x == 9) {
-				jumpMediumHitbox.SetActive (true);
-			}
-			if (x == 20) {
-				jumpMediumHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 9) {
+					jumpMediumHitbox.SetActive (true);
+				}
+				if (x == 20) {
+					jumpMediumHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 		}
 	}
 	public void Heavy(){
@@ -307,21 +309,21 @@ public class FeliciaAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		//PMS.MoveToward (7.5f);
 		for (int x = 0; x < 27;) {
-			if (x == 11) {
-				heavyHitbox.SetActive (true);
-				PMS.StopMovement ();
-			}
-
-			if (x == 14) {
-				heavyHitbox.SetActive (false);
-				state.SetState ("heavy recovery");
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 11) {
+					heavyHitbox.SetActive (true);
+					PMS.StopMovement ();
+				}
+
+				if (x == 14) {
+					heavyHitbox.SetActive (false);
+					state.SetState ("heavy recovery");
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 		heavyHitboxHit = false;
 		state.SetState ("neutral");
@@ -334,22 +336,23 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.GetComponent<BoxCollider2D>().offset = new Vector2 (0, 0);
 		PMS.GetComponent<BoxCollider2D>().size  = new Vector2 (1.15f, 1.5f);
 		for (int x = 0; x < 21;) {
-			
-			if (x == 7) {
-				jumpHeavyHitbox.SetActive (true);
-			}
-			if (x == 20) {
-				jumpHeavyHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
 
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 7) {
+					jumpHeavyHitbox.SetActive (true);
+				}
+				if (x == 20) {
+					jumpHeavyHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
 				if (x == 7) {
 					PMS.MoveToward (20, -10);
 				}
 				x++;
 			}
+
+			yield return null;
 		}
 	}
 
@@ -373,54 +376,53 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 81;) {
-			if (x == 3){
-				sp1Buffer = false;
-			}
-			// active
-			if (x == 9) {
-				sp1Hitbox.SetActive (true);
-			}
-			if (x == 12) {
-				sp1Hitbox.SetActive (false);
-			}
-			if (x == 15) {
-				sp1Hitbox.SetActive (true);
-			}
-			if (x == 18) {
-				sp1Hitbox.SetActive (false);
-			}
-			if (x == 21) {
-				sp1Hitbox.SetActive (true);
-			}
-			if (x == 24) {
-				sp1Hitbox.SetActive (false);
-			}
-			if (x == 27) {
-				sp1Hitbox.SetActive (true);
-			}
-			if (x == 30) {
-				sp1Hitbox.SetActive (false);
-			}
 
-			if (x == 35) {
-				sp1HitboxPart2.SetActive (true);
-			}
-			if (x == 38) {
-				sp1HitboxPart2.SetActive (false);
-			}
-
-			if (x == 41) {
-				sp1HitboxPart3.SetActive (true);
-			}
-			if (x == 43) {
-				sp1HitboxPart3.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
-				x++;
+				if (x == 3){
+					sp1Buffer = false;
+				}
+				// active
+				if (x == 9) {
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 12) {
+					sp1Hitbox.SetActive (false);
+				}
+				if (x == 15) {
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 18) {
+					sp1Hitbox.SetActive (false);
+				}
+				if (x == 21) {
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 24) {
+					sp1Hitbox.SetActive (false);
+				}
+				if (x == 27) {
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 30) {
+					sp1Hitbox.SetActive (false);
+				}
+
+				if (x == 35) {
+					sp1HitboxPart2.SetActive (true);
+				}
+				if (x == 38) {
+					sp1HitboxPart2.SetActive (false);
+				}
+
+				if (x == 41) {
+					sp1HitboxPart3.SetActive (true);
+				}
+				if (x == 43) {
+					sp1HitboxPart3.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
+
 				if (x == 36) {
 					PMS.DsableBodyBox ();
 					PMS.MoveToward (1f, 25);
@@ -431,16 +433,19 @@ public class FeliciaAttackScript : MonoBehaviour {
 				if (x == 51) {
 					PMS.MoveToward (-1.5f, 0);
 				}
-				
+
+				x++;
 
 			}
 
+			yield return null;
 		}
 		PMS.EnableBodyBox ();
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
-		if (state.GetState() == "neutral" || state.GetState() =="light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery"){
+		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)){
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -462,14 +467,13 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.DsableBodyBox ();
 		state.SetState ("attack");
 		for (int x = 0; x < 18;) {
-			
-			if (x == 3) {
-				sp2Buffer = false;
-			}
 
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3) {
+					sp2Buffer = false;
+				}
+
+
 				if (x < 15) {
 					PMS.MoveToward (15f, 0);
 				} 
@@ -477,13 +481,16 @@ public class FeliciaAttackScript : MonoBehaviour {
 			}else {
 				PMS.StopMovement ();
 			}
+
+			yield return null;
 		}
 		transform.position  = new Vector3(transform.position.x, transform.position.y, 0);
 		state.SetState ("neutral");
 		PMS.EnableBodyBox ();
 	}
 	public void SpecialThree(){
-		if (state.GetState() == "neutral" || state.GetState() == "light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery") {
+		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -502,23 +509,22 @@ public class FeliciaAttackScript : MonoBehaviour {
 		sp3movement = true;
 		state.SetState ("attack");
 		for (int x = 0; x < 27;) {
-			
-			if (x == 9) {
-				state.SetState ("projectile invulnerable");
-			}
-			if (x == 12) {
 
-				sp3Hitbox.SetActive(true);
-			}
-			if (x == 16) {
-				sp3Hitbox.SetActive(false);
-				state.SetState ("attack");
-				proximityBox.SetActive (false);
-
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 6) {
+					state.SetState ("projectile invulnerable");
+				}
+				if (x == 12) {
+
+					sp3Hitbox.SetActive(true);
+				}
+				if (x == 16) {
+					sp3Hitbox.SetActive(false);
+					state.SetState ("attack");
+					proximityBox.SetActive (false);
+
+				}
+
 				if (x > 6 ) {
 					PMS.MoveToward (10);
 				}
@@ -527,6 +533,8 @@ public class FeliciaAttackScript : MonoBehaviour {
 			} else {
 				PMS.StopMovement ();
 			}
+
+			yield return null;
 		}
 		PMS.StopMovement ();
 		state.SetState ("neutral");
@@ -554,16 +562,17 @@ public class FeliciaAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 10;) {
-			// active
-			if (x == 1) {
-				superHitbox.GetComponent<FeliciaSuperScript> ().SetTarget (otherPlayer.gameObject);
-				superHitbox.GetComponent<FollowScript>().transformToFollow = otherPlayer.gameObject;
-				superHitbox.SetActive (true);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				// active
+				if (x == 1) {
+					superHitbox.GetComponent<FeliciaSuperScript> ().SetTarget (otherPlayer.gameObject);
+					superHitbox.GetComponent<FollowScript>().transformToFollow = otherPlayer.gameObject;
+					superHitbox.SetActive (true);
+				}
 				x++;
 			}
+			yield return null;
 		}
 		state.SetState ("neutral");
 	}

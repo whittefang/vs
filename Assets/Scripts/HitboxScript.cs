@@ -77,15 +77,15 @@ public class HitboxScript : MonoBehaviour {
 					optionalFunc ();
 				}
 			}
-			if (multiHit && multihitFlag) {
-				StartCoroutine (multiHitEnum());
+			if (multiHit && multihitFlag && (!isProjectile || (isProjectile && other.GetComponentInParent<FighterStateMachineScript>().GetState() != "projectile invulnerable")) ) {
+				StartCoroutine (multiHitEnum());			
 			} else {
 				// turn off object
 				if (disableOnHit) {
 					//Debug.Log ("turnoff");
 					gameObject.SetActive (false);
 				}
-				if (isProjectile &&!multiHit) {
+				if (isProjectile &&!multiHit && other.GetComponentInParent<FighterStateMachineScript>().GetState() != "projectile invulnerable") {
 					GetComponent<BoxCollider2D> ().enabled = false;
 					GetComponentInParent<ProjectileScript> ().Kill ();
 				}

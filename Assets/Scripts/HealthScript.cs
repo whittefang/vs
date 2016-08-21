@@ -16,7 +16,7 @@ public class HealthScript : MonoBehaviour {
 	public SoundsPlayer sounds;
 	TextMesh comboCounterText, comboDamageText;
 	public int comboCounter = 0, comboDamage = 0, freezingCounter = 0;
-	float comboScaling = 1, leftBound = -10.2f, rightBound = 10.2f;
+	float comboScaling = 1, leftBound = -10.05f, rightBound = 10.05f;
 	LeftHpBarChange hpLeft;
 	RightHpBarChange hpRight;
 	SpriteRenderer SR;
@@ -179,10 +179,14 @@ public class HealthScript : MonoBehaviour {
 		sparks.transform.position = position + new Vector3(Random.Range(-.75f, .75f), Random.Range(-1f, 1f),0);
 		sparks.SetActive(true);
 		timeManager.StopTime (7);
+
+		PMS.CheckFacing ();
 		PMS.MoveToward (-bockPush.x, bockPush.y);
 		// if in the corner push attacker back
+		Debug.Log((transform.position.x + " " + rightBound + "  " + transform.position.x + "  "+ leftBound));
 		if((transform.position.x > rightBound || transform.position.x < leftBound) && useCornerKockback){
 			Debug.Log ("pushcorner");
+			PMS.CheckFacing ();
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
 		for (int x = 0; x < stunFrames;) {
@@ -217,10 +221,16 @@ public class HealthScript : MonoBehaviour {
 			sparks.SetActive (true);
 		}
 		timeManager.StopTime (5);
-		PMS.MoveToward (-hitPush.x, hitPush.y);
+		PMS.CheckFacing ();
+		if (!freezingAttack) {
+			PMS.MoveToward (-hitPush.x, hitPush.y);
+		} else {
+			PMS.StopMovement ();
+		}
 		// if in the corner push attacker back
 		if((transform.position.x > rightBound || transform.position.x < leftBound) && useCornerKockback){
 			Debug.Log ("pushcorner");
+			PMS.CheckFacing ();
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
 		for (int x = 0; x < stunFrames;) {	

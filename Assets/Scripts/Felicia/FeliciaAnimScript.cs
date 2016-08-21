@@ -102,6 +102,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 			}
 		}
 	}
+
 	IEnumerator DeathAnim(){
 		sound.PlayDeath ();
 		GetComponent<PlayerMovementScript> ().MoveToward (-10, 12);
@@ -499,6 +500,12 @@ public class FeliciaAnimScript : MonoBehaviour {
 
 	}
 	IEnumerator WinAnim(){
+		for (int x = 0; x < 10;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+			}
+		}
 		for (int i = 0; i < 3; i++) {			
 			spriteRenderer.sprite = winFrames [i];
 			for (int x = 0; x < 5;) {

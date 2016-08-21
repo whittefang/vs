@@ -148,6 +148,23 @@ public class SubzeroAnimScript : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator WinAnim (){
+		for (int x = 0; x < 10;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+			}
+		}
+		for(int i = 0; i < winFrames.Length; i++){
+			spriteRenderer.sprite = winFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+			}
+		}
+	}
 	IEnumerator DeathAnim(){
 		Debug.Log ("death");
 		sound.PlayDeath ();
@@ -165,7 +182,12 @@ public class SubzeroAnimScript : MonoBehaviour {
 	}
 	IEnumerator introAnim(){
 		spriteRenderer.sprite = introFrames [0];
-
+		for (int x = 0; x <80;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+			}
+		}
 		for(int i = 0; i < introFrames.Length; i++){
 			spriteRenderer.sprite = introFrames [i];
 			for (int x = 0; x < 6;) {
@@ -377,7 +399,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	IEnumerator ThrowComplete(){
 		Debug.Log ("throw");
 
-		cameraMove.EnableCameraMovement (false);
+		//cameraMove.EnableCameraMovement (false);
 		for (int i = 1; i < 7; i++) {
 			spriteRenderer.sprite = throwFrames [i];
 
@@ -496,7 +518,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	public void StartWinAnim(){
 		Debug.Log ("win");
 		EndAnimations ();
-		StartCoroutine (AnimateOnce(winFrames));
+		StartCoroutine (WinAnim());
 	}
 	public void StartIntroAnim(){
 		EndAnimations ();

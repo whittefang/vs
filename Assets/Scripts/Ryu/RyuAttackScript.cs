@@ -79,21 +79,23 @@ public class RyuAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		for (int x = 0; x < 10;) {
-			// startup
-			// active
-			if (x == 6) {
-				throwHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 8) {
-				throwHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				
+				// startup
+				// active
+				if (x == 6) {
+					throwHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 8) {
+					throwHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
 				x++;
+
 			}
+			yield return null;
+
 		}
 		state.SetState ("neutral");
 	}
@@ -110,30 +112,32 @@ public class RyuAttackScript : MonoBehaviour {
 		otherPlayer.position = ThrowPoint.transform.position;
 		Vector2 endPoint = new Vector2(1f,0);
 		for (int x = 0; x < 42;) {
-			if (x < 24) {
-				Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
-				ThrowPoint.transform.localPosition = newPoint;
-				otherPlayer.position = ThrowPoint.transform.position;
-			}
-			if (x == 1) {
-				endPoint= new Vector2 (-3f, 0);
-			}
-			if (x == 15) {
-				endPoint = new Vector2 (-3, 2f);
-			}
-			if (x == 18) {
-				endPoint = new Vector2 (-2f, 1.5f);
-			}
-			if (x == 21) {
-				endPoint = new Vector2 (1,1f);
-			}
-			if (x == 24) {
-				endPoint = new Vector2 (1,-1f);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x < 24) {
+					Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
+					ThrowPoint.transform.localPosition = newPoint;
+					otherPlayer.position = ThrowPoint.transform.position;
+				}
+				if (x == 1) {
+					endPoint= new Vector2 (-3f, 0);
+				}
+				if (x == 15) {
+					endPoint = new Vector2 (-3, 2f);
+				}
+				if (x == 18) {
+					endPoint = new Vector2 (-2f, 1.5f);
+				}
+				if (x == 21) {
+					endPoint = new Vector2 (1,1f);
+				}
+				if (x == 24) {
+					endPoint = new Vector2 (1,-1f);
+				}
 				x++;
 			}
+
+			yield return null;
 		}
 		PMS.EnableBodyBox ();
 		state.SetState ("neutral");
@@ -158,23 +162,24 @@ public class RyuAttackScript : MonoBehaviour {
 		for (int x = 0; x < 15;) {
 			// startup
 			// active
-			if (x == 3){
-				lightBuffer = false;
-			}
-			if (x == 4) {
-				lightHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 6) {
-				lightHitbox.SetActive (false);
-				state.SetState ("light recovery");
-				proximityBox.SetActive (false);
-			}
 
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					lightBuffer = false;
+				}
+				if (x == 4) {
+					lightHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 6) {
+					lightHitbox.SetActive (false);
+					state.SetState ("light recovery");
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 		lightHitboxHit = false;
 		state.SetState ("neutral");
@@ -184,17 +189,18 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlayJumpLight ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 15; ) {
-			if (x == 4){
-				jumpLightHitbox.SetActive (true);
-			}
-			if (x == 10){
-				jumpLightHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 4){
+					jumpLightHitbox.SetActive (true);
+				}
+				if (x == 10){
+					jumpLightHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 		}
 	}
 	public void Medium(){
@@ -219,24 +225,26 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		// startup
 		for (int x = 0; x < 27; ) {
-			if (x == 3){
-				mediumBuffer = false;	
-			}
-			// active
-			if (x == 9) {
-				PMS.StopMovement ();
-				mediumHitbox.SetActive (true);
-			}
-			// recovery
-			if (x == 11){
-				mediumHitbox.SetActive (false);
-				state.SetState ("medium recovery");
-				proximityBox.SetActive (false);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					mediumBuffer = false;	
+				}
+				// active
+				if (x == 9) {
+					PMS.StopMovement ();
+					mediumHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 11){
+					mediumHitbox.SetActive (false);
+					state.SetState ("medium recovery");
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+
+			yield return null;
 		}
 		mediumHitboxHit = false;
 		state.SetState ("neutral");
@@ -246,17 +254,19 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlayJumpMedium ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 27;) {
-			if (x == 9) {
-				jumpMediumHitbox.SetActive (true);
-			}
-			if (x == 20) {
-				jumpMediumHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 9) {
+					jumpMediumHitbox.SetActive (true);
+				}
+				if (x == 20) {
+					jumpMediumHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+
+			yield return null;
 		}
 	}
 	public void Heavy(){
@@ -281,21 +291,21 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		PMS.MoveToward (15);
 		for (int x = 0; x < 42;) {
-			if (x == 18) {
-				heavyHitbox.SetActive (true);
-			}
-
-			if (x == 22) {
-				PMS.StopMovement ();
-				heavyHitbox.SetActive (false);
-				state.SetState ("heavy recovery");
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 18) {
+					heavyHitbox.SetActive (true);
+				}
+
+				if (x == 22) {
+					PMS.StopMovement ();
+					heavyHitbox.SetActive (false);
+					state.SetState ("heavy recovery");
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 		heavyHitboxHit = false;
 		state.SetState ("neutral");
@@ -305,23 +315,24 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlayJumpHeavy ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 21;) {
-			if (x == 7) {
-				jumpHeavyHitbox.SetActive (true);
-			}
-			if (x == 15) {
-				jumpHeavyHitbox.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 7) {
+					jumpHeavyHitbox.SetActive (true);
+				}
+				if (x == 20) {
+					jumpHeavyHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
 				x++;
 			}
+			yield return null;
 		}
 	}
 
 	public void SpecialOne(){
-		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() =="heavy recovery" && heavyHitboxHit)) && !fireball.activeSelf) {
+		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) && !fireball.activeSelf) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -340,36 +351,38 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		bool canShoot = true;
 		for (int x = 0; x < 45;) {
-			// active
-			if (x == 3){
-				sp1Buffer = false;
-			}
-			if (x == 12 && canShoot) {
-				canShoot = false;
-				sounds.PlayExtra ();
-				fireball.transform.position = fireballGunpoint.transform.position;
-				if (PMS.CheckIfOnLeft ()) {
-					fireball.transform.eulerAngles = new Vector2(0, 0);
-					fireballProjectileScript.direction = new Vector2 (1, 0);
-				} else {
-					fireball.transform.eulerAngles = new Vector2(0, 180);
-					fireballProjectileScript.direction = new Vector2 (-1, 0);
-		
-				}
-				fireball.SetActive (true);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				// active
+				if (x == 3){
+					sp1Buffer = false;
+				}
+				if (x == 12 && canShoot) {
+					canShoot = false;
+					sounds.PlayExtra ();
+					fireball.transform.position = fireballGunpoint.transform.position;
+					if (PMS.CheckIfOnLeft ()) {
+						fireball.transform.eulerAngles = new Vector2(0, 0);
+						fireballProjectileScript.direction = new Vector2 (1, 0);
+					} else {
+						fireball.transform.eulerAngles = new Vector2(0, 180);
+						fireballProjectileScript.direction = new Vector2 (-1, 0);
+			
+					}
+					fireball.SetActive (true);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 
 		}
 		specialHitboxHit = false;
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
-		if (state.GetState() == "neutral" || state.GetState() =="light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery"){
+		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)){
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -393,45 +406,47 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		PMS.DsableBodyBox ();
 		for (int x = 0; x < 50;) {
-			if (x == 2) {
-				state.SetState ("invincible");
-			}
-			if (x == 3) {
-				sp2Buffer = false;
-				//PMS.StopMovement ();
-				sp2HitboxPart1.SetActive (true);
-			}
 
-			if (x == 10){
-				state.SetState ("attack");
-			}
-
-
-			if (x == 15){
-
-				specialHitboxHit = false;
-				//state.SetState ("attack");
-				sp2HitboxPart1.SetActive (false);
-				sp2HitboxPart2.SetActive (true);
-			}
-			if (x == 23) {
-				sp2HitboxPart2.SetActive (false);
-				proximityBox.SetActive (false);
-			}
-
-			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 14) {
-					PMS.MoveToward (2.5f, 20);
+				if (x == 2) {
+					state.SetState ("invincible");
 				}
+				if (x == 3) {
+					sp2Buffer = false;
+					//PMS.StopMovement ();
+					sp2HitboxPart1.SetActive (true);
+				}
+
+				if (x == 10){
+					state.SetState ("attack");
+				}
+
+
+				if (x == 15){
+
+					specialHitboxHit = false;
+					//state.SetState ("attack");
+					sp2HitboxPart1.SetActive (false);
+					sp2HitboxPart2.SetActive (true);
+				}
+				if (x == 23) {
+					sp2HitboxPart2.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
+					if (x == 14) {
+						PMS.MoveToward (2.5f, 20);
+					}
 				x++;
 			}
+			yield return null;
 		}
 		state.SetState ("neutral");
 		PMS.EnableBodyBox ();
 	}
 	public void SpecialThree(){
-		if (state.GetState() == "neutral" || state.GetState() == "light recovery" || state.GetState() =="medium recovery" || state.GetState() =="heavy recovery") {
+		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -455,49 +470,51 @@ public class RyuAttackScript : MonoBehaviour {
 			}
 		}
 		for (int x = 0; x < 80;) {
-			if (x == 9) {
-				sp3Hitbox.SetActive(true);
-			}
-			if (x == 12) {
-				sp3Hitbox.SetActive(false);
-			}
-			if (x == 18) {
-				sp3Hitbox.SetActive(true);
-			}
-			if (x == 21) {
-				sp3Hitbox.SetActive(false);
-			}
-			if (x == 33) {
-				sp3Hitbox.SetActive(true);
-			}
-			if (x == 35) {
-				sp3Hitbox.SetActive(false);
-			}
-			if (x == 42) {
-				sp3Hitbox.SetActive(true);
-			}
-			if (x == 45) {
-				sp3Hitbox.SetActive(false);
-			}
-			if (x == 59) {
-				sp3Hitbox.SetActive(true);
-			}
-			if (x == 61) {
-				sp3Hitbox.SetActive(false);
-			}
-			if (x == 66) {
-				sp3Hitbox.SetActive(true);
-			}
-			if (x == 68) {
-				sp3Hitbox.SetActive(false);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 9) {
+					sp3Hitbox.SetActive(true);
+				}
+				if (x == 12) {
+					sp3Hitbox.SetActive(false);
+				}
+				if (x == 18) {
+					sp3Hitbox.SetActive(true);
+				}
+				if (x == 21) {
+					sp3Hitbox.SetActive(false);
+				}
+				if (x == 33) {
+					sp3Hitbox.SetActive(true);
+				}
+				if (x == 35) {
+					sp3Hitbox.SetActive(false);
+				}
+				if (x == 42) {
+					sp3Hitbox.SetActive(true);
+				}
+				if (x == 45) {
+					sp3Hitbox.SetActive(false);
+				}
+				if (x == 59) {
+					sp3Hitbox.SetActive(true);
+				}
+				if (x == 61) {
+					sp3Hitbox.SetActive(false);
+				}
+				if (x == 66) {
+					sp3Hitbox.SetActive(true);
+				}
+				if (x == 68) {
+					sp3Hitbox.SetActive(false);
+					proximityBox.SetActive (false);
+				}
 
 				PMS.MoveToward (7.5f);
 				x++;
 			}
+
+			yield return null;
 		}
 		PMS.StopMovement ();
 			for (int x = 0; x < 10;) {
@@ -537,24 +554,25 @@ public class RyuAttackScript : MonoBehaviour {
 		bool canShoot = true;
 		for (int x = 0; x < 45;) {
 			// active
-			if (x == 12 && canShoot) {
-				canShoot = false;
-				sounds.PlayExtra ();
-				superFireball.transform.position = fireballGunpoint.transform.position;
-				if (PMS.CheckIfOnLeft ()) {
-					superFireball.transform.eulerAngles = new Vector2(0, 0);
-					superProjectileScript.direction = new Vector2 (1, 0);
-				} else {
-					superFireball.transform.eulerAngles = new Vector2(0, 180);
-					superProjectileScript.direction = new Vector2 (-1, 0);
-				}
-				superFireball.SetActive (true);
-				proximityBox.SetActive (false);
-			}
-			yield return null;
+
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 12 && canShoot) {
+					canShoot = false;
+					sounds.PlayExtra ();
+					superFireball.transform.position = fireballGunpoint.transform.position;
+					if (PMS.CheckIfOnLeft ()) {
+						superFireball.transform.eulerAngles = new Vector2(0, 0);
+						superProjectileScript.direction = new Vector2 (1, 0);
+					} else {
+						superFireball.transform.eulerAngles = new Vector2(0, 180);
+						superProjectileScript.direction = new Vector2 (-1, 0);
+					}
+					superFireball.SetActive (true);
+					proximityBox.SetActive (false);
+				}
 				x++;
 			}
+			yield return null;
 
 		}
 		state.SetState ("neutral");

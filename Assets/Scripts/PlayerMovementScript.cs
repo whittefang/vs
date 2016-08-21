@@ -113,7 +113,7 @@ public class PlayerMovementScript : MonoBehaviour {
 
 	public void CheckFacing(){
 		
-		if (transform.position.x > otherPlayer.transform.position.x && state.GetState() == "neutral" && OnLeft == true) {
+		if (transform.position.x > otherPlayer.transform.position.x && (state.GetState() == "neutral" || state.GetState() == "hitstun") && OnLeft == true) {
 			OnLeft = false;
 			if (LeftFacingSprites) {
 				SR.flipX = false;
@@ -121,7 +121,7 @@ public class PlayerMovementScript : MonoBehaviour {
 				SR.flipX = true;
 			}
 			attacksObject.eulerAngles = new Vector2(0, 180);
-		} else if (transform.position.x < otherPlayer.transform.position.x && state.GetState() == "neutral" && OnLeft == false){
+		} else if (transform.position.x < otherPlayer.transform.position.x && (state.GetState() == "neutral"|| state.GetState() == "hitstun") && OnLeft == false){
 			OnLeft = true;
 			if (LeftFacingSprites) {
 				SR.flipX = true;
@@ -238,11 +238,11 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void MoveToward(float speedx, float speedy = 0){
 		if (allowMoveTowards) {
-		
-		
+
 			if (speedy == 0) {
 				speedy = RB.velocity.y;
 			}
+			Debug.Log("move towards: " +speedx +"  "+ speedy);
 			if (OnLeft) {
 				RB.velocity = new Vector2 (speedx, speedy);
 			} else {
