@@ -28,8 +28,10 @@ public class FeliciaAnimScript : MonoBehaviour {
 	public Sprite[] SuperFrames;
 	public Sprite landingSprite;
 	public SpriteAnimator spriteAnimator;
-	public BoxCollider2D hurtbox;
+	public Transform hurtboxBody;
+	public Transform hurtboxLimb;
 	public GameObject SuperBG;
+	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
 	CameraMoveScript cameraMove;
@@ -38,6 +40,11 @@ public class FeliciaAnimScript : MonoBehaviour {
 	SoundsPlayer sound;
 	// Use this for initialization
 	void Start () {
+
+		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
+		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
+
+
 		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
@@ -64,13 +71,21 @@ public class FeliciaAnimScript : MonoBehaviour {
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
 		spriteAnimator.setLandingAnimation (StartLandingAnim);
-		hurtbox.gameObject.GetComponent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 	}
 
-
+	void SetJumpHitbox(){
+		hurtboxBody.transform.localPosition = new Vector2 (0, 0);
+		hurtboxBody.transform.localScale  = new Vector2 (1.75f, 1.75f);
+	}
+	void SetHurtbox(Vector2 position, Vector2 scale, Transform hurtbox){
+		hurtbox.localPosition = position;
+		hurtbox.localScale = scale;
+		hurtbox.gameObject.SetActive (true);
+	}
 	//IEnumerator 
 	IEnumerator loopAnimation(Sprite[] animationFrames){
 
@@ -140,8 +155,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		spriteRenderer.sprite = towardJumpFrames [0];
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = towardJumpFrames [i];
@@ -174,12 +188,9 @@ public class FeliciaAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
-		hurtbox.offset = new Vector2 ( 0, -.66f);
 	}
 	IEnumerator JumpAway(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 10; i++) {
 			spriteRenderer.sprite = awayJumpFrames [i];
 			for (int x = 0; x < 3;) {
@@ -189,13 +200,10 @@ public class FeliciaAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
-		hurtbox.offset = new Vector2 ( 0, -.66f);
 	}
 	IEnumerator JumpNeutral(){
 
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		spriteRenderer.sprite = neutralJumpFrames [0];
 		for (int x = 0; x < 3;) {
 			yield return null;
@@ -219,8 +227,6 @@ public class FeliciaAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		hurtbox.offset = new Vector2 ( 0, -.66f);
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 	}
 	IEnumerator Hit(int duration){
 		for (int i = 0; i < 5; i++) {
@@ -268,6 +274,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Light(){
+
+		SetHurtbox(new Vector2 (1.75f, -.4f), new Vector2 (1.75f, .75f), hurtboxLimb);
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = lightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -277,8 +285,11 @@ public class FeliciaAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator Medium(){
+
+		SetHurtbox(new Vector2 (.8f, -.8f), new Vector2 (3f, 3f), hurtboxBody);
 		for (int i = 0; i < 10; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
 			for (int x = 0; x < 3;) {
@@ -290,8 +301,13 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Heavy(){
+
+		SetHurtbox(new Vector2 (.8f, -1.5f), new Vector2 (2f, 2f), hurtboxBody);
 		for (int i = 0; i < 8; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
+			if (i == 3) {
+				SetHurtbox(new Vector2 (2.7f, -1.75f), new Vector2 (2.5f, 1f), hurtboxLimb);
+			}
 			if (i == 5) {
 				for (int x = 0; x < 3;) {
 					yield return null;
@@ -299,6 +315,9 @@ public class FeliciaAnimScript : MonoBehaviour {
 						x++;
 					}
 				}
+			}
+			if (i == 6) {
+				hurtboxLimb.gameObject.SetActive (false);
 			}
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -316,8 +335,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 		spriteRenderer.sprite = heavyFrames [0];
 	}
 	IEnumerator JumpLight(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 6; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -329,11 +347,13 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpMedium(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 5; i++) {
+			
 			spriteRenderer.sprite = jumpMediumFrames [i];
-
+			if (i == 3) {
+				SetHurtbox(new Vector2 (1.8f, -.3f), new Vector2 (2f, 1f), hurtboxLimb);
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -343,11 +363,13 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpHeavy(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		sound.PlayHeavy ();
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = jumpHeavyFrames [i];
+			if (i == 3) {
+				SetHurtbox(new Vector2 (1.6f, -1f), new Vector2 (1f, 1f), hurtboxLimb);				
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -357,11 +379,16 @@ public class FeliciaAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator SpecialOne(){
-		sound.PlaySP1 ();
-		sound.PlayExtra ();
+		
+
+		SetHurtbox(new Vector2 (0f, -1.5f), new Vector2 (2f, 2f), hurtboxBody);
 		// intro
 		for (int i = 0; i < 3; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
+			if (i == 2) {
+				sound.PlaySP1 ();
+				sound.PlayExtra ();
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -383,6 +410,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 			}
 		}
 		// ending uppercut
+
+		SetHurtbox(new Vector2 (0f, -.7f), new Vector2 (1.8f, 3f), hurtboxBody);
 		for (int i = 6; i < 12; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
 			for (int x = 0; x < 3;) {
@@ -404,6 +433,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 
 	IEnumerator SpecialTwo(){
 		sound.PlaySP2 ();
+
+		SetHurtbox(new Vector2 (0f, -1.4f), new Vector2 (4f, 2f), hurtboxBody);
 		for (int i = 0; i < 6; i++) {
 			spriteRenderer.sprite = SpecialTwoFrames [i];
 			for (int x = 0; x < 3;) {
@@ -626,7 +657,9 @@ public class FeliciaAnimScript : MonoBehaviour {
 		StartCoroutine (SuperAnim());
 	}
 	public void EndAnimations(){
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
+		hurtboxBody.transform.localScale  = hurtboxBodyOriginalScale;
+		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
+		hurtboxLimb.gameObject.SetActive (false);
 		StopAllCoroutines ();
 	}
 	public void StartLandingAnim(){

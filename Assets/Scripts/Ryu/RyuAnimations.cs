@@ -24,9 +24,11 @@ public class RyuAnimations : MonoBehaviour {
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
 	public SpriteAnimator spriteAnimator;
-	public BoxCollider2D hurtbox;
+	public Transform hurtboxBody;
+	public Transform hurtboxLimb;
 	public GameObject Bag;
 	public GameObject SuperBG;
+	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
 	CameraMoveScript cameraMove;
@@ -35,6 +37,10 @@ public class RyuAnimations : MonoBehaviour {
 	SoundsPlayer sound;
 	// Use this for initialization
 	void Start () {
+		
+		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
+		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
+
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		spriteAnimator.SetNeutralAnimation (StartNeutralAnim);
@@ -59,15 +65,24 @@ public class RyuAnimations : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
-		hurtbox.gameObject.GetComponent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 
 		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
 	}
-	
 
+
+	void SetJumpHitbox(){
+		hurtboxBody.transform.localPosition = new Vector2 (0, 0);
+		hurtboxBody.transform.localScale  = new Vector2 (1.75f, 1.75f);
+	}
+	void SetHurtbox(Vector2 position, Vector2 scale, Transform hurtbox){
+		hurtbox.localPosition = position;
+		hurtbox.localScale = scale;
+		hurtbox.gameObject.SetActive (true);
+	}
 	//IEnumerator 
 	IEnumerator loopAnimation(Sprite[] animationFrames){
 		
@@ -151,8 +166,7 @@ public class RyuAnimations : MonoBehaviour {
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		spriteRenderer.sprite = towardJumpFrames [0];
 		for (int x = 0; x < 3;) {
 			 yield return null;
@@ -176,12 +190,9 @@ public class RyuAnimations : MonoBehaviour {
 			}
 			}
 		}
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
-		hurtbox.offset = new Vector2 ( 0, -.66f);
 	}
 	IEnumerator JumpAway(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		spriteRenderer.sprite = towardJumpFrames [13];
 		for (int x = 0; x < 3;) {
 			 yield return null;
@@ -206,13 +217,10 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 		spriteRenderer.sprite = towardJumpFrames [13];
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
-		hurtbox.offset = new Vector2 ( 0, -.66f);
 	}
 	IEnumerator JumpNeutral(){
 
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		spriteRenderer.sprite = neutralJumpFrames [0];
 		for (int x = 0; x < 3;) {
 			 yield return null;
@@ -236,8 +244,6 @@ public class RyuAnimations : MonoBehaviour {
 			}
 			}
 		}
-		hurtbox.offset = new Vector2 ( 0, -.66f);
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 	}
 	IEnumerator Hit(int duration){
 		for (int i = 0; i < 3; i++) {
@@ -286,6 +292,8 @@ public class RyuAnimations : MonoBehaviour {
 	}
 	// depricated
 	IEnumerator Light(){
+		SetHurtbox(new Vector2 (1.5f, .5f), new Vector2 (2, .75f), hurtboxLimb);
+
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = lightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -295,21 +303,36 @@ public class RyuAnimations : MonoBehaviour {
 			}
 			}
 		}
+		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator Medium(){
+		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
+
+			if (i == 2) {
+				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
+			}
+			if (i == 5) {
+				hurtboxLimb.gameObject.SetActive (false);
+			}
 			for (int x = 0; x < 4;) {
 				 yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
-				x++;
-			}
+					x++;
+				}
 			}
 		}
 	}
 	IEnumerator Heavy(){
 		for (int i = 0; i < 14; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
+			if (i == 6) {
+				SetHurtbox(new Vector2 (2.1f, .2f), new Vector2 (2.5f, 1f), hurtboxLimb);
+			}
+			if (i == 10) {
+				hurtboxLimb.gameObject.SetActive (false);
+			}
 			for (int x = 0; x < 3;) {
 				 yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -319,8 +342,7 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpLight(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -332,8 +354,7 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpMedium(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 9; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
@@ -346,9 +367,10 @@ public class RyuAnimations : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpHeavy(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 7; i++) {
+
+			SetHurtbox(new Vector2 (1.8f, -.3f), new Vector2 (2f, 1f), hurtboxLimb);
 			spriteRenderer.sprite = jumpHeavyFrames [i];
 			for (int x = 0; x < 3;) {
 				 yield return null;
@@ -357,6 +379,7 @@ public class RyuAnimations : MonoBehaviour {
 			}
 			}
 		}
+		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator SpecialOne(){
 		for (int i = 0; i < 12; i++) {
@@ -418,6 +441,8 @@ public class RyuAnimations : MonoBehaviour {
 			}
 			}
 		}
+
+		SetHurtbox(new Vector2 (1.8f, 0f), new Vector2 (2f, 1f), hurtboxLimb);
 		for (int ii = 0; ii < 3; ii++) {
 			for (int i = 4; i < 12; i++) {
 				spriteRenderer.sprite = SpecialThreeFrames [i];
@@ -429,6 +454,7 @@ public class RyuAnimations : MonoBehaviour {
 				}
 			}
 		}
+		hurtboxLimb.gameObject.SetActive (false);
 		for (int i = 12; i < 15; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
 			for (int x = 0; x < 3;) {
@@ -589,8 +615,10 @@ public class RyuAnimations : MonoBehaviour {
 		StartCoroutine (SuperAnim());
 	}
 	public void EndAnimations(){
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 		StopAllCoroutines ();
+		hurtboxBody.transform.localScale  = hurtboxBodyOriginalScale;
+		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
+		hurtboxLimb.gameObject.SetActive (false);
 	}
 
 }

@@ -20,6 +20,7 @@ public class AnimationLoopScript : MonoBehaviour {
 		
 	}
 	public void StopAnimation(){
+		
 		StopAllCoroutines ();
 	}
 	IEnumerator Intro(){

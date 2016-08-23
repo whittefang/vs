@@ -67,7 +67,7 @@ public class HitboxScript : MonoBehaviour {
 			}
 			// deal the damage
 
-			bool blocked = other.GetComponent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback, isFreezingAttack, launcher);
+			bool blocked = other.GetComponentInParent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback, isFreezingAttack, launcher);
 			// run optional function
 			if (optionalFunc != null){
 				// only run when opt is allowed on block and move is not blocked or hits

@@ -25,11 +25,11 @@ public class FeliciaAttackScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
-			SetPlayer (true);
-			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
+			//SetPlayer (true);
+			//otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
-			SetPlayer (false);
-			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
+			//SetPlayer (false);
+			//otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
 
 		health = GetComponentInChildren<HealthScript> ();
@@ -96,7 +96,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	void ThrowHit(Transform otherPlayerTmp){
-		otherPlayer = otherPlayerTmp;
+		otherPlayer = otherPlayerTmp.transform.parent;
 		CancelAttacks ();
 		StartCoroutine (ThrowHitEnum());
 	}

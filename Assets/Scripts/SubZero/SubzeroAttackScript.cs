@@ -23,9 +23,9 @@ public class SubzeroAttackScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
-			SetPlayer (true);
+			//SetPlayer (true);
 		} else {
-			SetPlayer (false);
+			//SetPlayer (false);
 		}
 
 		health = GetComponentInChildren<HealthScript> ();
@@ -95,7 +95,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	void ThrowHit(Transform otherPlayerTmp){
-		otherPlayer = otherPlayerTmp;
+		otherPlayer = otherPlayerTmp.transform.parent;
 		CancelAttacks ();
 		StartCoroutine (ThrowHitEnum());
 	}

@@ -157,6 +157,7 @@ public class InputScript : MonoBehaviour {
 	}
 	public void SetPlayerNumber (int newNum){
 		playerNumber = newNum;
+		playerIndex = (PlayerIndex)playerNumber;
 	}
 	public float GetX(bool raw = true){
 		if (raw) {

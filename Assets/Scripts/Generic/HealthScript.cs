@@ -162,7 +162,9 @@ public class HealthScript : MonoBehaviour {
 				DeathFunc ();
 			}
 			Debug.Log ("died");
-			GetComponent<BoxCollider2D> ().enabled = false;
+			foreach (Transform child in transform) {
+				child.gameObject.SetActive (false);
+			}
 
 			PMS.EndGame ();
 			otherPlayerMovementScript.gameObject.GetComponent<InputScript> ().inputEnabled = false;

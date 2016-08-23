@@ -18,9 +18,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	int jumpingMask = 9;
 	public int landingRecoveryFrames = 0;
 	public GameObject otherPlayer;
-	public Transform attacksObject;
+	public Transform attacksObject, hurtboxes;
 	public bool OnLeft, canProximityBlock, jumpAway = false;
-	public float moveboxOffsetY = -1, moveboxSizeX = 1.6f;
+	public Vector2 moveboxOffset, moveboxSize;
 	TimeManagerScript timeManager;
 	public delegate void vDelegate();
 	 vDelegate cancelAttacks;
@@ -121,6 +121,7 @@ public class PlayerMovementScript : MonoBehaviour {
 				SR.flipX = true;
 			}
 			attacksObject.eulerAngles = new Vector2(0, 180);
+			hurtboxes.eulerAngles = new Vector2(0, 180);
 		} else if (transform.position.x < otherPlayer.transform.position.x && (state.GetState() == "neutral"|| state.GetState() == "hitstun") && OnLeft == false){
 			OnLeft = true;
 			if (LeftFacingSprites) {
@@ -129,6 +130,7 @@ public class PlayerMovementScript : MonoBehaviour {
 				SR.flipX = false;
 			}
 			attacksObject.eulerAngles = new Vector2(0, 0);
+			hurtboxes.eulerAngles = new Vector2(0, 0);
 		}
 	}
 	public void JumpCheck(float x, float y){
@@ -213,8 +215,8 @@ public class PlayerMovementScript : MonoBehaviour {
 			} else {
 				state.SetState ("neutral");
 			}
-			movementBox.offset = new Vector2 (0, moveboxOffsetY);
-			movementBox.size  = new Vector2 (moveboxSizeX, 2.2f);
+			movementBox.offset = moveboxOffset;
+			movementBox.size = moveboxSize;
 			gameObject.layer = onGroundMask;
 			CheckFacing ();
 		} else if (groundedBuffer > 0) {

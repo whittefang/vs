@@ -24,9 +24,9 @@ public class RyuAttackScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
-			SetPlayer (true);
+			//SetPlayer (true);
 		} else {
-			SetPlayer (false);
+			//SetPlayer (false);
 		}
 			
 		health = GetComponentInChildren<HealthScript> ();
@@ -100,7 +100,7 @@ public class RyuAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	void ThrowHit(Transform otherPlayerTmp){
-		otherPlayer = otherPlayerTmp;
+		otherPlayer = otherPlayerTmp.transform.parent;
 		CancelAttacks ();
 		StartCoroutine (ThrowHitEnum());
 	}
@@ -619,6 +619,7 @@ public class RyuAttackScript : MonoBehaviour {
 		if (playerOne) {
 			fireball.GetComponent<ProjectileScript> ().projectileOwner = 0;
 			superFireball.GetComponent<ProjectileScript> ().projectileOwner = 0;
+
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			jumpMediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
 			jumpHeavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
@@ -638,6 +639,7 @@ public class RyuAttackScript : MonoBehaviour {
 		} else {
 			fireball.GetComponent<ProjectileScript> ().projectileOwner = 1;
 			superFireball.GetComponent<ProjectileScript> ().projectileOwner = 1;
+
 			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			jumpMediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			jumpHeavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
@@ -651,6 +653,7 @@ public class RyuAttackScript : MonoBehaviour {
 			fireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
 			superFireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+
 			fireball.GetComponentInChildren<ProximityBlockScript>().tagToDamage = "playerOne";
 			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerOne";
 		}

@@ -23,9 +23,11 @@ public class SubzeroAnimScript : MonoBehaviour {
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
 	public SpriteAnimator spriteAnimator;
-	public BoxCollider2D hurtbox;
+	public Transform hurtboxBody;
+	public Transform hurtboxLimb;
 	public GameObject head;
 	public GameObject SuperBG;
+	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
 	CameraMoveScript cameraMove;
@@ -41,6 +43,9 @@ public class SubzeroAnimScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
+		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
+
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		spriteAnimator.SetNeutralAnimation (StartNeutralAnim);
@@ -65,7 +70,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
-		hurtbox.gameObject.GetComponent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
@@ -73,7 +78,15 @@ public class SubzeroAnimScript : MonoBehaviour {
 		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
 	}
 
-
+	void SetJumpHitbox(){
+		hurtboxBody.transform.localPosition = new Vector2 (0, 0);
+		hurtboxBody.transform.localScale  = new Vector2 (1.75f, 1.75f);
+	}
+	void SetHurtbox(Vector2 position, Vector2 scale, Transform hurtbox){
+		hurtbox.localPosition = position;
+		hurtbox.localScale = scale;
+		hurtbox.gameObject.SetActive (true);
+	}
 	//IEnumerator 
 	IEnumerator loopAnimation(Sprite[] animationFrames){
 
@@ -203,8 +216,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 
 	IEnumerator JumpNeutral(){
 
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		spriteRenderer.sprite = neutralJumpFrames [0];
 		for (int ii = 0; ii < 2; ii++) {
 			for (int i = 0; i < 7; i++) {
@@ -218,13 +230,10 @@ public class SubzeroAnimScript : MonoBehaviour {
 			}	
 		}
 
-		hurtbox.offset = new Vector2 ( 0, -.66f);
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 	}
 	IEnumerator JumpAway(){
 
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		spriteRenderer.sprite = neutralJumpFrames [neutralJumpFrames.Length-1];
 		for (int ii = 0; ii < 2; ii++) {
 			for (int i = neutralJumpFrames.Length-1; i >= 0; i--) {
@@ -238,8 +247,6 @@ public class SubzeroAnimScript : MonoBehaviour {
 			}	
 		}
 
-		hurtbox.offset = new Vector2 ( 0, -.66f);
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 	}
 	IEnumerator Hit(int duration){
 		for (int i = 0; i < 3; i++) {
@@ -268,6 +275,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	IEnumerator Light(){
 		sound.PlayHit ();
 		spriteRenderer.sprite = lightFrames [0];
+		SetHurtbox(new Vector2 (1.25f, .7f), new Vector2 (1, .75f), hurtboxLimb);
 		for (int x = 0; x < 4;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -285,8 +293,12 @@ public class SubzeroAnimScript : MonoBehaviour {
 	}
 	IEnumerator Medium(){
 		sound.PlayHit ();
+		SetHurtbox(new Vector2 (0f, -1f), new Vector2 (1.8f, 1.5f), hurtboxBody);
 		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
+			if (i == 3) {
+				SetHurtbox(new Vector2 (1.25f, -1.5f), new Vector2 (2, .75f), hurtboxLimb);
+			}
 			for (int x = 0; x < 4;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -297,6 +309,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	}
 	IEnumerator Heavy(){
 		sound.PlayHit ();
+		SetHurtbox(new Vector2 (0f, -.8f), new Vector2 (1.8f, 1.75f), hurtboxBody);
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
 			for (int x = 0; x < 3;) {
@@ -306,10 +319,10 @@ public class SubzeroAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		SetHurtbox(hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale, hurtboxBody);
 	}
 	IEnumerator JumpLight(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -321,8 +334,8 @@ public class SubzeroAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpMedium(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
+		SetHurtbox(new Vector2 (1.5f, 0f), new Vector2 (1, 1f), hurtboxLimb);
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
@@ -335,8 +348,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator JumpHeavy(){
-		hurtbox.offset = new Vector2 (0, 0);
-		hurtbox.size  = new Vector2 (1.15f, 1.5f);
+		SetJumpHitbox ();
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = jumpHeavyFrames [i];
 			for (int x = 0; x < 3;) {
@@ -529,7 +541,9 @@ public class SubzeroAnimScript : MonoBehaviour {
 		StartCoroutine (SuperAnim());
 	}
 	public void EndAnimations(){
-		hurtbox.size  = new Vector2 (1.15f, 3.3f);
 		StopAllCoroutines ();
+		hurtboxBody.transform.localScale  = hurtboxBodyOriginalScale;
+		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
+		hurtboxLimb.gameObject.SetActive (false);
 	}
 }
