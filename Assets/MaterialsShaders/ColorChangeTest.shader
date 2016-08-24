@@ -7,6 +7,7 @@
 		_ColorPaletteOriginal("Colour Palette Original", 2D) = "white"{}
 		_ColorPaletteMorph("Colour Palette Morph", 2D) = "white"{}
 		_floatTest("Float test", Float) = 0 
+		_textureWidth("Texture Width", int) = 64
 		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
 	}
 
@@ -70,6 +71,7 @@
 			sampler2D _ColorPaletteOriginal;
 			sampler2D _ColorPaletteMorph;
 			Float _floatTest;
+			int _textureWidth;
 
 			fixed4 frag(v2f IN) : COLOR
 			{
@@ -80,10 +82,10 @@
 				//return c*_Color;
 				float4 currentColor= tex2D(_MainTex, IN.texcoord.xy);
 				float pos = 0;
-				for (float x =0; x <64; x +=1){
-					float4 newCol = tex2D(_ColorPaletteOriginal, float2(x/64, .5));
-					if (currentColor.r == newCol.r &&  currentColor.g == newCol.g && currentColor.b == newCol.b){
-						pos = x/64;
+				for (float x =0; x <_textureWidth; x +=1){
+					float4 newCol = tex2D(_ColorPaletteOriginal, float2(x/_textureWidth, .5));
+					if (currentColor.r == newCol.r &&  currentColor.g == newCol.g && currentColor.b == newCol.b){// && currentColor.a == newCol.a){
+						pos = x/_textureWidth;
 					}
 				}
 				//_floatTest = _floatTest/64;

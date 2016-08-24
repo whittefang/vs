@@ -11,7 +11,7 @@ public class ColorPicker : MonoBehaviour {
 	public string colorSetFunctionName = "OnSetNewColor";
 	public string colorGetFunctionName = "OnGetColor";
 	public bool useExternalDrawer = false;
-	public int currentPixel = 0;
+	public int currentPixel = 0, textureWidth =0;
 	public Transform selectedColorCursor;
 	private Color TempColor; 
 	[SerializeField]
@@ -64,10 +64,10 @@ public class ColorPicker : MonoBehaviour {
 	void Update(){
 		if (Input.GetKeyDown(KeyCode.RightArrow)) {
 			currentPixel++;
-			if (currentPixel > 63){
-				currentPixel = 63;
+			if (currentPixel > textureWidth-1){
+				currentPixel = textureWidth-1;
 			}
-			selectedColorCursor.transform.position = new Vector3 (-2.43f + ((float)currentPixel * .1565f), selectedColorCursor.transform.position.y, selectedColorCursor.transform.position.z);
+			//selectedColorCursor.transform.position = new Vector3 (-2.43f + ((float)currentPixel * .1565f), selectedColorCursor.transform.position.y, selectedColorCursor.transform.position.z);
 			textureWriter.ShowPixels (currentPixel);
 		}
 		if (Input.GetKeyDown(KeyCode.LeftArrow)) {
@@ -75,11 +75,14 @@ public class ColorPicker : MonoBehaviour {
 			if (currentPixel < 0){
 				currentPixel = 0;
 			}
-			selectedColorCursor.transform.position = new Vector3 (-2.43f + (currentPixel * .1565f), selectedColorCursor.transform.position.y, selectedColorCursor.transform.position.z);
+			//selectedColorCursor.transform.position = new Vector3 (-2.43f + (currentPixel * .1565f), selectedColorCursor.transform.position.y, selectedColorCursor.transform.position.z);
 			textureWriter.ShowPixels (currentPixel);
 		}
 		if (Input.GetKeyDown (KeyCode.UpArrow)) {
 			textureWriter.ResetColor (currentPixel);
+		}
+		if (Input.GetKeyDown (KeyCode.DownArrow)) {
+			textureWriter.HideSelectionColor (currentPixel);
 		}
 	}
 
