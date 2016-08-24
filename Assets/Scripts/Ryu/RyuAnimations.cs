@@ -65,12 +65,15 @@ public class RyuAnimations : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
-		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
+			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		}
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
-
-		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
+		if (GameObject.Find ("Camera") != null) {
+			cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript> ();
+		}
 	}
 
 
@@ -162,7 +165,9 @@ public class RyuAnimations : MonoBehaviour {
 		}
 		Bag.transform.position = transform.position;
 		Bag.SetActive (true);
-		GetComponent<InputScript> ().inputEnabled = true;
+		if (GetComponent<InputScript> () != null) {
+			GetComponent<InputScript> ().inputEnabled = true;
+		}
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){
@@ -476,8 +481,9 @@ public class RyuAnimations : MonoBehaviour {
 	}
 	IEnumerator ThrowComplete(){
 		Debug.Log ("throw");
-
-		cameraMove.EnableCameraMovement (false);
+		if (cameraMove != null) {
+			cameraMove.EnableCameraMovement (false);
+		}
 		for (int i = 1; i < 14; i++) {
 			spriteRenderer.sprite = throwFrames [i];
 
@@ -489,7 +495,9 @@ public class RyuAnimations : MonoBehaviour {
 			}
 		}
 
-		cameraMove.EnableCameraMovement (true);
+		if (cameraMove != null) {
+			cameraMove.EnableCameraMovement (true);
+		}
 	}
 	IEnumerator SuperAnim(){
 		// super anim

@@ -4,6 +4,7 @@ using System.Collections;
 public class TimeManagerScript : MonoBehaviour {
 
 	public bool timePaused = false;
+	public bool canPauseTime = true;
 	// Use this for initialization
 	void Awake () {
 		QualitySettings.vSyncCount = 0;
@@ -17,18 +18,19 @@ public class TimeManagerScript : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Space)){
 			timePaused = !timePaused;
 		}
-		// frame step
-		if (Input.GetKeyDown(KeyCode.RightArrow)){
-			StartCoroutine (StepFrame ());
-		}
+
 	}
 	public void StopTime(int numberOfFrames){
-		StopAllCoroutines ();
-		StartCoroutine (StopTimeEnum (numberOfFrames));
+		if (canPauseTime) {
+			StopAllCoroutines ();
+			StartCoroutine (StopTimeEnum (numberOfFrames));
+		}
 	}
 	public void StopTimeForce(int numberOfFrames){
-		StopAllCoroutines ();
-		StartCoroutine (StopTimeEnum (numberOfFrames));
+		if (canPauseTime) {
+			StopAllCoroutines ();
+			StartCoroutine (StopTimeEnum (numberOfFrames));
+		}
 	}
 	IEnumerator StepFrame(){
 		timePaused = false;

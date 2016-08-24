@@ -6,7 +6,8 @@ using System.Collections.Generic;
 public class TextureWriter : MonoBehaviour {
 	Texture2D newPalette;
 	public string fileName;
-	public Texture2D originalSprite;
+	public Texture2D[] originalSpritesArray;
+	public string SpritesArrayFolderPath = "Ryu";
 	public SpriteRenderer targetSprite;
 	public MeshRenderer generatedPalletePreview;
 	public MeshRenderer newPalettePreview;
@@ -36,6 +37,7 @@ public class TextureWriter : MonoBehaviour {
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.F3)) {
+			originalSpritesArray = Resources.LoadAll<Texture2D>(SpritesArrayFolderPath);
 			GeneratePalette ();
 		}
 
@@ -73,22 +75,24 @@ public class TextureWriter : MonoBehaviour {
 		
 		List<Color32> foundColors = new List<Color32>();
 		int uniqueColors = 0;
-
-		foreach (Color32 found in originalSprite.GetPixels()) {
-			bool match = false;
-			//Debug.Log (found);
-
-			foreach (Color32 existing in foundColors) {
-				if (found.r == existing.r && found.g == existing.g && found.b == existing.b){// && found.a == existing.a) {
-					match = true;
-					break;
-				}
-
-			}
-			if (!match) {
-				uniqueColors++;
-				foundColors.Add (found);
+		Debug.Log ("Started scanning sprites, if there is a large Volume it may take some time");
+		foreach (Texture2D tex in originalSpritesArray) {
+			foreach (Color32 found in tex.GetPixels()) {
+				bool match = false;
 				//Debug.Log (found);
+
+				foreach (Color32 existing in foundColors) {
+					if (found.r == existing.r && found.g == existing.g && found.b == existing.b) {// && found.a == existing.a) {
+						match = true;
+						break;
+					}
+
+				}
+				if (!match) {
+					uniqueColors++;
+					foundColors.Add (found);
+					//Debug.Log (found);
+				}
 			}
 		}
 		generatedPallete = new Texture2D (uniqueColors, 1, TextureFormat.ARGB32, false, false);
