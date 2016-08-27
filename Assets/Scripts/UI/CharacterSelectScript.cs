@@ -3,8 +3,10 @@ using System.Collections;
 using XInputDotNetPure; // Required in C#
 
 public class CharacterSelectScript : MonoBehaviour {
+	public bool characterSelect = true;
 	public int playerNumber = 0;
 	public int currentSelection = 0;
+	public int maxSelectionSize = 6;
 	public Vector2[] cursorPositions;
 	Rounds roundScript;
 	PlayerIndex playerIndex;
@@ -31,7 +33,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		state = GamePad.GetState (playerIndex);
 
 		// send input for movement(state.ThumbSticks.Left.X, state.ThumbSticks.Left.Y);
-		if (state.ThumbSticks.Left.X > 0 && currentSelection < 6 && buffer && !selectionMade){
+		if (state.ThumbSticks.Left.X > 0 && currentSelection < maxSelectionSize && buffer && !selectionMade){
 			StartCoroutine (setBuffer());
 			sound.PlayChange ();
 			// move cursor
@@ -50,23 +52,34 @@ public class CharacterSelectScript : MonoBehaviour {
 
 		if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed && !selectionMade) {
 			// set rounds script
-			if (ConvertToString (currentSelection) == "random") {
-				if (playerNumber == 0) {
-					roundScript.player1character = RandomizeCharacter ();
-					lockedIn = sceneLoader.SetReady (true, true);
+
+			if (playerNumber == 0) {
+				if (characterSelect) {
+					if (ConvertToString (currentSelection) == "random"){
+						Debug.Log ("randomizing");
+						roundScript.player1character = RandomizeCharacter ();
+					}else {
+						roundScript.player1character = ConvertToString (currentSelection);
+					}
 				} else {
-					roundScript.player2character = RandomizeCharacter ();
-					lockedIn = sceneLoader.SetReady (false, true);
+					sceneLoader.SetScene (true, currentSelection+3);
 				}
+					lockedIn = sceneLoader.SetReady (true, true);
+				
 			} else {
-				if (playerNumber == 0) {
-					roundScript.player1character = ConvertToString (currentSelection);
-					lockedIn = sceneLoader.SetReady (true, true);
+				if (characterSelect) {
+					if (ConvertToString (currentSelection) == "random"){
+						Debug.Log ("randomizing");
+						roundScript.player2character = RandomizeCharacter ();
+					}else {
+						roundScript.player2character = ConvertToString (currentSelection);
+					}
 				} else {
-					roundScript.player2character = ConvertToString (currentSelection);
-					lockedIn = sceneLoader.SetReady (false, true);
+					sceneLoader.SetScene (false, currentSelection+3);
 				}
+			lockedIn = sceneLoader.SetReady (false, true);
 			}
+
 			UpdateSelected(currentSelection);
 			selectionMade = true;
 			sound.PlayConfirm ();
@@ -87,6 +100,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		while (pickedCharacter == "random") {
 			pickedCharacter = ConvertToString (Random.Range (0, 7));
 		}
+		Debug.Log (pickedCharacter);
 		return pickedCharacter;
 	}
 	void UpdateCursorPosition(){
@@ -133,7 +147,10 @@ public class CharacterSelectScript : MonoBehaviour {
 		foreach (GameObject g in selectedsLoop) {
 			g.SetActive (false);
 		}
-		selectedsLoop [character].SetActive (true);
+
+		if (selectedsLoop.Length > character) {
+			selectedsLoop [character].SetActive (true);
+		}
 		sound.PlayCharacterSelect (character);
 	}
 }

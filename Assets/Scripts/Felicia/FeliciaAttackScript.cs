@@ -26,10 +26,10 @@ public class FeliciaAttackScript : MonoBehaviour {
 	void Start () {
 		if (tag == "playerOne") {
 			//SetPlayer (true);
-			//otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
+			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
 			//SetPlayer (false);
-			//otherPlayer = GameObject.FindWithTag ("playerOne").transform;
+			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
 
 		health = GetComponentInChildren<HealthScript> ();
@@ -167,7 +167,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		lightBuffer = true;
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 12;) {
+		for (int x = 0; x < 15;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				// startup
 				// active
@@ -308,7 +308,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlayHeavy ();
 		state.SetState ("attack");
 		//PMS.MoveToward (7.5f);
-		for (int x = 0; x < 27;) {
+		for (int x = 0; x < 30;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 11) {
 					heavyHitbox.SetActive (true);
@@ -347,7 +347,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 				}
 
 				if (x == 7) {
-					PMS.MoveToward (20, -10);
+					PMS.MoveToward (17, -10);
 				}
 				x++;
 			}

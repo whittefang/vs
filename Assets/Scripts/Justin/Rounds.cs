@@ -32,7 +32,7 @@ public class Rounds : MonoBehaviour {
 	}
 	void loadx(Scene x, Scene y){
 		Debug.Log("i loaded");
-		if (SceneManager.GetActiveScene().buildIndex == 2) {
+		if (SceneManager.GetActiveScene().buildIndex > 2) {
 			if (RoundFlag == 1){
 				StartCoroutine(SetRoundText("Round 1"));
 			}
@@ -73,11 +73,11 @@ public class Rounds : MonoBehaviour {
 				
 				break;
 			case 2:
-				SceneManager.LoadScene(sceneToload);
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 				StartCoroutine(SetRoundText("Round 2"));
 				break;
 			case 3:
-				SceneManager.LoadScene(sceneToload);
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 				StartCoroutine(SetRoundText("Round 3"));
 				break;
 			case 4:

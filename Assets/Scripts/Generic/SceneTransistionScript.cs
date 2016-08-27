@@ -5,10 +5,11 @@ using UnityEngine.SceneManagement;
 public class SceneTransistionScript : MonoBehaviour {
 
 	public int sceneToTransitionTo;
-	bool player1Ready = false, player2Ready = false;
+	int[] playerScenes;
+	bool player1Ready = false, player2Ready = false, levelSelect = false;
 	// Use this for initialization
 	void Start () {
-	
+		playerScenes = new int[2];
 	}
 	
 	// Update is called once per frame
@@ -24,7 +25,13 @@ public class SceneTransistionScript : MonoBehaviour {
 		}
 
 		if (player1Ready && player2Ready) {
-			LoadScene (2, sceneToTransitionTo);
+			if (levelSelect) {
+				Debug.Log (playerScenes [0] + "  " + playerScenes [1]);
+				sceneToTransitionTo = playerScenes[Random.Range(0,2)];
+				Debug.Log (sceneToTransitionTo);
+			} 
+				LoadScene (2, sceneToTransitionTo);
+			
 			return true;
 		} else {
 			return false;
@@ -32,6 +39,14 @@ public class SceneTransistionScript : MonoBehaviour {
 	}
 	public void LoadScene(float delay ,int newScene){
 		StartCoroutine (LoadSceneDelay( delay, newScene));
+	}
+	public void SetScene(bool isPlayerOne, int scene){
+		if (isPlayerOne) {
+			playerScenes[0] = scene;
+		} else {
+			playerScenes[1] = scene;
+		}
+		levelSelect = true;
 	}
 	IEnumerator LoadSceneDelay(float delay ,int newScene){
 		yield return new WaitForSeconds (delay);
