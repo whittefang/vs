@@ -45,7 +45,7 @@ public class HealthScript : MonoBehaviour {
 	public void SetPlayer(string player, GameObject otherPlayer){
 		exBar = GameObject.Find("DoNotDestroy").GetComponent<ExMeter>();
 		if (player == "playerOne") {
-			exBar.GetEx(true);
+			exCurrent =	(int)exBar.GetEx(true);
 			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
 			hpLeft.setHpLeft (healthMax);
 			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
@@ -54,7 +54,7 @@ public class HealthScript : MonoBehaviour {
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		} else {
-			exBar.GetEx(false);
+			exCurrent =	(int)exBar.GetEx(false);
 			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
 			hpRight.setHpRight (healthMax);
 			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();

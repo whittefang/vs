@@ -21,6 +21,8 @@ public class YukikoAttackScript : MonoBehaviour {
 	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false;
 	HealthScript health;
 	Transform otherPlayer;
+	public PersonaAttackAnimScript persona;
+	public delegate void vDel();
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
@@ -224,6 +226,8 @@ public class YukikoAttackScript : MonoBehaviour {
 		spriteAnimator.PlayMedium ();
 		state.SetState ("attack");
 		// startup
+
+		ActivatePersona(persona.StartMediumAnim);
 		for (int x = 0; x < 27; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
@@ -289,6 +293,8 @@ public class YukikoAttackScript : MonoBehaviour {
 		spriteAnimator.PlayHeavy ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
+
+		ActivatePersona(persona.StartHeavyAnim);
 		for (int x = 0; x < 42;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 18) {
@@ -349,6 +355,9 @@ public class YukikoAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		bool canShoot = true;
+
+		ActivatePersona(persona.StartSpecialOneAnim);
+
 		for (int x = 0; x < 45;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
@@ -403,6 +412,8 @@ public class YukikoAttackScript : MonoBehaviour {
 
 		state.SetState ("attack");
 		PMS.DsableBodyBox ();
+		ActivatePersona(persona.StartSpecialTwoAnim);
+
 		for (int x = 0; x < 50;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
@@ -460,6 +471,9 @@ public class YukikoAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
 		state.SetState ("projectile invulnerable");
+
+		ActivatePersona(persona.StartSpecialThreeAnim);
+
 		for (int x = 0; x < 6;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -529,7 +543,16 @@ public class YukikoAttackScript : MonoBehaviour {
 		}
 		state.SetState ("neutral");
 	}
-
+	void ActivatePersona(vDel move){
+		if (!persona.gameObject.activeSelf) {
+			persona.gameObject.SetActive (true);
+			move ();
+			persona.Summon ();
+			persona.transform.position = new Vector3 (transform.position.x, transform.position.y + 3, transform.position.z);
+		} else {
+			move ();
+		}
+	}
 	public void LightHit(){
 		lightHitboxHit = true;
 	}
