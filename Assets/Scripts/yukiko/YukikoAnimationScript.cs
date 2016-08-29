@@ -11,7 +11,10 @@ public class YukikoAnimationScript : MonoBehaviour {
 	public Sprite[] awayJumpFrames;
 	public Sprite[] throwFrames;
 	public Sprite[] lightFrames;
+	public Sprite[] lightFrames1;
 	public Sprite[] mediumFrames;
+	public Sprite[] mediumFrames2;
+	public Sprite[] mediumFrames3;
 	public Sprite[] heavyFrames;
 	public Sprite[] jumpLightFrames;
 	public Sprite[] jumpMediumFrames;
@@ -65,6 +68,10 @@ public class YukikoAnimationScript : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
+		spriteAnimator.setExtra1Animation (StartLight2Anim);
+		spriteAnimator.setExtra2Animation (StartMedium2Anim);
+		spriteAnimator.setExtra3Animation (StartMedium3Anim);
+		spriteAnimator.setExtra4Animation (StartHeavyLoopAnim);
 		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
 			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		}
@@ -304,9 +311,24 @@ public class YukikoAnimationScript : MonoBehaviour {
 		}
 		hurtboxLimb.gameObject.SetActive (false);
 	}
+	// depricated
+	IEnumerator Light2(){
+		SetHurtbox(new Vector2 (1.5f, .5f), new Vector2 (2, .75f), hurtboxLimb);
+
+		for (int i = 0; i < 13; i++) {
+			spriteRenderer.sprite = lightFrames1 [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		hurtboxLimb.gameObject.SetActive (false);
+	}
 	IEnumerator Medium(){
 		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 8; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
 
 			if (i == 2) {
@@ -323,15 +345,48 @@ public class YukikoAnimationScript : MonoBehaviour {
 			}
 		}
 	}
-	IEnumerator Heavy(){
-		for (int i = 0; i < 9; i++) {
-			spriteRenderer.sprite = heavyFrames [i];
-			if (i == 6) {
-				SetHurtbox(new Vector2 (2.1f, .2f), new Vector2 (2.5f, 1f), hurtboxLimb);
+	IEnumerator Medium2(){
+		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
+		for (int i = 0; i < 10; i++) {
+			spriteRenderer.sprite = mediumFrames2 [i];
+
+			if (i == 2) {
+				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
 			}
-			if (i == 10) {
+			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);
 			}
+			for (int x = 0; x < 4;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+	}
+	IEnumerator Medium3(){
+		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
+		for (int i = 0; i < 12; i++) {
+			spriteRenderer.sprite = mediumFrames3 [i];
+
+			if (i == 2) {
+				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
+			}
+			if (i == 5) {
+				hurtboxLimb.gameObject.SetActive (false);
+			}
+			for (int x = 0; x < 4;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+	}
+	IEnumerator Heavy(){
+		for (int i = 0; i < 2; i++) {
+			spriteRenderer.sprite = heavyFrames [i];
+
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -339,6 +394,29 @@ public class YukikoAnimationScript : MonoBehaviour {
 				}
 			}
 		}
+		StartCoroutine (HeavyLoop (3));
+	}
+	IEnumerator HeavyLoop(int duration){
+		for (int iii = 0; iii < duration; iii++) {
+
+			for (int ii = 0; ii < 3; ii++) {
+				spriteRenderer.sprite = heavyFrames [ii+2];
+				for (int i = 0; i < 3; i++) {
+					yield return null;
+				}	
+			}
+		}
+		for (int i = 5; i < 7; i++) {
+			spriteRenderer.sprite = heavyFrames [i];
+
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+
 	}
 	IEnumerator JumpLight(){
 		SetJumpHitbox ();
@@ -505,13 +583,33 @@ public class YukikoAnimationScript : MonoBehaviour {
 		EndAnimations ();
 		StartCoroutine (Light());
 	}
+	public void StartLight2Anim(){
+		EndAnimations ();
+		StartCoroutine (Light2());
+	}
 	public void StartMediumAnim(){
+		EndAnimations ();
+		StartCoroutine (Medium());
+	}
+	public void StartMedium2Anim(){
+		EndAnimations ();
+		StartCoroutine (Medium2());
+	}
+	public void StartMedium3Anim(){
+		EndAnimations ();
+		StartCoroutine (Medium3());
+	}
+	public void StartMedium4Anim(){
 		EndAnimations ();
 		StartCoroutine (Medium());
 	}
 	public void StartHeavyAnim(){
 		EndAnimations ();
 		StartCoroutine (Heavy());
+	}
+	public void StartHeavyLoopAnim(){
+		EndAnimations ();
+		StartCoroutine (HeavyLoop(5));
 	}
 	public void StartJumpLightAnim(){
 		EndAnimations ();

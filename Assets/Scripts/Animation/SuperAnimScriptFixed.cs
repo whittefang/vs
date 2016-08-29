@@ -4,13 +4,11 @@ using System.Collections;
 public class SuperAnimScriptFixed : MonoBehaviour {
 
 	public GameObject portrait, background;
-	TimeManagerScript timeManager;
 	FollowScript follow;
 	// Use this for initialization
 	void Start () {
 		follow = GetComponent<FollowScript> ();
 		follow.transformToFollow = GameObject.Find ("Camera");
-		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 	}
 	void OnEnable(){
 		StartCoroutine (SuperAnimate ());

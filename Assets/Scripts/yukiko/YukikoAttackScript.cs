@@ -7,7 +7,7 @@ public class YukikoAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject fan1, fan2, sp1Fireball, sp3Trap, mediumHitbox, heavyHitbox, jumpMediumHitbox, jumpHeavyHitbox,
+	public GameObject fan1, fan2, sp1Fireball, sp3Trap, medium1Hitbox,medium2Hitbox,medium3Hitbox, heavyHitbox, jumpMediumHitbox, jumpHeavyHitbox,
 	sp2Hitbox, fireballGunpoint, throwHitbox, proximityBox;
 
 	ProjectileScript sp1FireballProjectileScript , fan1ProjectileScript, fan2ProjectileScript;
@@ -22,13 +22,14 @@ public class YukikoAttackScript : MonoBehaviour {
 	HealthScript health;
 	Transform otherPlayer;
 	public PersonaAttackAnimScript persona;
+	int attackStage =0;
 	public delegate void vDel();
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
-			//SetPlayer (true);
+			persona.SetOtherPlayer(true);
 		} else {
-			//SetPlayer (false);
+			persona.SetOtherPlayer (false);
 		}
 
 		health = GetComponentInChildren<HealthScript> ();
@@ -55,8 +56,10 @@ public class YukikoAttackScript : MonoBehaviour {
 		inputScript.assignBYButton (Super);
 
 //		lightHitboxScript.SetOptFunc (LightHit);
-//		mediumHitboxScript.SetOptFunc (MediumHit);
-//		heavyHitboxScript.SetOptFunc (HeavyHit);
+		medium1Hitbox.GetComponent<HitboxScript>().SetOptFunc (MediumHit);
+		medium2Hitbox.GetComponent<HitboxScript>().SetOptFunc (MediumHit);
+		medium3Hitbox.GetComponent<HitboxScript>().SetOptFunc (MediumHit);
+		heavyHitboxScript.SetOptFunc (HeavyHit);
 		throwHitboxScript.SetThrowFunc (ThrowHit);
 		sp1Fireball.GetComponentInChildren<HitboxScript> ().SetOptFunc (SpecialHit);
 		sp2Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
@@ -150,14 +153,17 @@ public class YukikoAttackScript : MonoBehaviour {
 		if (state.GetState () == "neutral") {
 			PMS.CheckFacing ();
 			StartCoroutine (lightEnum ());
-		} else if (state.GetState () == "jumping") {
+		} else if (state.GetState () == "light recovery"){
+			PMS.CheckFacing ();
+			StopAllCoroutines ();
+			StartCoroutine (light2Enum ());
+		}else if (state.GetState () == "jumping") {
 			StartCoroutine (jumpLightEnum ());
 		}
 
 	}
 	IEnumerator lightEnum(){
 		health.AddMeter (10);
-		proximityBox.SetActive (true);
 		lightBuffer = true;
 		spriteAnimator.PlayLight ();
 		PMS.StopMovement ();
@@ -170,14 +176,47 @@ public class YukikoAttackScript : MonoBehaviour {
 				if (x == 3){
 					lightBuffer = false;
 				}
-				if (x == 4) {
-					//lightHitbox.SetActive (true);
-				}
+
 				// recovery
-				if (x == 6) {
-					//lightHitbox.SetActive (false);
+				if (x == 11) {
+					fan1.transform.position = fireballGunpoint.transform.position;
+					if (PMS.CheckIfOnLeft ()) {
+						fan1.transform.eulerAngles = new Vector2(0, 0);
+						fan1ProjectileScript.direction = new Vector2 (1, 0);
+					} else {
+						fan1.transform.eulerAngles = new Vector2(0, 180);
+						fan1ProjectileScript.direction = new Vector2 (-1, 0);
+
+					}
+					fan1.SetActive (true);
 					state.SetState ("light recovery");
-					proximityBox.SetActive (false);
+				}
+				if (x == 20) {
+					state.SetState ("attack");
+				}
+				x++;
+			}
+			yield return null;
+		}
+		lightHitboxHit = false;
+		state.SetState ("neutral");
+	}
+	IEnumerator light2Enum(){
+		spriteAnimator.PlayExtra1 ();
+		PMS.StopMovement ();
+		state.SetState ("attack");
+		for (int x = 0; x < 45;) {
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 6) {
+					fan2.transform.position = fireballGunpoint.transform.position;
+					if (PMS.CheckIfOnLeft ()) {
+						fan2.transform.eulerAngles = new Vector2(0, 0);
+						fan2ProjectileScript.direction = new Vector2 (1, 0);
+					} else {
+						fan2.transform.eulerAngles = new Vector2(0, 180);
+						fan2ProjectileScript.direction = new Vector2 (-1, 0);
+					}
+					fan2.SetActive (true);
 				}
 
 				x++;
@@ -194,12 +233,17 @@ public class YukikoAttackScript : MonoBehaviour {
 		for (int x = 0; x < 15; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 4){
-					//jumpLightHitbox.SetActive (true);
-				}
 				if (x == 10){
-					//jumpLightHitbox.SetActive (false);
-					proximityBox.SetActive (false);
+					fan2.transform.position = new Vector3( fireballGunpoint.transform.position.x, fireballGunpoint.transform.position.y-.5f, fireballGunpoint.transform.position.z);
+					if (PMS.CheckIfOnLeft ()) {
+						fan2.transform.eulerAngles = new Vector3(0, 0, -45);
+						fan2ProjectileScript.direction = new Vector2 (.75f, -1f);
+					} else {
+						fan2.transform.eulerAngles = new Vector3(0, 180, 45);
+						fan2ProjectileScript.direction = new Vector2 (-.75f, -1f);
+
+					}
+					fan2.SetActive (true);
 				}
 				x++;
 			}
@@ -207,27 +251,33 @@ public class YukikoAttackScript : MonoBehaviour {
 		}
 	}
 	public void Medium(){
-		if (state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit)) {
-			if (lightHitboxHit) {
-				lightHitboxHit = false;
-			}
+		if (state.GetState() == "neutral") {
 			PMS.CheckFacing ();
 			StopAllCoroutines ();
-			StartCoroutine (mediumEnum ());
-		} else if (state.GetState () == "jumping") {
+			StartCoroutine (medium1Enum ());
+		}else if(state.GetState() == "medium recovery" && attackStage == 1 && mediumHitboxHit){
+			PMS.CheckFacing ();
+			mediumHitboxHit = false;
+			StopAllCoroutines ();
+			StartCoroutine (medium2Enum ());
+		}else if(state.GetState() == "medium recovery" && attackStage == 2 && mediumHitboxHit){
+			PMS.CheckFacing ();
+			mediumHitboxHit = false;
+			StopAllCoroutines ();
+			StartCoroutine (medium3Enum ());
+		}else if (state.GetState () == "jumping") {
 			StartCoroutine (jumpMediumEnum ());
 		}
 
 	}
-	IEnumerator mediumEnum(){
+	IEnumerator medium1Enum(){
 		health.AddMeter (15);
 		mediumBuffer = true;
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayMedium ();
 		state.SetState ("attack");
 		// startup
-
-		ActivatePersona(persona.StartMediumAnim);
+		PMS.MoveToward(5, 0);
 		for (int x = 0; x < 27; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
@@ -237,12 +287,88 @@ public class YukikoAttackScript : MonoBehaviour {
 				// active
 				if (x == 9) {
 					PMS.StopMovement ();
-					mediumHitbox.SetActive (true);
+					medium1Hitbox.SetActive (true);
 				}
 				// recovery
 				if (x == 11){
-					mediumHitbox.SetActive (false);
+					medium1Hitbox.SetActive (false);
+					attackStage = 1;
 					state.SetState ("medium recovery");
+					PMS.StopMovement ();
+					proximityBox.SetActive (false);
+				}
+				x++;
+			}
+
+			yield return null;
+		}
+		mediumHitboxHit = false;
+		state.SetState ("neutral");
+	}
+	IEnumerator medium2Enum(){
+		health.AddMeter (15);
+		mediumBuffer = true;
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayExtra2 ();
+		state.SetState ("attack");
+		// startup
+		PMS.MoveToward(5, 0);
+
+		//ActivatePersona(persona.StartMediumAnim);
+		for (int x = 0; x < 33; ) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					mediumBuffer = false;	
+				}
+				// active
+				if (x == 12) {
+					PMS.StopMovement ();
+					medium2Hitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 14){
+					medium2Hitbox.SetActive (false);
+					attackStage = 2;
+					state.SetState ("medium recovery");
+					PMS.StopMovement ();
+					proximityBox.SetActive (false);
+				}
+				x++;
+			}
+
+			yield return null;
+		}
+		mediumHitboxHit = false;
+		state.SetState ("neutral");
+	}
+	IEnumerator medium3Enum(){
+		health.AddMeter (15);
+		mediumBuffer = true;
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayExtra3 ();
+		state.SetState ("attack");
+		// startup
+		PMS.MoveToward(5, 0);
+
+		//ActivatePersona(persona.StartMediumAnim);
+		for (int x = 0; x < 39; ) {
+
+			attackStage = 0;
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					mediumBuffer = false;	
+				}
+				// active
+				if (x == 12) {
+					PMS.StopMovement ();
+					medium3Hitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 15){
+					medium3Hitbox.SetActive (false);
+					state.SetState ("medium recovery");
+					PMS.StopMovement ();
 					proximityBox.SetActive (false);
 				}
 				x++;
@@ -274,7 +400,7 @@ public class YukikoAttackScript : MonoBehaviour {
 		}
 	}
 	public void Heavy(){
-		if (state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit)) {
+		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() == "heavy recovery")) && persona.GetAttackState() != -1) {
 			if (mediumHitboxHit) {
 				mediumHitboxHit = false;
 			}
@@ -290,22 +416,19 @@ public class YukikoAttackScript : MonoBehaviour {
 
 		health.AddMeter (20);
 		proximityBox.SetActive (true);
-		spriteAnimator.PlayHeavy ();
+		if (state.GetState () == "neutral") {
+			spriteAnimator.PlayHeavy ();
+		} else {
+			spriteAnimator.PlayExtra4 ();
+		}
 		PMS.StopMovement ();
 		state.SetState ("attack");
 
-		ActivatePersona(persona.StartHeavyAnim);
-		for (int x = 0; x < 42;) {
+		ActivatePersona(persona.StartAttacksAnim);
+		for (int x = 0; x < 50;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 18) {
-					heavyHitbox.SetActive (true);
-				}
-
-				if (x == 22) {
-					PMS.StopMovement ();
-					heavyHitbox.SetActive (false);
+				if (x == 10) {
 					state.SetState ("heavy recovery");
-					proximityBox.SetActive (false);
 				}
 
 				x++;
@@ -336,7 +459,7 @@ public class YukikoAttackScript : MonoBehaviour {
 	}
 
 	public void SpecialOne(){
-		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
 			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) && !sp1Fireball.activeSelf) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
@@ -389,14 +512,19 @@ public class YukikoAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
-		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+		if (state.GetState() == "neutral" ||  (state.GetState() =="medium recovery" && mediumHitboxHit) 
 			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)){
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
 			PMS.CheckFacing ();
 			StopAllCoroutines ();
-			StartCoroutine (SpecialTwoEnum ());
+			if (!persona.CheckActive ()) {
+				StartCoroutine (SpecialTwoEnum ());
+			} else {
+
+				StartCoroutine (SpecialTwoReturnEnum ());
+			}
 		}
 
 	}
@@ -452,8 +580,31 @@ public class YukikoAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 		PMS.EnableBodyBox ();
 	}
+	IEnumerator SpecialTwoReturnEnum(){
+
+		health.AddMeter (30);
+		proximityBox.SetActive (true);
+		spriteAnimator.PlaySpecialTwo ();
+		PMS.StopMovement ();
+		sp2Buffer = true;
+		//state.SetState ("attack");
+		// needs jumpbox turned off
+
+		state.SetState ("attack");
+		persona.UnSummon ();
+
+		for (int x = 0; x < 30;) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+			yield return null;
+		}
+		state.SetState ("neutral");
+		PMS.EnableBodyBox ();
+	}
 	public void SpecialThree(){
-		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+		if (state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
 			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
@@ -503,7 +654,7 @@ public class YukikoAttackScript : MonoBehaviour {
 	}
 
 	public void Super(){
-		if (health.exCurrent >= 1000 && ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || 
+		if (health.exCurrent >= 1000 && ((state.GetState() == "neutral" || 
 			(state.GetState() =="medium recovery" && mediumHitboxHit) || 
 			(state.GetState() =="heavy recovery" && heavyHitboxHit) || 
 			(specialHitboxHit)) || mediumBuffer || sp2Buffer)) {
@@ -544,12 +695,14 @@ public class YukikoAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	void ActivatePersona(vDel move){
-		if (!persona.gameObject.activeSelf) {
+		if (!persona.CheckActive()) {
+			persona.transform.position = new Vector3 (transform.position.x, transform.position.y + 3, transform.position.z);
 			persona.gameObject.SetActive (true);
 			move ();
 			persona.Summon ();
-			persona.transform.position = new Vector3 (transform.position.x, transform.position.y + 3, transform.position.z);
+
 		} else {
+			persona.transform.position = new Vector3 (persona.transform.position.x, transform.position.y + 3, transform.position.z);
 			move ();
 		}
 	}
@@ -571,7 +724,9 @@ public class YukikoAttackScript : MonoBehaviour {
 		lightBuffer = false;
 		sp1Buffer = false;
 		StopAllCoroutines ();
-		mediumHitbox.SetActive (false);
+		medium1Hitbox.SetActive (false);
+		medium2Hitbox.SetActive (false);
+		medium3Hitbox.SetActive (false);
 		heavyHitbox.SetActive (false);
 		jumpMediumHitbox.SetActive (false);
 		jumpHeavyHitbox.SetActive (false);

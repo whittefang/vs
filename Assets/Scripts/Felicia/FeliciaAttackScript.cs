@@ -12,14 +12,13 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 	TimeManagerScript timeManager;
 
-	SoundsPlayer sounds;
 	public HitboxScript lightHitboxScript, mediumHitboxScript, heavyHitboxScript, throwHitboxScript;
 	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false, specialHitboxHit = false;
 	public GameObject ThrowPoint;
 
 
 
-	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false, sp3movement = true;
+	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false;
 	HealthScript health;
 	Transform otherPlayer;
 	// Use this for initialization
@@ -34,7 +33,6 @@ public class FeliciaAttackScript : MonoBehaviour {
 
 		health = GetComponentInChildren<HealthScript> ();
 		health.SetHitFunc (CancelAttacks);
-		sounds = GetComponent<SoundsPlayer>();
 		state = GetComponent<FighterStateMachineScript>();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
@@ -506,7 +504,6 @@ public class FeliciaAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
-		sp3movement = true;
 		state.SetState ("attack");
 		for (int x = 0; x < 27;) {
 

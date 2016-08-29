@@ -5,7 +5,6 @@ public class AnimationLoopScript : MonoBehaviour {
 	public Sprite[] frames, introFrames;
 	public bool useTransition = false, useDelay = false, loopBackwardsAfterFinish = false;
 	SpriteRenderer  SR;
-	int currentFrame = 0;
 	public int timeBetweenFrames = 4, delay = 0;
 	// Use this for initialization
 	void OnEnable () {

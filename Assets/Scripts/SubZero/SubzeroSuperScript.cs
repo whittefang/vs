@@ -3,11 +3,9 @@ using System.Collections;
 
 public class SubzeroSuperScript : MonoBehaviour {
 	ObjectPoolScript pool;
-	Transform cameraPos;
 	// Use this for initialization
 	void Start () {
 		pool = GetComponent<ObjectPoolScript> ();
-		cameraPos = GameObject.Find ("Camera").transform;
 	}
 	
 	// Update is called once per frame

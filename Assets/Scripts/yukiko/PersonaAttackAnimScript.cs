@@ -2,15 +2,22 @@
 using System.Collections;
 
 public class PersonaAttackAnimScript : MonoBehaviour {
-	public Sprite[] mediumFrames;
-	public Sprite[] heavyFrames;
+	public Sprite[] SendoutFrames;
+	public Sprite[] Attack1Frames;
+	public Sprite[] Attack2Frames;
+	public Sprite[] Attack3Frames;
 	public Sprite[] SpecialOneFrames;
 	public Sprite[] SpecialTwoFrames;
 	public Sprite[] SpecialThreeFrames;
+	public GameObject sp1Fireball, sp3Trap, attack1Hitbox,attack2Hitbox, attack3Hitbox;
 	SpriteRenderer spriteRenderer;
 	TimeManagerScript timeManager;
 	SoundsPlayer sound;
 	Rigidbody2D RB;
+	Transform otherPlayer;
+	public bool isActive = false;
+	public Transform fireballPos, trapPos;
+	int attackStage =0;
 	// Use this for initialization
 	void Awake () {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -18,70 +25,144 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		RB = GetComponent<Rigidbody2D> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 	}
-	IEnumerator Medium(){
-		int animationFrame = 0;
-		spriteRenderer.sprite = mediumFrames [0];
-		Vector2 direction = new Vector2 (15, 0);
-		bool notHit = true;
+	public void SetOtherPlayer(bool isP1){
+		if (isP1) {
+			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
+		} else {
+			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
+		}
+	}
+	IEnumerator SendOut(){
+		attackStage = 1;
+		spriteRenderer.sprite = SendoutFrames [0];
+		Vector2 direction;
+		if (transform.position.x > otherPlayer.position.x) {
+			direction = new Vector2 (-17, 0);
+		} else {
+			direction = new Vector2 (17, 0);					
+		}
+
 		int counter = 0;
 		for (int i = 0; i < 40; i++) {
 			if (counter == 3) {
-				spriteRenderer.sprite = mediumFrames [1];
+				spriteRenderer.sprite = SendoutFrames [1];
 			} else if (counter == 6) {
-				spriteRenderer.sprite = mediumFrames [0];
+				spriteRenderer.sprite = SendoutFrames [0];
 				counter = 0;
 			}
 			counter++;
 			RB.velocity = direction;
 			yield return null;
 		}
-		RB.velocity = Vector2.zero;
-		for (int i = 0; i < 33;) {
+		StartCoroutine (TimedUnsummon ());
+	}
+	IEnumerator Attack1(){
+		int animationFrame = 0;
+		attackStage=-1;
+		spriteRenderer.sprite = Attack1Frames [0];
+		for (int i = 0; i < 26;) {
 
 			if (i%3 == 0) {
-				spriteRenderer.sprite = mediumFrames [animationFrame];
+				spriteRenderer.sprite = Attack1Frames [animationFrame];
 				animationFrame++;
 			}
-
+			if (i == 10) {
+				attack1Hitbox.SetActive (true);
+			}
+			if (i == 12) {
+				attack1Hitbox.SetActive (false);
+			}
+			if (i == 20) {
+				attackStage=2;
+			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				i++;
 			}
+
 		}
+		StartCoroutine (TimedUnsummon (15));
+	}
+
+	IEnumerator Attack2(){
+		int animationFrame = 0;
+
+		attackStage=-1;
+		spriteRenderer.sprite = Attack2Frames [0];
+		for (int i = 0; i < 39;) {
+
+			if (i%3 == 0) {
+				spriteRenderer.sprite = Attack2Frames [animationFrame];
+				animationFrame++;
+			}
+			if (i == 10) {
+				attack2Hitbox.SetActive (true);
+			}
+			if (i == 12) {
+				attack2Hitbox.SetActive (false);
+			}
+			if (i == 30) {
+
+				attackStage = 3;
+			}
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				i++;
+			}
+
+		}
+		attackStage = 3;
 		StartCoroutine (TimedUnsummon (30));
 	}
-	IEnumerator Heavy(){
+	IEnumerator Attack3(){
+		transform.position = new Vector3 (transform.position.x, transform.position.y -1.5f, transform.position.z);
 		int animationFrame = 0;
-		spriteRenderer.sprite = heavyFrames [0];
+		attackStage= -1;
+		spriteRenderer.sprite = Attack3Frames [0];
 		for (int i = 0; i < 27;) {
-
+			
 			if (i%3 == 0) {
-				spriteRenderer.sprite = heavyFrames [animationFrame];
+				spriteRenderer.sprite = Attack3Frames [animationFrame];
 				animationFrame++;
 			}
-
+			if (i == 10) {
+				attack3Hitbox.SetActive (true);
+			}
+			if (i == 12) {
+				attack3Hitbox.SetActive (false);
+			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				i++;
 			}
 
 		}
+		attackStage = 0;
 		StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator SpecialOne(){
 		int animationFrame = 0;
 		spriteRenderer.sprite = SpecialOneFrames [0];
 		for (int i = 0; i < 21;) {
+			if (!timeManager.CheckIfTimePaused()) {
+				if (i%3 == 0) {
+					spriteRenderer.sprite = SpecialOneFrames [animationFrame];
+					animationFrame++;
+				}
+				if (i == 18) {
+					if (transform.position.x > otherPlayer.position.x) {
+						sp1Fireball.GetComponent<ProjectileScript>().direction = new Vector2(-1,0);
+					} else {
+						sp1Fireball.GetComponent<ProjectileScript>().direction = new Vector2(1,0);						
+					}
+					sp1Fireball.transform.position = fireballPos.position;
+					sp1Fireball.gameObject.SetActive(true);
+				}
 
-			if (i%3 == 0) {
-				spriteRenderer.sprite = SpecialOneFrames [animationFrame];
-				animationFrame++;
+				i++;
 			}
 
 			yield return null;
-			if (!timeManager.CheckIfTimePaused()) {
-				i++;
-			}
 
 		}
 		StartCoroutine (TimedUnsummon (30));
@@ -116,11 +197,19 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (i == 21) {
+					sp3Trap.transform.position = trapPos.position;
+					sp3Trap.gameObject.SetActive(true);
+					if (transform.position.x > otherPlayer.position.x) {
+						RB.velocity =  (new Vector2(3, 0));
+					} else {
+						RB.velocity =  (new Vector2(-3, 0));					
+					}
+				}
 				i++;
 			}
 		}
-		RB.AddForce (new Vector2(-5, 0));
-		StartCoroutine (TimedUnsummon (30));
+		StartCoroutine (TimedUnsummon (15));
 	}
 	IEnumerator TimedUnsummon(int delay =0){
 		for (int i = 0; i < delay;) {
@@ -130,6 +219,8 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 				i++;
 			}
 		}
+		attackStage = 0;
+		isActive = false;
 		for (int i = 0; i < 10;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -145,6 +236,8 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 	}
 	IEnumerator SummonEffect(){	
+
+		CheckFacing ();
 		spriteRenderer.color  = new Color(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b,0);
 			
 		for (int i = 0; i < 10;) {
@@ -157,31 +250,74 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		}
 
 	}
+	void CheckFacing(){
+		if (otherPlayer.position.x > transform.position.x) {
+			transform.eulerAngles = new Vector3 (0, 0, 0);
+			//spriteRenderer.flipX = true;
+		} else {
+			transform.eulerAngles = new Vector3 (0, 180, 0);
+			//spriteRenderer.flipX = false;
+		}
+	}
+	public bool CheckActive(){
+		return isActive;
+	}
 	public void UnSummon(){
+		StartCoroutine (TimedUnsummon ());
+	}
+	public int GetAttackState(){
+		return attackStage;
+	}
+	public void StartAttacksAnim(){
 		
+		if (attackStage != -1) {
+			EndAnimations ();
+		}
+		if (!isActive) {
+			attackStage = 0;
+		}
+		CheckFacing ();
+		switch (attackStage) {
+		case 0: 
+			StartCoroutine (SendOut());
+			break;
+		case 1: 
+			StartCoroutine (Attack1 ());
+			break;
+		case 2: 
+			StartCoroutine (Attack2 ());
+			break;
+		case 3: 
+			StartCoroutine (Attack3 ());
+			break;
+		}
+
+		isActive = true;
 	}
-	public void StartMediumAnim(){
-		EndAnimations ();
-		StartCoroutine (Medium());
-	}
-	public void StartHeavyAnim(){
-		EndAnimations ();
-		StartCoroutine (Heavy());
-	}
+
 	public void StartSpecialOneAnim(){
 		EndAnimations ();
+		CheckFacing ();
+		isActive = true;
 		StartCoroutine (SpecialOne());
 	}
 	public void StartSpecialTwoAnim(){
 		EndAnimations ();
+		CheckFacing ();
+		isActive = true;
 		StartCoroutine (SpecialTwo());
 	}
 	public void StartSpecialThreeAnim(){
 		EndAnimations ();
+		CheckFacing ();
+		isActive = true;
 		StartCoroutine (SpecialThree());
 	}
 	public void EndAnimations(){
 		RB.velocity = Vector2.zero;
+		attack1Hitbox.SetActive (false);
+		attack2Hitbox.SetActive (false);
+		attack3Hitbox.SetActive (false);
 		StopAllCoroutines ();
 	}
 }
