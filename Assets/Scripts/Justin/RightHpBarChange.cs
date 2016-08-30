@@ -34,7 +34,7 @@ public class RightHpBarChange : MonoBehaviour {
 
 		//(current hp / max hp) - ((newesthp - damage) / max hp) = how much % i need to decrease the bar
 		float floatChange = 0;
-		Debug.Log ("floatChange = " + floatChange + "newestHp = " + newestHpR + "damage = " + damageR + "maxHp = " + maxHpR);
+		//Debug.Log ("floatChange = " + floatChange + "newestHp = " + newestHpR + "damage = " + damageR + "maxHp = " + maxHpR);
 
 		// newestHpR -= damageR;
 		// newsetHpR < 0 
@@ -53,11 +53,11 @@ public class RightHpBarChange : MonoBehaviour {
 			DND = GameObject.Find("DoNotDestroy");
 			DND.GetComponent<Rounds>().PlayerOneWin();
 		}else{
-			Debug.Log ("floatChange = " + floatChange + "newestHp = " + newestHpR + "damage = " + damageR + "maxHp = " + maxHpR);
+			//Debug.Log ("floatChange = " + floatChange + "newestHp = " + newestHpR + "damage = " + damageR + "maxHp = " + maxHpR);
 			//the bar at max x is 6, so we are decreaseing that number by a percentage and keeping track of how small it gets
 			floatChange = 8 * floatChange;
 			currentLengthR = currentLengthR - floatChange;
-			Debug.Log ("after change to length =" + currentLengthR);
+			//Debug.Log ("after change to length =" + currentLengthR);
 			RightHpBar.transform.localScale = new Vector3 (currentLengthR, RightHpBar.transform.localScale.y, RightHpBar.transform.localScale.z);
 			//we need to remember where the bar is going so we can correct it to keep it on one side
 			float newLeftSpot = rendererRight.bounds.min.x;

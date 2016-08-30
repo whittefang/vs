@@ -180,7 +180,13 @@ public class InputScript : MonoBehaviour {
 		}
 		
 	}
-
+	public bool CheckRTRelease(){
+		if (state.Triggers.Right > .5f) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	IEnumerator BufferButton(buttonDelegate button){
 		for (int x = 0; x < 6;){
 			button ();

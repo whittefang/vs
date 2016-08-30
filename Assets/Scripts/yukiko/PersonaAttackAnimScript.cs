@@ -9,7 +9,11 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	public Sprite[] SpecialOneFrames;
 	public Sprite[] SpecialTwoFrames;
 	public Sprite[] SpecialThreeFrames;
-	public GameObject sp1Fireball, sp3Trap, attack1Hitbox,attack2Hitbox, attack3Hitbox;
+	public Sprite[] superFrames;
+	public Sprite[] jumpMediumFrames;
+
+	public GameObject sp1Fireball, sp3TrapPre, sp3TrapAttack, attack1Hitbox,attack2Hitbox, attack3Hitbox, mediumHitbox
+					, dpHitbox, superHitbox;
 	SpriteRenderer spriteRenderer;
 	TimeManagerScript timeManager;
 	SoundsPlayer sound;
@@ -18,12 +22,15 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	public bool isActive = false;
 	public Transform fireballPos, trapPos;
 	int attackStage =0;
+	GameObject hitboxes;
+	public YukikoAttackScript yukiAttack;
 	// Use this for initialization
 	void Awake () {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		sound = GetComponent<SoundsPlayer> ();
 		RB = GetComponent<Rigidbody2D> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
+		hitboxes = attack1Hitbox.transform.parent.gameObject;
 	}
 	public void SetOtherPlayer(bool isP1){
 		if (isP1) {
@@ -33,13 +40,14 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator SendOut(){
-		attackStage = 1;
 		spriteRenderer.sprite = SendoutFrames [0];
 		Vector2 direction;
 		if (transform.position.x > otherPlayer.position.x) {
 			direction = new Vector2 (-17, 0);
+			transform.position = new Vector3 (transform.position.x + 3, transform.position.y, transform.position.z);
 		} else {
-			direction = new Vector2 (17, 0);					
+			direction = new Vector2 (17, 0);
+			transform.position = new Vector3 (transform.position.x - 3, transform.position.y, transform.position.z);					
 		}
 
 		int counter = 0;
@@ -50,10 +58,41 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 				spriteRenderer.sprite = SendoutFrames [0];
 				counter = 0;
 			}
+			if (i == 7) {
+				attackStage = 1;
+			}
 			counter++;
 			RB.velocity = direction;
 			yield return null;
 		}
+		StartCoroutine (TimedUnsummon ());
+	}
+	IEnumerator JumpMedium(){
+		Vector2 direction;
+		if (transform.position.x > otherPlayer.position.x) {
+			direction = new Vector2 (-20, 0);
+			transform.position = new Vector3 (transform.position.x + 2, transform.position.y, transform.position.z);
+		} else {
+			direction = new Vector2 (20, 0);
+			transform.position = new Vector3 (transform.position.x - 2, transform.position.y, transform.position.z);					
+		}
+
+		int animationFrame = 0;
+		for (int i = 0; i < 15; i++) {
+			if (i%3 == 0) {
+				spriteRenderer.sprite = jumpMediumFrames [animationFrame];
+				animationFrame++;
+			}
+			if (i == 10) {
+				mediumHitbox.SetActive (true);
+			}
+			if (i == 12) {
+				mediumHitbox.SetActive (false);
+			}
+			RB.velocity = direction;
+			yield return null;
+		}
+		RB.velocity = Vector2.zero;
 		StartCoroutine (TimedUnsummon ());
 	}
 	IEnumerator Attack1(){
@@ -176,6 +215,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 				spriteRenderer.sprite = SpecialTwoFrames [animationFrame];
 				animationFrame++;
 			}
+			if (i == 5) {
+				dpHitbox.SetActive (true);
+			}
+			if (i == 7) {
+				dpHitbox.SetActive (false);
+			}
 
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
@@ -198,12 +243,40 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				if (i == 21) {
-					sp3Trap.transform.position = trapPos.position;
-					sp3Trap.gameObject.SetActive(true);
+					sp3TrapPre.transform.position = trapPos.position;
+					sp3TrapAttack.transform.position = trapPos.position;
+					yukiAttack.SetTrap();
+					sp3TrapPre.gameObject.SetActive(true);
 					if (transform.position.x > otherPlayer.position.x) {
 						RB.velocity =  (new Vector2(3, 0));
 					} else {
 						RB.velocity =  (new Vector2(-3, 0));					
+					}
+				}
+				i++;
+			}
+		}
+		StartCoroutine (TimedUnsummon (15));
+	}
+	IEnumerator Super(){
+		int animationFrame = 0;
+		for (int i = 0; i < 60;) {
+			
+
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				if (i > 10) {
+					RB.velocity = new Vector2 (0, 10);
+				}
+				if (i % 5 == 0) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}
+				if (i%3 == 0) {
+					spriteRenderer.sprite = superFrames [animationFrame];
+					animationFrame++;
+					if (animationFrame >= 5) {
+						animationFrame = 0;
 					}
 				}
 				i++;
@@ -245,7 +318,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			if (!timeManager.CheckIfTimePaused()) {
 				i++;
 				spriteRenderer.color  = new Color(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b, spriteRenderer.color.a + .1f);
-				Debug.Log (spriteRenderer.color.a);
+			
 			}
 		}
 
@@ -253,9 +326,11 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	void CheckFacing(){
 		if (otherPlayer.position.x > transform.position.x) {
 			transform.eulerAngles = new Vector3 (0, 0, 0);
+			hitboxes.transform.eulerAngles = new Vector3 (0, 0, 0);
 			//spriteRenderer.flipX = true;
 		} else {
 			transform.eulerAngles = new Vector3 (0, 180, 0);
+			hitboxes.transform.eulerAngles = new Vector3 (0, 180, 0);
 			//spriteRenderer.flipX = false;
 		}
 	}
@@ -294,7 +369,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 		isActive = true;
 	}
-
+	public void StartJumpMediumAnim(){
+		EndAnimations ();
+		CheckFacing ();
+		isActive = true;
+		StartCoroutine (JumpMedium());
+	}
 	public void StartSpecialOneAnim(){
 		EndAnimations ();
 		CheckFacing ();
@@ -312,6 +392,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		CheckFacing ();
 		isActive = true;
 		StartCoroutine (SpecialThree());
+	}
+	public void StartSuperAnim(){
+		EndAnimations ();
+		CheckFacing ();
+		isActive = true;
+		StartCoroutine (Super());
 	}
 	public void EndAnimations(){
 		RB.velocity = Vector2.zero;

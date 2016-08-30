@@ -432,7 +432,7 @@ public class YukikoAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpMedium(){
 		SetJumpHitbox ();
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
 			for (int x = 0; x < 3;) {
@@ -445,7 +445,7 @@ public class YukikoAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpHeavy(){
 		SetJumpHitbox ();
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 5; i++) {
 
 			SetHurtbox(new Vector2 (1.8f, -.3f), new Vector2 (2f, 1f), hurtboxLimb);
 			spriteRenderer.sprite = jumpHeavyFrames [i];
@@ -489,15 +489,7 @@ public class YukikoAnimationScript : MonoBehaviour {
 				sound.PlaySP2 ();
 			}
 			spriteRenderer.sprite = SpecialTwoFrames [i];
-			// hold on rising uppercut
-			if (i == 5) {
-				for (int x = 0; x < 6;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused()) {
-						x++;
-					}
-				}
-			}
+		
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -560,17 +552,11 @@ public class YukikoAnimationScript : MonoBehaviour {
 		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < 9; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
-			if (i == 9) {
-				sound.PlaySP1 ();
-				for (int x = 0; x < 12;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
-						x++;
-					}
-				}
-			}
+
+
+			
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
