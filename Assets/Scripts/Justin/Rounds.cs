@@ -21,6 +21,11 @@ public class Rounds : MonoBehaviour {
 	voidDel win;
 	ExMeter ex;
 	FollowScript fs;
+
+	public Texture2D[] ryuColor;
+	public Texture2D[] feliciaColor;
+	public Texture2D[] subzeroColor;
+
 	void Awake(){
 		if (FalseMeansTest == true) {
 			Debug.Log("object can not be destroyed");
