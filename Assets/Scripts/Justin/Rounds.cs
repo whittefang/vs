@@ -21,10 +21,14 @@ public class Rounds : MonoBehaviour {
 	voidDel win;
 	ExMeter ex;
 	FollowScript fs;
-
 	public Texture2D[] ryuColor;
 	public Texture2D[] feliciaColor;
 	public Texture2D[] subzeroColor;
+	public int player1ColorNumber = 0;
+	public int player2ColorNumber = 0;
+	LeftHpBarChange leftHpBarSprite;
+	RightHpBarChange rightHpBarSprite;
+	
 
 	void Awake(){
 		if (FalseMeansTest == true) {
@@ -65,6 +69,7 @@ public class Rounds : MonoBehaviour {
 		}
 
 	}
+
 
 	public void	RoundChange(){
 		RoundFlag ++;
@@ -172,12 +177,42 @@ public class Rounds : MonoBehaviour {
 		switch(character){
 		case "ryu":
 			player = Instantiate(RyuPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			if (isPlayerOne){
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("ryu");
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(ryuColor[player1ColorNumber]);
+			}
+			else{
+			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+			rightHpBarSprite.SetRightBoarderArt("ryu");
+			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(ryuColor[player2ColorNumber]);
+			}
 			break;
 		case "felicia":
 			player = Instantiate(FeliciaPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			if (isPlayerOne){
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(feliciaColor[player1ColorNumber]);
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("felicia");
+			}
+			else{
+			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(feliciaColor[player2ColorNumber]);
+			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+			rightHpBarSprite.SetRightBoarderArt("felicia");
+			}
 			break;
 		case "subzero":
 			player = Instantiate(SubzeroPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			if (isPlayerOne){
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(subzeroColor[player1ColorNumber]);
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("subzero");
+			}
+			else{
+			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+			rightHpBarSprite.SetRightBoarderArt("subzero");
+			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(subzeroColor[player2ColorNumber]);
+			}
 			break;
 		default :
 			player = new GameObject();
@@ -194,7 +229,9 @@ public class Rounds : MonoBehaviour {
 		p2 = CharacterSpawn(false);
 		p1.GetComponent<PlayerNumberSetScript>().SetPlayer("playerOne", p2);
 		p2.GetComponent<PlayerNumberSetScript>().SetPlayer("playerTwo", p1);
-		p2.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f , .7f);
+
+		//greying out player 2
+		//p2.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color(.7f, .7f , .7f);
 		GameObject.Find("Camera").GetComponent<CameraMoveScript>().SetPlayers(p1, p2);
 	}
 

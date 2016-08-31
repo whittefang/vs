@@ -29,16 +29,16 @@ public class RightHpBarChange : MonoBehaviour {
 		switch (name){
 			case "ryu" :
 				RightBoarder.sprite = rightBoarders[0];
-				RightBoarder.transform.position = new Vector3(0f, .04f, 0f);
+				RightBoarder.transform.localPosition = new Vector3(0f, .04f, 0f);
 				break;
 			case "felica" :
 				RightBoarder.sprite = rightBoarders[1];
-				RightBoarder.transform.position = new Vector3(-.26f, -.04f, 0f);
+				RightBoarder.transform.localPosition = new Vector3(-.26f, -.04f, 0f);
 
 				break;
 			case "subzero" :
 				RightBoarder.sprite = rightBoarders[2];
-				RightBoarder.transform.position = new Vector3(.33f, .46f, 0f);
+				RightBoarder.transform.localPosition = new Vector3(.33f, .46f, 0f);
 
 				break;
 		}

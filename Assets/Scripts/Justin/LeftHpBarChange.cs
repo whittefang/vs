@@ -29,15 +29,15 @@ public class LeftHpBarChange : MonoBehaviour {
 		switch (name){
 			case "ryu" :
 				LeftBoarder.sprite = leftBoarders[0];
-				LeftBoarder.transform.position = new Vector3(0f, .04f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(0f, .04f, 0f);
 				break;
 			case "felica" :
 				LeftBoarder.sprite = leftBoarders[1];
-				LeftBoarder.transform.position = new Vector3(.26f, -.04f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(.26f, -.04f, 0f);
 				break;
 			case "subzero" :
 				LeftBoarder.sprite = leftBoarders[2];
-				LeftBoarder.transform.position = new Vector3(-.33f, .46f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(-.33f, .46f, 0f);
 				break;
 		}
 
