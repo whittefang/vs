@@ -70,12 +70,16 @@ public class SubzeroAnimScript : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
-		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
+			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		}
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 
-		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
+		if (GameObject.Find ("Camera") != null) {
+			cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript> ();
+		}
 	}
 
 	void SetJumpHitbox(){
@@ -210,7 +214,9 @@ public class SubzeroAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		GetComponent<InputScript> ().inputEnabled = true;
+		if (GetComponent<InputScript> () != null) {
+			GetComponent<InputScript> ().inputEnabled = true;
+		}
 		StartNeutralAnim ();
 	}
 

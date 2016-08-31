@@ -45,7 +45,9 @@ public class FeliciaAnimScript : MonoBehaviour {
 		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
 
 
-		cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript>();
+		if (GameObject.Find ("Camera") != null) {
+			cameraMove = GameObject.Find ("Camera").GetComponent<CameraMoveScript> ();
+		}
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		spriteAnimator.SetNeutralAnimation (StartNeutralAnim);
@@ -71,7 +73,10 @@ public class FeliciaAnimScript : MonoBehaviour {
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
 		spriteAnimator.setLandingAnimation (StartLandingAnim);
-		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+
+		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
+			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
+		}
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
