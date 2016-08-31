@@ -11,6 +11,8 @@ public class RightHpBarChange : MonoBehaviour {
 	public float currentLengthR = 8;
 	public Renderer rendererRight;
 	public GameObject DND;
+	public SpriteRenderer RightBoarder;
+	public Sprite[] rightBoarders;
 	void Start () {
 		rendererRight  = GetComponent<SpriteRenderer> ();
 	}
@@ -22,6 +24,29 @@ public class RightHpBarChange : MonoBehaviour {
 			//changeBar2(damage, maxHpBar, LeftHpBar);
 		}
 	}
+
+	public void SetRightBoarderArt(string name){
+		switch (name){
+			case "ryu" :
+				RightBoarder.sprite = rightBoarders[0];
+				RightBoarder.transform.position = new Vector3(0f, .04f, 0f);
+				break;
+			case "felica" :
+				RightBoarder.sprite = rightBoarders[1];
+				RightBoarder.transform.position = new Vector3(-.26f, -.04f, 0f);
+
+				break;
+			case "subzero" :
+				RightBoarder.sprite = rightBoarders[2];
+				RightBoarder.transform.position = new Vector3(.33f, .46f, 0f);
+
+				break;
+		}
+
+
+	}
+
+
 
 	public void setHpRight (int hp){
 		maxHpR = hp;
