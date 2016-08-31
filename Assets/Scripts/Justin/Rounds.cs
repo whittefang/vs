@@ -155,6 +155,8 @@ public class Rounds : MonoBehaviour {
 		func();
 	}
 	public GameObject CharacterSpawn(bool isPlayerOne){
+		
+			
 		Vector3 spawnPosition = new Vector3(5, -1, 0);
 		string character = player2character;
 		if (isPlayerOne){

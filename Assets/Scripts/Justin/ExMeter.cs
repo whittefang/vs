@@ -46,6 +46,18 @@ public class ExMeter : MonoBehaviour {
 			return (currentExRight);
 		}
 	}
+	/*
+	public void ZeroExBar(bool isP1){
+		if (isP1){
+			currentExLeft = 0;
+			ExMeterChange(0,true);
+		}
+		else{
+			currentExRight = 0;
+			ExMeterChange(0, false);
+		}
+	}
+	*/
 
 	public void ExMeterChange(int meter, bool isPlayerOne){
 		float tempMeter = meter;
@@ -57,7 +69,7 @@ public class ExMeter : MonoBehaviour {
 			if (currentExLeft > 1000){
 				currentExLeft = 1000;
 			}
-			exLeftRenderer.transform.localScale = new Vector3(currentExLeft / 1000 * 4, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
+			exLeftRenderer.transform.localScale = new Vector3(currentExLeft / 1000 * 2.5, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
 			float newLeftSpot = exLeftRenderer.bounds.min.x;
 			float findNewLeftSpot = newLeftSpot - originalLeftSpot;
 			exLeftRenderer.transform.Translate(new Vector3 (-findNewLeftSpot, 0f, 0f),Space.Self);
@@ -68,17 +80,10 @@ public class ExMeter : MonoBehaviour {
 			if (currentExRight > 1000){
 				currentExRight = 1000;
 			}
-			exRightRenderer.transform.localScale = new Vector3(currentExRight / 1000 * 4, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
+			exRightRenderer.transform.localScale = new Vector3(currentExRight / 1000 * 2.5, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
 			float newRightSpot = exRightRenderer.bounds.max.x;
 			float findNewRightSpot = newRightSpot - originalRightSpot;
 			exRightRenderer.transform.Translate(new Vector3 (-findNewRightSpot, 0f, 0f), Space.Self);
 		}
-
-
-
-
-
-
-
 	}
 }
