@@ -31,7 +31,7 @@ public class LeftHpBarChange : MonoBehaviour {
 				LeftBoarder.sprite = leftBoarders[0];
 				LeftBoarder.transform.localPosition = new Vector3(0f, .04f, 0f);
 				break;
-			case "felica" :
+			case "felicia" :
 				LeftBoarder.sprite = leftBoarders[1];
 				LeftBoarder.transform.localPosition = new Vector3(.26f, -.04f, 0f);
 				break;

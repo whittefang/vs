@@ -14,7 +14,7 @@ public class HealthScript : MonoBehaviour {
 	TimeManagerScript timeManager;
 	ObjectPoolScript hitsparksPool, blocksparksPool;
 	public SoundsPlayer sounds;
-	TextMesh comboCounterText, comboDamageText;
+	TextMesh comboCounterText, comboDamageText,comboCounterShadowText, comboDamageShadowText;
 	public int comboCounter = 0, comboDamage = 0, freezingCounter = 0;
 	float comboScaling = 1, leftBound = -10.05f, rightBound = 10.05f;
 	LeftHpBarChange hpLeft;
@@ -52,6 +52,8 @@ public class HealthScript : MonoBehaviour {
 			blocksparksPool = GameObject.Find ("P2BlockSparksObject").GetComponent<ObjectPoolScript> ();
 			comboCounterText = GameObject.Find ("P1ComboCount").GetComponent<TextMesh> ();
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
+			comboCounterShadowText = GameObject.Find ("P1ComboCountShadow").GetComponent<TextMesh> ();
+			comboDamageShadowText = GameObject.Find ("P1DamageShadow").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		} else {
 			exCurrent =	(int)exBar.GetEx(false);
@@ -61,6 +63,8 @@ public class HealthScript : MonoBehaviour {
 			blocksparksPool = GameObject.Find ("P1BlockSparksObject").GetComponent<ObjectPoolScript> ();
 			comboCounterText = GameObject.Find ("P2ComboCount").GetComponent<TextMesh> ();
 			comboDamageText = GameObject.Find ("P2Damage").GetComponent<TextMesh> ();
+			comboCounterShadowText = GameObject.Find ("P2ComboCountShadow").GetComponent<TextMesh> ();
+			comboDamageShadowText = GameObject.Find ("P2DamageShadow").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		}
 	}
@@ -90,6 +94,8 @@ public class HealthScript : MonoBehaviour {
 				comboDamage += (int)(amount * comboScaling);
 				comboDamageText.text = comboDamage.ToString();
 				comboCounterText.text = comboCounter.ToString();
+				comboDamageShadowText.text = comboDamage.ToString();
+				comboCounterShadowText.text = comboCounter.ToString();
 			} else {
 				comboCounter = 1;
 				comboScaling = 1;

@@ -73,7 +73,7 @@ public class CharacterSelectScript : MonoBehaviour {
 							roundScript.player1character = RandomizeCharacter ();
 						} else {
 							roundScript.player1character = ConvertToString (currentSelection);
-							//roundScript.player1ColorNumber = colorPreviewScript.GetColorNumber(currentSelection);
+							roundScript.player1ColorNumber = colorPreviewScript.GetColorNumber(currentSelection);
 						}
 					} else {
 						sceneLoader.SetScene (true, currentSelection + 3);
@@ -87,7 +87,7 @@ public class CharacterSelectScript : MonoBehaviour {
 							roundScript.player2character = RandomizeCharacter ();
 						} else {
 							roundScript.player2character = ConvertToString (currentSelection);
-							//roundScript.player1ColorNumber = colorPreviewScript.GetColorNumber(currentSelection);
+							roundScript.player2ColorNumber = colorPreviewScript.GetColorNumber(currentSelection);
 						}
 					} else {
 						sceneLoader.SetScene (false, currentSelection + 3);
