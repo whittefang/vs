@@ -68,7 +68,12 @@ public class TextureWriter : MonoBehaviour {
 		newPalette.SetPixel (lastSpot, 0, lastColor);
 		lastColor = newPalette.GetPixel (x, 0);
 		lastSpot = x;
+		colorSelector.SetColor (new Color(lastColor.r, lastColor.g, lastColor.b, 1));
 		newPalette.SetPixel (x, 0, new Color(1,.1f,1,1));
+		newPalette.Apply();
+	}
+	public void SetPreviewColor(int x, Color newCol){
+		newPalette.SetPixel (x, 0, newCol);
 		newPalette.Apply();
 	}
 	public void GeneratePalette(){

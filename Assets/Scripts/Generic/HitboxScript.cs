@@ -90,7 +90,12 @@ public class HitboxScript : MonoBehaviour {
 					GetComponentInParent<ProjectileScript> ().Kill ();
 				}
 			}
+		}
 
+		if (other.tag == "P1Persona" && pnum == 1) {
+			other.GetComponent<PersonaAttackAnimScript> ().DealDamage ();
+		} else if (other.tag == "P2Persona" && pnum == 0) {
+			other.GetComponent<PersonaAttackAnimScript> ().DealDamage ();
 		}
 	}
 	public void AddTagToDamage(string newTag){

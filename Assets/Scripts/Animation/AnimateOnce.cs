@@ -36,6 +36,8 @@ public class AnimateOnce : MonoBehaviour {
 			yield return new WaitForSeconds (delay);	
 		}
 		for (int x = 0; x < frames.Length; x++) {
+
+			Debug.Log ("anim");
 			SR.sprite = frames [x];
 			for (int i =0; i < speed;){
 				if (!timeManager.CheckIfTimePaused()) {

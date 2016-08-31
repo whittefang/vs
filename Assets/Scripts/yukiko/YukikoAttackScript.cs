@@ -404,14 +404,14 @@ public class YukikoAttackScript : MonoBehaviour {
 		}
 	}
 	public void Heavy(){
-		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() == "heavy recovery")) && persona.GetAttackState() != -1) {
+		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() == "heavy recovery")) && persona.GetAttackState() != -1 && persona.CheckAlive()) {
 			if (mediumHitboxHit) {
 				mediumHitboxHit = false;
 			}
 			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (heavyEnum ());
-		} else if (state.GetState () == "jumping") {
+		} else if (state.GetState () == "jumping" && persona.CheckAlive()) {
 			StartCoroutine (jumpHeavyEnum ());
 		}
 
@@ -460,7 +460,7 @@ public class YukikoAttackScript : MonoBehaviour {
 
 	public void SpecialOne(){
 		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && !sp1Fireball.activeSelf) {
+			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && !sp1Fireball.activeSelf && persona.CheckAlive()) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -512,8 +512,8 @@ public class YukikoAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
-		if (state.GetState() == "neutral" ||  (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)){
+		if ((state.GetState() == "neutral" ||  (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && persona.CheckAlive()){
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -597,8 +597,8 @@ public class YukikoAttackScript : MonoBehaviour {
 		PMS.EnableBodyBox ();
 	}
 	public void SpecialThree(){
-		if (state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery" )) {
+		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" )) && persona.CheckAlive()) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -651,7 +651,7 @@ public class YukikoAttackScript : MonoBehaviour {
 		if (health.exCurrent >= 1000 && ((state.GetState() == "neutral" || 
 			(state.GetState() =="medium recovery" && mediumHitboxHit) || 
 			(state.GetState() =="heavy recovery" && heavyHitboxHit) || 
-			(specialHitboxHit)) || mediumBuffer || sp2Buffer)) {
+			(specialHitboxHit)) || mediumBuffer || sp2Buffer) && persona.CheckAlive()) {
 			health.AddMeter (-1000);
 			CancelAttacks ();
 			PMS.CheckFacing ();

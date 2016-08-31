@@ -33,6 +33,7 @@ public class PlayerNumberSetScript : MonoBehaviour {
 			}
 			foreach (HitboxScript child in GetComponentsInChildren<HitboxScript>(true)) {
 				child.AddTagToDamage("playerTwoHurtbox");
+				child.pnum = 0;
 			}
 			foreach (ProximityBlockScript child in GetComponentsInChildren<ProximityBlockScript>(true)) {
 				child.tagToDamage = ("playerTwo");
@@ -53,6 +54,7 @@ public class PlayerNumberSetScript : MonoBehaviour {
 			}
 			foreach (HitboxScript child in GetComponentsInChildren<HitboxScript>(true)) {
 				child.AddTagToDamage( "playerOneHurtbox");
+				child.pnum = 1;
 			}
 			foreach (ProximityBlockScript child in GetComponentsInChildren<ProximityBlockScript>(true)) {
 				child.tagToDamage = ("playerOne");

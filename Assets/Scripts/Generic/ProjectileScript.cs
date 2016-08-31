@@ -4,9 +4,10 @@ using System.Collections;
 public class ProjectileScript : MonoBehaviour {
 	public Vector2 direction;
 	public float speed = .1f;
+	float savedSpeed =0;
 	public bool movementEnabled = true;
 	public float lifeDuration = 0;
-	public bool useLimitedLife = false, enableFireballKiller = true;
+	public bool useLimitedLife = false, enableFireballKiller = true, flyOffOnDeath = false;
 	public int projecttileStrength = 1, projectileOwner = 0;
 	public  GameObject bodyToTurnOff;
 	public BoxCollider2D[] hitboxsToTurnOff;
@@ -22,11 +23,14 @@ public class ProjectileScript : MonoBehaviour {
 			}
 			Invoke("TurnOffSelf", lifeDuration);
 		}
-
+		speed = savedSpeed;
 		movementEnabled = true;
 		foreach (BoxCollider2D b in hitboxsToTurnOff) {
 			b.enabled = true;
 		}
+	}
+	void Awake(){
+		savedSpeed = speed;
 	}
 	void OnDisable(){
 		CancelInvoke ();
@@ -85,12 +89,18 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	public void Kill(){
 		movementEnabled = false;
-		GetComponentInChildren<AnimateOnce> ().Animate ();
 		foreach (BoxCollider2D b in hitboxsToTurnOff) {
 			b.enabled = false;
 		}
 		if (GetComponentInChildren<AnimationLoopScript> () != null) {
 			GetComponentInChildren<AnimationLoopScript> ().StopAnimation ();
 		}
+		if (flyOffOnDeath) {
+			movementEnabled = true;
+			SetSpeed (.1f);
+			SetDirection (new Vector2 (Random.Range (-1f, 1f), -1f));
+		}
+
+		GetComponentInChildren<AnimateOnce> ().Animate ();
 	}
 }

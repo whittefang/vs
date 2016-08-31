@@ -239,7 +239,7 @@ public class ColorPicker : MonoBehaviour {
 					SetColor(SelectedColor);
 				}
 
-				mState = ESTATE.Hidding;
+				//mState = ESTATE.Hidding;
 				dt = 0;
 			}
 		}
@@ -287,7 +287,7 @@ public class ColorPicker : MonoBehaviour {
 			}
 			else
 			{
-				SetColor(SelectedColor);
+				//SetColor(SelectedColor);
 
 			}
 		}
@@ -296,6 +296,9 @@ public class ColorPicker : MonoBehaviour {
 	public void SetColor(Color color)
 	{
 		TempColor = color;
+		if (Input.GetMouseButton(1)){
+			textureWriter.SetPreviewColor (currentPixel, TempColor);
+		}
 		if(txColorDisplay != null)
 		{
 			txColorDisplay.SetPixel(0, 0, color);

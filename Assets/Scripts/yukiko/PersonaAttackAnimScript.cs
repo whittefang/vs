@@ -20,8 +20,11 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	Rigidbody2D RB;
 	Transform otherPlayer;
 	public bool isActive = false;
+	bool alive = true;
 	public Transform fireballPos, trapPos;
 	int attackStage =0;
+	int maxCards = 4;
+	int currentCards = 4;
 	GameObject hitboxes;
 	public YukikoAttackScript yukiAttack;
 	// Use this for initialization
@@ -34,8 +37,10 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	}
 	public void SetOtherPlayer(bool isP1){
 		if (isP1) {
+			tag = "P1Persona";
 			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
+			tag = "P2Persona";
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
 	}
@@ -292,6 +297,15 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 				i++;
 			}
 		}
+		// turn off hitboxes
+		attack1Hitbox.SetActive(false);
+		attack2Hitbox.SetActive(false);
+		attack3Hitbox.SetActive(false);
+		mediumHitbox.SetActive (false);
+		superHitbox.SetActive (false);
+		dpHitbox.SetActive (false);
+
+
 		attackStage = 0;
 		isActive = false;
 		for (int i = 0; i < 10;) {
@@ -337,67 +351,97 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	public bool CheckActive(){
 		return isActive;
 	}
+	public bool CheckAlive(){
+		return alive;
+	}
 	public void UnSummon(){
 		StartCoroutine (TimedUnsummon ());
 	}
 	public int GetAttackState(){
 		return attackStage;
 	}
-	public void StartAttacksAnim(){
-		
-		if (attackStage != -1) {
-			EndAnimations ();
-		}
-		if (!isActive) {
-			attackStage = 0;
-		}
-		CheckFacing ();
-		switch (attackStage) {
-		case 0: 
-			StartCoroutine (SendOut());
-			break;
-		case 1: 
-			StartCoroutine (Attack1 ());
-			break;
-		case 2: 
-			StartCoroutine (Attack2 ());
-			break;
-		case 3: 
-			StartCoroutine (Attack3 ());
-			break;
-		}
 
-		isActive = true;
+	public void DealDamage(){
+		currentCards--;
+		StopAllCoroutines ();
+		UnSummon ();
+		//play hit sound(glass break)
+		if (currentCards <= 0) {
+			alive = false;
+			Invoke ("ReActivate", 7);
+		}
+	}
+	void ReActivate(){
+		currentCards = maxCards;
+		alive = true;
+	}
+
+	public void StartAttacksAnim(){
+		if (alive) {
+			if (attackStage != -1) {
+				EndAnimations ();
+			}
+			if (!isActive) {
+				attackStage = 0;
+			}
+			CheckFacing ();
+			switch (attackStage) {
+			case 0: 
+				StartCoroutine (SendOut ());
+				break;
+			case 1: 
+				StartCoroutine (Attack1 ());
+				break;
+			case 2: 
+				StartCoroutine (Attack2 ());
+				break;
+			case 3: 
+				StartCoroutine (Attack3 ());
+				break;
+			}
+
+			isActive = true;
+		}
 	}
 	public void StartJumpMediumAnim(){
-		EndAnimations ();
-		CheckFacing ();
-		isActive = true;
-		StartCoroutine (JumpMedium());
+		if (alive) {
+			EndAnimations ();
+			CheckFacing ();
+			isActive = true;
+			StartCoroutine (JumpMedium ());
+		}
 	}
-	public void StartSpecialOneAnim(){
-		EndAnimations ();
-		CheckFacing ();
-		isActive = true;
-		StartCoroutine (SpecialOne());
+		public void StartSpecialOneAnim(){
+		if (alive) {
+			EndAnimations ();
+			CheckFacing ();
+			isActive = true;
+			StartCoroutine (SpecialOne ());
+		}
 	}
 	public void StartSpecialTwoAnim(){
-		EndAnimations ();
-		CheckFacing ();
-		isActive = true;
-		StartCoroutine (SpecialTwo());
+		if (alive) {
+			EndAnimations ();
+			CheckFacing ();
+			isActive = true;
+			StartCoroutine (SpecialTwo ());
+		}
 	}
 	public void StartSpecialThreeAnim(){
-		EndAnimations ();
-		CheckFacing ();
-		isActive = true;
-		StartCoroutine (SpecialThree());
+		if (alive) {
+			EndAnimations ();
+			CheckFacing ();
+			isActive = true;
+			StartCoroutine (SpecialThree ());
+		}
 	}
 	public void StartSuperAnim(){
-		EndAnimations ();
-		CheckFacing ();
-		isActive = true;
-		StartCoroutine (Super());
+		if (alive) {
+			EndAnimations ();
+			CheckFacing ();
+			isActive = true;
+			StartCoroutine (Super ());
+		}
 	}
 	public void EndAnimations(){
 		RB.velocity = Vector2.zero;
