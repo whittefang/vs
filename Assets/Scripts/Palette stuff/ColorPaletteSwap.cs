@@ -5,18 +5,29 @@ using System.Collections.Generic;
 public class ColorPaletteSwap : MonoBehaviour {
 
 	public Texture2D originalPalette;
-	public Texture2D newPalette;
+	public Texture2D newPaletteDefault;
 	public int uniqueColors = 0;
 	public List<Color32> foundColors = new List<Color32>();
 	public List<Color32> foundColorsnew = new List<Color32>();
 	// Use this for initialization
 	void Start () {
-
+		LoadColors (newPaletteDefault);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	public void LoadColors(Texture2D newPalette){
 		// move original into a texture
 
+		uniqueColors = 0;
+		foundColors.Clear ();
+		foundColorsnew.Clear ();
+
 		foreach (Color32 found in originalPalette.GetPixels()) {
-				uniqueColors++;
-				foundColors.Add (found);
+			uniqueColors++;
+			foundColors.Add (found);
 		}
 		Texture2D generatedPallete;
 		generatedPallete = new Texture2D (uniqueColors, 1, TextureFormat.ARGB32, false, false);
@@ -24,9 +35,9 @@ public class ColorPaletteSwap : MonoBehaviour {
 		for (int x = 0; x < uniqueColors; x++) {
 			generatedPallete.SetPixel (x, 0, foundColors [x]);
 		}
-		Debug.Log (uniqueColors);
+		//Debug.Log (uniqueColors);
 		generatedPallete.Apply ();
-	
+
 
 
 		uniqueColors = 0;
@@ -40,7 +51,7 @@ public class ColorPaletteSwap : MonoBehaviour {
 		for (int x = 0; x < uniqueColors; x++) {
 			NewPaletteGeneration.SetPixel (x, 0, foundColorsnew [x]);
 		}
-		Debug.Log (uniqueColors);
+		//Debug.Log (uniqueColors);
 		NewPaletteGeneration.Apply ();
 
 
@@ -50,10 +61,4 @@ public class ColorPaletteSwap : MonoBehaviour {
 		targetSprite.material.SetTexture("_ColorPaletteMorph", NewPaletteGeneration);
 		targetSprite.material.SetInt ("_textureWidth", uniqueColors +1 );
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 }
