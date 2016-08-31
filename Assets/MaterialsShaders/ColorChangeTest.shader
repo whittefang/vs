@@ -9,6 +9,7 @@
 		_floatTest("Float test", Float) = 0 
 		_textureWidth("Texture Width", int) = 64
 		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
+        _EffectAmount ("Effect Amount", Range (0, 1)) = 1.0
 	}
 
 	SubShader
@@ -72,6 +73,7 @@
 			sampler2D _ColorPaletteMorph;
 			Float _floatTest;
 			int _textureWidth;
+            uniform float _EffectAmount;
 
 			fixed4 frag(v2f IN) : COLOR
 			{
@@ -81,17 +83,26 @@
 				//float4 c = tex2Dlod(_PallitTex, float4(pCoord.r*palSize+palSize*(palShift-1), 0.5, 0.0, 0.0));
 				//return c*_Color;
 				float4 currentColor= tex2D(_MainTex, IN.texcoord.xy);
-				float pos = 0;
-				for (float x =0; x <_textureWidth; x +=1){
-					float4 newCol = tex2D(_ColorPaletteOriginal, float2(x/_textureWidth, .5));
-					if (currentColor.r == newCol.r &&  currentColor.g == newCol.g && currentColor.b == newCol.b){// && currentColor.a == newCol.a){
-						pos = x/_textureWidth;
+				float4 result;
+				if (_EffectAmount == 1){
+                	currentColor.rgb = lerp(currentColor.rgb, dot(currentColor.rgb, float3(0.3, 0.59, 0.11)), _EffectAmount);
+                	currentColor.g = 1;//lerp(texcol.g, dot(texcol.g, 1), _EffectAmount);
+                	currentColor.b = 1;//lerp(texcol.b, dot(texcol.b, 1), _EffectAmount);
+                	result = currentColor;
+                }else {
+					float pos = 0;
+					for (float x =0; x <_textureWidth; x +=1){
+						float4 newCol = tex2D(_ColorPaletteOriginal, float2(x/_textureWidth, .5));
+						if (currentColor.r == newCol.r &&  currentColor.g == newCol.g && currentColor.b == newCol.b){// && currentColor.a == newCol.a){
+							pos = x/_textureWidth;
+						}
 					}
+
+					result = tex2D(_ColorPaletteMorph, fixed2(pos, .5));
+					result.a = currentColor.a;
 				}
 				//_floatTest = _floatTest/64;
 				//float4 ne = tex2D(_ColorPaletteOriginal, float2(_floatTest, .5));
-				float4 result = tex2D(_ColorPaletteMorph, fixed2(pos, .5));
-				result.a = currentColor.a;
 				return result;
 
 
