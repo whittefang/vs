@@ -9,9 +9,12 @@ public class ColorPaletteSwap : MonoBehaviour {
 	public int uniqueColors = 0;
 	public List<Color32> foundColors = new List<Color32>();
 	public List<Color32> foundColorsnew = new List<Color32>();
+	public bool fireOnAwake = true;
 	// Use this for initialization
-	void Start () {
-		LoadColors (newPaletteDefault);
+	void Awake () {
+		if (fireOnAwake) {
+			LoadColors (newPaletteDefault);
+		}
 	}
 	
 	// Update is called once per frame
@@ -60,5 +63,6 @@ public class ColorPaletteSwap : MonoBehaviour {
 		targetSprite.material.SetTexture("_ColorPaletteOriginal", generatedPallete);
 		targetSprite.material.SetTexture("_ColorPaletteMorph", NewPaletteGeneration);
 		targetSprite.material.SetInt ("_textureWidth", uniqueColors +1 );
+		Debug.Log (gameObject.name);
 	}
 }
