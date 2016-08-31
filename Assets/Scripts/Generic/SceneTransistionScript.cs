@@ -30,7 +30,7 @@ public class SceneTransistionScript : MonoBehaviour {
 				sceneToTransitionTo = playerScenes[Random.Range(0,2)];
 				Debug.Log (sceneToTransitionTo);
 			} 
-				LoadScene (2, sceneToTransitionTo);
+				LoadScene (0, sceneToTransitionTo);
 			
 			return true;
 		} else {

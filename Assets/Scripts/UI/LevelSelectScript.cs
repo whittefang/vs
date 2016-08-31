@@ -2,7 +2,8 @@
 using System.Collections;
 using XInputDotNetPure; // Required in C#
 
-public class CharacterSelectScript : MonoBehaviour {
+public class LevelSelectScript : MonoBehaviour {
+
 	public bool characterSelect = true, colorSelect = false;
 	public int playerNumber = 0;
 	public int currentSelection = 0;
@@ -19,7 +20,6 @@ public class CharacterSelectScript : MonoBehaviour {
 	bool buffer = true, selectionMade = false, lockedIn = false;
 	public GameObject[] previewsLoop;
 	public GameObject[] selectedsLoop;
-	public ColorPreviewScript colorPreviewScript;
 	// Use this for initialization
 	void Awake () {
 		sceneLoader = GameObject.Find ("Main Camera").GetComponent<SceneTransistionScript> ();
@@ -27,18 +27,14 @@ public class CharacterSelectScript : MonoBehaviour {
 		sound = GameObject.Find ("Main Camera").GetComponent<UIsounds> ();
 		roundScript = GameObject.Find ("DoNotDestroy").GetComponent<Rounds> ();
 	}
-	
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		prevState = state;
 		state = GamePad.GetState (playerIndex);
 
-		// send input for movement(state.ThumbSticks.Left.X, state.ThumbSticks.Left.Y);
-		if (state.ThumbSticks.Left.X > 0 && buffer && !selectionMade){
-			if (colorSelect) {
-				colorPreviewScript.UpdateSelection (currentSelection, 1);
-				StartCoroutine (setBuffer ());
-			} else if (currentSelection < maxSelectionSize ) {
+		if (state.ThumbSticks.Left.X > 0 && buffer && !selectionMade) {
+			if (currentSelection < maxSelectionSize) {
 				StartCoroutine (setBuffer ());
 				sound.PlayChange ();
 				// move cursor
@@ -48,11 +44,8 @@ public class CharacterSelectScript : MonoBehaviour {
 				UpdatePreview (currentSelection);
 			}
 		}
-		if (state.ThumbSticks.Left.X < 0  && buffer && !selectionMade){
-			if (colorSelect) {
-				colorPreviewScript.UpdateSelection (currentSelection, -1);
-				StartCoroutine (setBuffer ());
-			} else if ( currentSelection > 0){
+		if (state.ThumbSticks.Left.X < 0 && buffer && !selectionMade) {
+			if (currentSelection > 0) {
 				StartCoroutine (setBuffer ());
 				sound.PlayChange ();
 				currentSelection--;
@@ -63,65 +56,56 @@ public class CharacterSelectScript : MonoBehaviour {
 
 		if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed && !selectionMade) {
 			// set rounds script
-			if (!colorSelect) {
-				colorSelect = true;
+			if (playerNumber == 0) {
+				if (characterSelect) {
+					if (ConvertToString (currentSelection) == "random") {
+						roundScript.player1character = RandomizeCharacter ();
+					} else {
+						roundScript.player1character = ConvertToString (currentSelection);
+					}
+				} else {
+					sceneLoader.SetScene (true, currentSelection + 3);
+				}
+				lockedIn = sceneLoader.SetReady (true, true);
+
 			} else {
-				if (playerNumber == 0) {
-					if (characterSelect) {
-						if (ConvertToString (currentSelection) == "random") {
-							Debug.Log ("randomizing");
-							roundScript.player1character = RandomizeCharacter ();
-						} else {
-							roundScript.player1character = ConvertToString (currentSelection);
-							//roundScript.player1ColorNumber = colorPreviewScript.GetColorNumber(currentSelection);
-						}
+				if (characterSelect) {
+					if (ConvertToString (currentSelection) == "random") {
+						roundScript.player2character = RandomizeCharacter ();
 					} else {
-						sceneLoader.SetScene (true, currentSelection + 3);
+						roundScript.player2character = ConvertToString (currentSelection);
 					}
-					lockedIn = sceneLoader.SetReady (true, true);
-				
 				} else {
-					if (characterSelect) {
-						if (ConvertToString (currentSelection) == "random") {
-							Debug.Log ("randomizing");
-							roundScript.player2character = RandomizeCharacter ();
-						} else {
-							roundScript.player2character = ConvertToString (currentSelection);
-							//roundScript.player1ColorNumber = colorPreviewScript.GetColorNumber(currentSelection);
-						}
-					} else {
-						sceneLoader.SetScene (false, currentSelection + 3);
-					}
-					lockedIn = sceneLoader.SetReady (false, true);
+					sceneLoader.SetScene (false, currentSelection + 3);
 				}
-			
-
-				UpdateSelected(currentSelection);
-				//colorPreviewScript.UpdateSelection (currentSelection, 0);
-				sound.PlayConfirm ();
-				selectionMade = true;
+				lockedIn = sceneLoader.SetReady (false, true);
 			}
+
+
+			UpdateSelected (currentSelection);
+			//colorPreviewScript.UpdateSelection (currentSelection, 0);
+			sound.PlayConfirm ();
+			selectionMade = true;
 		}
-		if (prevState.Buttons.B == ButtonState.Released && state.Buttons.B == ButtonState.Pressed && !lockedIn) {
-			if (colorSelect) {
+	
+		
+		if (prevState.Buttons.B == ButtonState.Released && state.Buttons.B == ButtonState.Pressed && !lockedIn && selectionMade) {
+		
 
-				colorSelect = false;
-				selectionMade = false;
-			} else if (selectionMade){
-				
-				sound.PlayBack ();
-				if (playerNumber == 0) {
-					sceneLoader.SetReady (true, false);
-				} else {
-					sceneLoader.SetReady (false, false);
-				}
-				UpdatePreview (currentSelection);
-
-				selectionMade = false;
-				colorSelect = true;
+			sound.PlayBack ();
+			if (playerNumber == 0) {
+				sceneLoader.SetReady (true, false);
+			} else {
+				sceneLoader.SetReady (false, false);
 			}
+			UpdatePreview (currentSelection);
+
+			selectionMade = false;
+			colorSelect = true;
+			
 		}
 	}
+
 	string RandomizeCharacter(){
 		string pickedCharacter = "random";
 		while (pickedCharacter == "random") {
