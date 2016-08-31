@@ -11,9 +11,12 @@ public class ExMeter : MonoBehaviour {
 	public Renderer exRightRenderer;
  	float originalLeftSpot;
  	float originalRightSpot;
+ 	float maxBarLength = 1.97f;
+ 	public GameObject LeftAnimation, RightAnimation;
 
 	void Start () {
-		
+		LeftAnimation.SetActive(false);
+		RightAnimation.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -56,32 +59,40 @@ public class ExMeter : MonoBehaviour {
 			currentExRight = 0;
 			ExMeterChange(0, false);
 		}
-	}
+
 	*/
 
 	public void ExMeterChange(int meter, bool isPlayerOne){
 		float tempMeter = meter;
-		originalLeftSpot = exLeftRenderer.bounds.min.x;
-		originalRightSpot = exRightRenderer.bounds.max.x;
+		originalLeftSpot = exLeftRenderer.bounds.max.x;
+		originalRightSpot = exRightRenderer.bounds.min.x;
 
 		if (isPlayerOne){
 				currentExLeft += meter;
-			if (currentExLeft > 1000){
+			if (currentExLeft >= 1000){
 				currentExLeft = 1000;
+				LeftAnimation.SetActive(true);
 			}
-			exLeftRenderer.transform.localScale = new Vector3(currentExLeft / 1000 * 2.5, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
-			float newLeftSpot = exLeftRenderer.bounds.min.x;
+			else{
+				LeftAnimation.SetActive(false);
+			}
+			exLeftRenderer.transform.localScale = new Vector3(currentExLeft / 1000 * maxBarLength, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
+			float newLeftSpot = exLeftRenderer.bounds.max.x;
 			float findNewLeftSpot = newLeftSpot - originalLeftSpot;
 			exLeftRenderer.transform.Translate(new Vector3 (-findNewLeftSpot, 0f, 0f),Space.Self);
 
 		}
 		else {
 				currentExRight += meter;
-			if (currentExRight > 1000){
+			if (currentExRight >= 1000){
 				currentExRight = 1000;
+				RightAnimation.SetActive(true);
 			}
-			exRightRenderer.transform.localScale = new Vector3(currentExRight / 1000 * 2.5, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
-			float newRightSpot = exRightRenderer.bounds.max.x;
+			else{
+				RightAnimation.SetActive(false);
+			}
+			exRightRenderer.transform.localScale = new Vector3(currentExRight / 1000 * maxBarLength, exLeftRenderer.transform.localScale.y, exLeftRenderer.transform.localScale.z);
+			float newRightSpot = exRightRenderer.bounds.min.x;
 			float findNewRightSpot = newRightSpot - originalRightSpot;
 			exRightRenderer.transform.Translate(new Vector3 (-findNewRightSpot, 0f, 0f), Space.Self);
 		}

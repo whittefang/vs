@@ -7,7 +7,7 @@ public class Rounds : MonoBehaviour {
 	public GameObject FeliciaPrefab, RyuPrefab, SubzeroPrefab;
 	public string player1character = "ryu";
 	public string player2character = "ryu";
-
+	public TextMesh textShadow;
 	public bool FalseMeansTest = false;
 	int RoundFlag = 1;
 	int P1W = 0;
@@ -195,8 +195,11 @@ public class Rounds : MonoBehaviour {
 
 	IEnumerator SetRoundText(string roundText){
 		GetComponentInChildren<TextMesh> ().text = roundText;
+		textShadow.text = roundText;
 		yield return new WaitForSeconds(2f);
 		GetComponentInChildren<TextMesh> ().text = "";
+		textShadow.text = "";
+
 	}
 
 }
