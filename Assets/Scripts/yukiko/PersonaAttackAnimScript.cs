@@ -56,7 +56,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		}
 
 		int counter = 0;
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < 60; i++) {
 			if (counter == 3) {
 				spriteRenderer.sprite = SendoutFrames [1];
 			} else if (counter == 6) {
@@ -104,10 +104,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		int animationFrame = 0;
 		attackStage=-1;
 		spriteRenderer.sprite = Attack1Frames [0];
-		for (int i = 0; i < 26;) {
+		for (int i = 0; i < 24;) {
 
 			if (i%3 == 0) {
-				spriteRenderer.sprite = Attack1Frames [animationFrame];
+				if (animationFrame < Attack1Frames.Length) {
+					spriteRenderer.sprite = Attack1Frames [animationFrame];
+				}
 				animationFrame++;
 			}
 			if (i == 10) {
@@ -116,7 +118,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			if (i == 12) {
 				attack1Hitbox.SetActive (false);
 			}
-			if (i == 20) {
+			if (i == 15) {
 				attackStage=2;
 			}
 			yield return null;
@@ -125,7 +127,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			}
 
 		}
-		StartCoroutine (TimedUnsummon (15));
+		//StartCoroutine (TimedUnsummon (15));
 	}
 
 	IEnumerator Attack2(){
@@ -136,7 +138,9 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 39;) {
 
 			if (i%3 == 0) {
-				spriteRenderer.sprite = Attack2Frames [animationFrame];
+				if (animationFrame < Attack1Frames.Length) {
+					spriteRenderer.sprite = Attack2Frames [animationFrame];
+				}
 				animationFrame++;
 			}
 			if (i == 10) {
@@ -145,7 +149,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			if (i == 12) {
 				attack2Hitbox.SetActive (false);
 			}
-			if (i == 30) {
+			if (i == 17) {
 
 				attackStage = 3;
 			}
@@ -156,17 +160,19 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 		}
 		attackStage = 3;
-		StartCoroutine (TimedUnsummon (30));
+		//StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator Attack3(){
-		transform.position = new Vector3 (transform.position.x, transform.position.y -1.5f, transform.position.z);
+		transform.position = new Vector3 (transform.position.x, transform.position.y -1.2f, transform.position.z);
 		int animationFrame = 0;
 		attackStage= -1;
 		spriteRenderer.sprite = Attack3Frames [0];
 		for (int i = 0; i < 27;) {
 			
 			if (i%3 == 0) {
-				spriteRenderer.sprite = Attack3Frames [animationFrame];
+				if (animationFrame < Attack1Frames.Length) {
+					spriteRenderer.sprite = Attack3Frames [animationFrame];
+				}
 				animationFrame++;
 			}
 			if (i == 10) {
@@ -182,15 +188,18 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 		}
 		attackStage = 0;
-		StartCoroutine (TimedUnsummon (30));
+		//StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator SpecialOne(){
+
 		int animationFrame = 0;
 		spriteRenderer.sprite = SpecialOneFrames [0];
 		for (int i = 0; i < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (i%3 == 0) {
-					spriteRenderer.sprite = SpecialOneFrames [animationFrame];
+					if (animationFrame < Attack1Frames.Length) {
+						spriteRenderer.sprite = SpecialOneFrames [animationFrame];
+					}
 					animationFrame++;
 				}
 				if (i == 18) {
@@ -212,12 +221,21 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator SpecialTwo(){
+		if (transform.position.x > otherPlayer.position.x) {
+			transform.position = new Vector3 (transform.position.x+1f, transform.position.y + 1f, transform.position.z);
+		}else {
+			transform.position = new Vector3 (transform.position.x-1f, transform.position.y + 1f, transform.position.z);
+
+		}
 		int animationFrame = 0;
 		spriteRenderer.sprite = SpecialTwoFrames [0];
 		for (int i = 0; i < 18;) {
 
 			if (i%3 == 0) {
-				spriteRenderer.sprite = SpecialTwoFrames [animationFrame];
+
+				if (animationFrame < Attack1Frames.Length) {
+					spriteRenderer.sprite = SpecialTwoFrames [animationFrame];
+				}
 				animationFrame++;
 			}
 			if (i == 5) {
@@ -241,7 +259,9 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 42;) {
 
 			if (i%3 == 0) {
-				spriteRenderer.sprite = SpecialThreeFrames [animationFrame];
+				if (animationFrame < Attack1Frames.Length) {
+					spriteRenderer.sprite = SpecialThreeFrames [animationFrame];
+				}
 				animationFrame++;
 			}
 

@@ -404,13 +404,14 @@ public class YukikoAttackScript : MonoBehaviour {
 		}
 	}
 	public void Heavy(){
-		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) || (state.GetState() == "heavy recovery")) && persona.GetAttackState() != -1 && persona.CheckAlive()) {
-			if (mediumHitboxHit) {
-				mediumHitboxHit = false;
+		if ((state.GetState() != "jumping" && state.GetState() != "hitstun" && state.GetState() != "heavy recovery") && persona.GetAttackState() != -1 && persona.CheckAlive()) {
+			if (persona.GetAttackState () == 0 && state.GetState() == "neutral") {
+				PMS.CheckFacing ();
+				StopAllCoroutines ();
+				StartCoroutine (heavyEnum ());
+			} else if (persona.GetAttackState () != 0){
+				ActivatePersona(persona.StartAttacksAnim);
 			}
-			PMS.CheckFacing ();
-			StopAllCoroutines ();
-			StartCoroutine (heavyEnum ());
 		} else if (state.GetState () == "jumping" && persona.CheckAlive()) {
 			StartCoroutine (jumpHeavyEnum ());
 		}
@@ -420,19 +421,17 @@ public class YukikoAttackScript : MonoBehaviour {
 
 		health.AddMeter (20);
 		proximityBox.SetActive (true);
-		if (state.GetState () == "neutral") {
-			spriteAnimator.PlayHeavy ();
-		} else {
-			spriteAnimator.PlayExtra4 ();
-		}
+		spriteAnimator.PlayHeavy ();
+		
 		PMS.StopMovement ();
-		state.SetState ("attack");
-
+		state.SetState ("heavy recovery");
 		ActivatePersona(persona.StartAttacksAnim);
-		for (int x = 0; x < 25;) {
+		for (int x = 0; x < 30;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 7) {
-					state.SetState ("heavy recovery");
+
+					state.SetState ("attack");
+
 				}
 
 				x++;
@@ -479,7 +478,6 @@ public class YukikoAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		bool canShoot = true;
 
-		ActivatePersona(persona.StartSpecialOneAnim);
 
 		for (int x = 0; x < 45;) {
 
@@ -489,19 +487,9 @@ public class YukikoAttackScript : MonoBehaviour {
 					sp1Buffer = false;
 				}
 				if (x == 12 && canShoot) {
-					canShoot = false;
-					sounds.PlayExtra ();
-					//fireball.transform.position = fireballGunpoint.transform.position;
-					if (PMS.CheckIfOnLeft ()) {
-						//fireball.transform.eulerAngles = new Vector2(0, 0);
-						//fireballProjectileScript.direction = new Vector2 (1, 0);
-					} else {
-						//fireball.transform.eulerAngles = new Vector2(0, 180);
-						//fireballProjectileScript.direction = new Vector2 (-1, 0);
 
-					}
-					//fireball.SetActive (true);
-					proximityBox.SetActive (false);
+					ActivatePersona(persona.StartSpecialOneAnim);
+					canShoot = false;
 				}
 				x++;
 			}
@@ -688,13 +676,13 @@ public class YukikoAttackScript : MonoBehaviour {
 	}
 	void ActivatePersona(vDel move){
 		if (!persona.CheckActive()) {
-			persona.transform.position = new Vector3 (transform.position.x, transform.position.y + 3, transform.position.z);
+			persona.transform.position = new Vector3 (transform.position.x, transform.position.y + 2f, transform.position.z);
 			persona.gameObject.SetActive (true);
 			move ();
 			persona.Summon ();
 
 		} else {
-			persona.transform.position = new Vector3 (persona.transform.position.x, transform.position.y + 3, transform.position.z);
+			persona.transform.position = new Vector3 (persona.transform.position.x, transform.position.y + 2.5f, transform.position.z);
 			move ();
 		}
 	}
