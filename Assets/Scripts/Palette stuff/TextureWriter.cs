@@ -13,7 +13,7 @@ public class TextureWriter : MonoBehaviour {
 	public MeshRenderer newPalettePreview;
 	public ColorPicker colorSelector;
 
-	Color lastColor;
+	Color32 lastColor;
 	int lastSpot = 0;
 	Texture2D generatedPallete;
 
@@ -30,12 +30,7 @@ public class TextureWriter : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.F1)) {
 			SaveTexture ();
 		}
-		if (Input.GetKeyDown (KeyCode.F2)) {
-			for (int i = 0; i < 64; i++) {
 
-				SetPixel (i, new Color(Random.Range(0f,1f), Random.Range(0f,1f), Random.Range(0f,1f), 1));
-			}
-		}
 		if (Input.GetKeyDown (KeyCode.F3)) {
 			originalSpritesArray = Resources.LoadAll<Texture2D>(SpritesArrayFolderPath);
 			GeneratePalette ();
@@ -43,9 +38,9 @@ public class TextureWriter : MonoBehaviour {
 
 	}
 
-	public void SetPixel(int x, Color newCol){
-		newPalette.SetPixel (x, 0, newCol);
-		lastColor = newCol;
+	public void SetPixel(int x, Color32 newCol){
+		newPalette.SetPixel (x, 0, new Color32 (newCol.r, newCol.g, newCol.b, 255));
+		lastColor = new Color32 (newCol.r, newCol.g, newCol.b, 255);
 		newPalette.Apply();
 
 	}
@@ -72,8 +67,8 @@ public class TextureWriter : MonoBehaviour {
 		newPalette.SetPixel (x, 0, new Color(1,.1f,1,1));
 		newPalette.Apply();
 	}
-	public void SetPreviewColor(int x, Color newCol){
-		newPalette.SetPixel (x, 0, newCol);
+	public void SetPreviewColor(int x, Color32 newCol){
+		newPalette.SetPixel (x, 0, new Color32 (newCol.r, newCol.g, newCol.b, 255));
 		newPalette.Apply();
 	}
 	public void GeneratePalette(){
@@ -95,8 +90,8 @@ public class TextureWriter : MonoBehaviour {
 				}
 				if (!match) {
 					uniqueColors++;
-					foundColors.Add (found);
-					//Debug.Log (found);
+					foundColors.Add (new Color32 (found.r, found.g, found.b, 255));
+					Debug.Log (new Color32 (found.r, found.g, found.b, 255));
 				}
 			}
 		}
