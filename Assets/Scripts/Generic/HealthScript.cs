@@ -78,13 +78,13 @@ public class HealthScript : MonoBehaviour {
 		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false){
 
 		// check for invincible or blocking
-		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState() != "blockstun" && !(state.GetState() == "projectile invulnerable" && isProjectile)) || 
-			( isThrow && state.GetState() != "hitstun" && state.GetState() != "blockstun" && state.GetState() != "jumping" && state.GetState() != "jump attack"  )) {
+		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
+		    (isThrow && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack")) {
 
-
+			Debug.Log (isThrow + " " + state.GetState ());
 			// player got hit
 			// deal damage
-			if (state.GetState () == "hitstun" || state.GetState() == "falling hit") {
+			if (state.GetState () == "hitstun" || state.GetState () == "falling hit") {
 				comboCounter++;
 				comboScaling -= .1f;
 
@@ -92,10 +92,10 @@ public class HealthScript : MonoBehaviour {
 					comboScaling = .4f;
 				}
 				comboDamage += (int)(amount * comboScaling);
-				comboDamageText.text = comboDamage.ToString();
-				comboCounterText.text = comboCounter.ToString();
-				comboDamageShadowText.text = comboDamage.ToString();
-				comboCounterShadowText.text = comboCounter.ToString();
+				comboDamageText.text = comboDamage.ToString ();
+				comboCounterText.text = comboCounter.ToString ();
+				comboDamageShadowText.text = comboDamage.ToString ();
+				comboCounterShadowText.text = comboCounter.ToString ();
 			} else {
 				comboCounter = 1;
 				comboScaling = 1;
@@ -107,7 +107,7 @@ public class HealthScript : MonoBehaviour {
 			}
 			healthAmount -= (int)(amount * comboScaling);
 
-			AddMeter((int)((amount * comboScaling) * 1.3f));
+			AddMeter ((int)((amount * comboScaling) * 1.3f));
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft ((int)(amount * comboScaling));
 			} else {
@@ -125,7 +125,7 @@ public class HealthScript : MonoBehaviour {
 				spriteAnimator.PlayHit (hitstun);
 			}
 			// set hitstun
-			StopAllCoroutines();
+			StopAllCoroutines ();
 			PMS.landingRecoveryFrames = 0;
 
 			if (freezingAttack && freezingCounter <= 1) {
@@ -147,10 +147,10 @@ public class HealthScript : MonoBehaviour {
 			//
 			return false;
 
-		} else if (PMS.CheckIfBlocking () || state.GetState() == "blockstun") {
+		} else if (PMS.CheckIfBlocking () || state.GetState () == "blockstun") {
 			// player is blocking
-			spriteAnimator.PlayBlock();
-			StopAllCoroutines();
+			spriteAnimator.PlayBlock ();
+			StopAllCoroutines ();
 			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback));
 			healthAmount -= (int)((float)amount * .05f);
 			if (hpLeft != null) {
@@ -158,6 +158,9 @@ public class HealthScript : MonoBehaviour {
 			} else {
 				hpRight.changeBarRight ((int)((float)amount * .05f));
 			}
+			return true;
+		} else if (isThrow) {
+			Debug.Log ("thro returrn true");
 			return true;
 		}
 		return false;

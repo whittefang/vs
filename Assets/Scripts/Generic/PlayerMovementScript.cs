@@ -270,6 +270,14 @@ public class PlayerMovementScript : MonoBehaviour {
 	public void DsableBodyBox(){
 		gameObject.layer = jumpingMask;
 	}
+	public void EnableCollider(bool enabled){
+		movementBox.isTrigger = enabled;
+		if (enabled) {
+			RB.gravityScale = 0;	
+		} else {
+			RB.gravityScale = 7;
+		}
+	}
 	public void setAttackCancel(vDelegate newFunc){
 		Debug.Log ("setcancel");
 		cancelAttacks = newFunc;

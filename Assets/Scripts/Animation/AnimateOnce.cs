@@ -32,6 +32,7 @@ public class AnimateOnce : MonoBehaviour {
 		StartCoroutine (animate ());
 	}
 	IEnumerator animate(){
+		SR.sprite = frames [0];
 		if (useDelay) {
 			yield return new WaitForSeconds (delay);	
 		}

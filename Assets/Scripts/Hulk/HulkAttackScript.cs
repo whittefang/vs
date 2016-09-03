@@ -1,0 +1,646 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class HulkAttackScript : MonoBehaviour {
+
+	InputScript inputScript;
+	SpriteAnimator spriteAnimator;
+	FighterStateMachineScript state;
+	PlayerMovementScript PMS;
+	public GameObject fireball, superHitbox, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
+	sp1Hitbox, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
+
+	ProjectileScript fireballProjectileScript;
+	TimeManagerScript timeManager;
+
+	SoundsPlayer sounds;
+	public HitboxScript lightHitboxScript, mediumHitboxScript, heavyHitboxScript, throwHitboxScript;
+	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false, specialHitboxHit = false;
+	public GameObject ThrowPoint;
+
+	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false;
+	HealthScript health;
+	Transform otherPlayer;
+	bool canMoveDuringCharge = false;
+	// Use this for initialization
+	void Start () {
+		if (tag == "playerOne") {
+			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
+		} else {
+			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
+		}
+
+		health = GetComponentInChildren<HealthScript> ();
+		health.SetHitFunc (CancelAttacks);
+		sounds = GetComponent<SoundsPlayer>();
+		state = GetComponent<FighterStateMachineScript>();
+		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
+		spriteAnimator = GetComponent<SpriteAnimator> ();
+		fireballProjectileScript = fireball.GetComponent < ProjectileScript> ();
+		PMS = GetComponent<PlayerMovementScript> ();
+		PMS.setAttackCancel (CancelAttacks);
+		inputScript = GetComponent<InputScript> ();
+		inputScript.assignAXButton (Throw);
+		inputScript.assignXButton (Light, null);
+		inputScript.assignYButton (Medium, null);
+		inputScript.assignRBButton (Heavy, null);
+
+		inputScript.assignAButton (SpecialOne, null);
+		inputScript.assignBButton (Throw, null);
+		inputScript.assignRT (SpecialThree, null);
+
+		inputScript.assignBYButton (Super);
+		lightHitboxScript = lightHitbox.GetComponent<HitboxScript> ();
+		mediumHitboxScript = mediumHitbox.GetComponent<HitboxScript> ();
+		heavyHitboxScript = heavyHitbox.GetComponent<HitboxScript> ();
+		throwHitboxScript = throwHitbox.GetComponent<HitboxScript> ();
+		lightHitboxScript.SetOptFunc (LightHit);
+		mediumHitboxScript.SetOptFunc (MediumHit);
+		heavyHitboxScript.SetOptFunc (HeavyHit);
+		throwHitboxScript.SetThrowFunc (ThrowHit);
+		sp3Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
+
+
+	}
+	void Update(){
+		if (Input.GetKeyDown (KeyCode.UpArrow)) {
+			health.exCurrent = 1000;
+		}
+	}
+
+	public void Throw(){
+		if (state.GetState () == "neutral" || lightBuffer || sp1Buffer) {
+			CancelAttacks ();
+			StartCoroutine (ThrowEnum ());
+		}
+	}
+	IEnumerator ThrowEnum(){
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayThrowTry ();
+		PMS.StopMovement ();
+		state.SetState ("attack");
+		for (int x = 0; x < 10;) {
+			if (!timeManager.CheckIfTimePaused()) {
+
+				// startup
+				// active
+				if (x == 6) {
+					throwHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 8) {
+					throwHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+				x++;
+
+			}
+			yield return null;
+
+		}
+		state.SetState ("neutral");
+	}
+	void ThrowHit(Transform otherPlayerTmp){
+		otherPlayer = otherPlayerTmp.transform.parent;
+		CancelAttacks ();
+		StartCoroutine (ThrowHitEnum());
+	}
+	IEnumerator ThrowHitEnum(){
+
+		spriteAnimator.PlayThrowComplete ();
+		PMS.DsableBodyBox ();
+		ThrowPoint.transform.localPosition = new Vector2 (4, 0);
+		otherPlayer.position = ThrowPoint.transform.position;
+		Vector2 endPoint = new Vector2(4f,0);
+		for (int x = 0; x < 45;) {
+
+			if (!timeManager.CheckIfTimePaused ()) {
+				if (x < 24) {
+					Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
+					ThrowPoint.transform.localPosition = newPoint;
+					otherPlayer.position = ThrowPoint.transform.position;
+				}
+				if (x == 3) {
+					endPoint = new Vector2 (4.5f, 1f);
+				}
+				if (x == 5) {
+					endPoint = new Vector2 (2.4f, 2.5f);
+				}
+				if (x == 8) {
+					endPoint = new Vector2 (-.5f, 2.5f);
+				}
+				if (x == 11) {
+					endPoint = new Vector2 (-2.3f, -.3f);
+				}
+				if (x == 14) {
+					endPoint = new Vector2 (0, 0f);
+				}
+				if (x == 17) {
+					endPoint = new Vector2 (1.7f, -.3f);
+				}
+				if (x == 20) {
+					endPoint = new Vector2 (3.6f, 0f);
+				}
+				if (x == 23) {
+					endPoint = new Vector2 (2.8f, -.5f);
+				}
+				// add force
+				if (x == 24){
+					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (17, 25);
+
+					otherPlayer.GetComponent<PlayerMovementScript> ().DsableBodyBox ();
+				}
+				x++;
+			}
+
+			yield return null;
+		}
+		PMS.EnableBodyBox ();
+		state.SetState ("neutral");
+	}
+
+	public void Light(){
+		if (state.GetState () == "neutral") {
+			PMS.CheckFacing ();
+			StartCoroutine (lightEnum ());
+		} else if (state.GetState () == "jumping") {
+			StartCoroutine (jumpLightEnum ());
+		}
+
+	}
+	IEnumerator lightEnum(){
+		health.AddMeter (10);
+		proximityBox.SetActive (true);
+		lightBuffer = true;
+		spriteAnimator.PlayLight ();
+		PMS.StopMovement ();
+		state.SetState ("attack");
+		for (int x = 0; x < 15;) {
+			// startup
+			// active
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					lightBuffer = false;
+				}
+				if (x == 4) {
+					lightHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 6) {
+					lightHitbox.SetActive (false);
+					state.SetState ("light recovery");
+					proximityBox.SetActive (false);
+				}
+
+				x++;
+			}
+			yield return null;
+		}
+		lightHitboxHit = false;
+		state.SetState ("neutral");
+	}
+	IEnumerator jumpLightEnum(){
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayJumpLight ();
+		state.SetState ("jump attack");
+		for (int x = 0; x < 15; ) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 4){
+					jumpLightHitbox.SetActive (true);
+				}
+				if (x == 10){
+					jumpLightHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+				x++;
+			}
+			yield return null;
+		}
+	}
+	public void Medium(){
+		if (state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit)) {
+			if (lightHitboxHit) {
+				lightHitboxHit = false;
+			}
+			PMS.CheckFacing ();
+			StopAllCoroutines ();
+			StartCoroutine (mediumEnum ());
+		} else if (state.GetState () == "jumping") {
+			StartCoroutine (jumpMediumEnum ());
+		}
+
+	}
+	IEnumerator mediumEnum(){
+		health.AddMeter (15);
+		mediumBuffer = true;
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayMedium ();
+		state.SetState ("attack");
+		// startup
+		for (int x = 0; x < 21; ) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3){
+					mediumBuffer = false;	
+				}
+
+
+				// active
+				if (x == 8) {
+					mediumHitbox.SetActive (true);
+				}
+				// recovery
+				if (x == 12){
+					mediumHitbox.SetActive (false);
+					state.SetState ("medium recovery");
+					proximityBox.SetActive (false);
+				}
+				x++;
+			}
+
+			yield return null;
+		}
+		mediumHitboxHit = false;
+		state.SetState ("neutral");
+	}
+	IEnumerator jumpMediumEnum(){
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayJumpMedium ();
+		state.SetState ("jump attack");
+		for (int x = 0; x < 27;) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 9) {
+					jumpMediumHitbox.SetActive (true);
+				}
+				if (x == 20) {
+					jumpMediumHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+				x++;
+			}
+
+			yield return null;
+		}
+	}
+	public void Heavy(){
+		if (state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit)) {
+			if (mediumHitboxHit) {
+				mediumHitboxHit = false;
+			}
+			PMS.CheckFacing ();
+			StopAllCoroutines ();
+			StartCoroutine (heavyEnum ());
+		} else if (state.GetState () == "jumping") {
+			StartCoroutine (jumpHeavyEnum ());
+		}
+
+	}
+	IEnumerator heavyEnum(){
+
+		health.AddMeter (20);
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayHeavy ();
+		PMS.StopMovement ();
+		state.SetState ("attack");
+		for (int x = 0; x < 30;) {
+			if (!timeManager.CheckIfTimePaused()) {
+				
+				// active
+				if (x == 10) {
+					heavyHitbox.SetActive (true);
+				}
+				if (x == 12) {
+					heavyHitbox.SetActive (false);
+					state.SetState ("heavy recovery");
+				}
+
+				x++;
+			}
+			yield return null;
+		}
+		heavyHitboxHit = false;
+		state.SetState ("neutral");
+	}
+	IEnumerator jumpHeavyEnum(){
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayJumpHeavy ();
+		state.SetState ("jump attack");
+		for (int x = 0; x < 21;) {
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 7) {
+					jumpHeavyHitbox.SetActive (true);
+				}
+				if (x == 20) {
+					jumpHeavyHitbox.SetActive (false);
+					proximityBox.SetActive (false);
+				}
+
+				x++;
+			}
+			yield return null;
+		}
+	}
+
+	public void SpecialOne(){
+		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit))) {
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
+			PMS.CheckFacing ();
+			StopAllCoroutines ();
+			StartCoroutine (SpecialOneEnum ());
+		}
+
+	}
+	IEnumerator SpecialOneEnum(){
+		sp1Buffer = true;
+		health.AddMeter (30);
+		proximityBox.SetActive (true);
+		spriteAnimator.PlaySpecialOne ();
+		PMS.StopMovement ();
+		state.SetState ("attack");
+		bool canShoot = true;
+		for (int x = 0; x < 60;) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				// active
+				if (x == 3){
+					sp1Buffer = false;
+				}
+				if (x == 17) {
+					sounds.PlayExtra ();
+					fireball.transform.position = transform.position;
+					if (PMS.OnLeft) {
+						fireball.transform.eulerAngles = new Vector3 (0, 0, 0);
+					} else {
+						fireball.transform.eulerAngles = new Vector3 (0, 180, 0);
+
+					}
+					fireball.SetActive (true);
+					proximityBox.SetActive (false);
+				}
+				if (x == 20) {
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 22) {
+					sp1Hitbox.SetActive (false);
+				}
+				x++;
+			}
+			yield return null;
+
+		}
+		specialHitboxHit = false;
+		state.SetState ("neutral");
+	}
+	public void SpecialTwo(){
+		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)){
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
+			PMS.CheckFacing ();
+			StopAllCoroutines ();
+			StartCoroutine (SpecialTwoEnum ());
+		}
+
+	}
+	IEnumerator SpecialTwoEnum(){
+
+		health.AddMeter (30);
+		proximityBox.SetActive (true);
+		spriteAnimator.PlaySpecialTwo ();
+		PMS.StopMovement ();
+		sp2Buffer = true;
+		//state.SetState ("attack");
+		// needs jumpbox turned off
+		PMS.MoveToward (5f,0);
+
+		state.SetState ("attack");
+		PMS.DsableBodyBox ();
+		for (int x = 0; x < 50;) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 2) {
+					state.SetState ("invincible");
+				}
+				if (x == 3) {
+					sp2Buffer = false;
+					//PMS.StopMovement ();
+				}
+
+				if (x == 10){
+					state.SetState ("attack");
+				}
+
+
+				if (x == 15){
+
+					specialHitboxHit = false;
+					//state.SetState ("attack");
+				}
+				if (x == 23) {
+					proximityBox.SetActive (false);
+				}
+
+				if (x == 14) {
+					PMS.MoveToward (2.5f, 20);
+				}
+				x++;
+			}
+			yield return null;
+		}
+		state.SetState ("neutral");
+		PMS.EnableBodyBox ();
+	}
+	public void SpecialThree(){
+		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) {
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
+			PMS.CheckFacing ();
+			StopAllCoroutines ();
+			StartCoroutine (SpecialthreeEnum ());
+		}
+
+	}
+	IEnumerator SpecialthreeEnum(){
+
+		health.AddMeter (30);
+		proximityBox.SetActive (true);
+		spriteAnimator.PlaySpecialThree ();
+		PMS.StopMovement ();
+		state.SetState ("projectile invulnerable");
+		canMoveDuringCharge = true;
+		for (int x = 0; x < 35;) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x > 9 && x < 20) {
+					if (canMoveDuringCharge) {
+						PMS.MoveToward (40f);
+					} else {
+						PMS.StopMovement ();
+					}
+					sp3Hitbox.SetActive(true);
+				
+				}
+				if (x == 20) {
+					PMS.StopMovement ();
+					sp3Hitbox.SetActive(false);
+					proximityBox.SetActive (false);
+				}
+
+				x++;
+			}
+
+			yield return null;
+		}
+		PMS.StopMovement ();
+		for (int x = 0; x < 10;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+		}
+		specialHitboxHit = false;
+		PMS.StopMovement ();
+		state.SetState ("neutral");
+	}
+
+	public void Super(){
+		if (health.exCurrent >= 1000 && ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || 
+			(state.GetState() =="medium recovery" && mediumHitboxHit) || 
+			(state.GetState() =="heavy recovery" && heavyHitboxHit) || 
+			(specialHitboxHit)) || mediumBuffer || sp2Buffer)) {
+			health.AddMeter (-1000);
+			CancelAttacks ();
+			PMS.CheckFacing ();
+			mediumBuffer = false;
+			sp2Buffer = false;
+			Debug.Log ("super2");
+			lightHitboxHit = false;
+			mediumHitboxHit = false;
+			heavyHitboxHit = false;
+			StopAllCoroutines ();
+			StartCoroutine (SuperEnum ());
+		}
+	}
+	IEnumerator SuperEnum(){
+		proximityBox.SetActive (true);
+		spriteAnimator.PlaySuper ();
+		PMS.StopMovement ();
+		state.SetState ("attack");
+		bool canShoot = true;
+		for (int i = 0; i < 70; i++) {
+			if (i > 50) {
+				PMS.EnableCollider (true);
+
+				PMS.MoveToward (0, 25);
+			}
+			yield return null;
+		}
+
+		if (PMS.OnLeft) {
+			transform.position = new Vector3 (otherPlayer.transform.position.x-12, 10, otherPlayer.transform.position.z);
+		} else {
+			transform.position = new Vector3 (otherPlayer.transform.position.x+12, 10, otherPlayer.transform.position.z);
+		}
+		superHitbox.SetActive (true);
+		for (int i = 0; i < 40; i++) {
+			if (PMS.OnLeft) {
+				PMS.MoveToward (15, -15);
+			} else {
+				PMS.MoveToward (-15, -15);
+			}
+			yield return null;
+		}
+		PMS.EnableCollider (false);
+		PMS.StopMovement ();
+		superHitbox.GetComponent<AnimateOnce> ().Animate ();
+		superHitbox.GetComponent<FollowScript> ().transformToFollow = null;
+		for (int x = 0; x < 25;x++) {
+			if (x == 10) {
+				PMS.MoveToward (-15, 15);
+			}
+			yield return null;
+		}
+		state.SetState ("neutral");
+	}
+
+	public void LightHit(){
+		lightHitboxHit = true;
+	}
+	public void MediumHit(){
+		mediumHitboxHit = true;
+	}
+	public void HeavyHit(){
+		heavyHitboxHit = true;
+	}
+	public void SpecialHit(){
+		specialHitboxHit = true;
+		canMoveDuringCharge = false;
+	}
+	public void CancelAttacks(){
+		mediumBuffer = false;
+		sp2Buffer = false;
+		lightBuffer = false;
+		sp1Buffer = false;
+		StopAllCoroutines ();
+		lightHitbox.SetActive (false);
+		mediumHitbox.SetActive (false);
+		heavyHitbox.SetActive (false);
+		jumpLightHitbox.SetActive (false);
+		jumpMediumHitbox.SetActive (false);
+		jumpHeavyHitbox.SetActive (false);
+
+		sp3Hitbox.SetActive (false);
+		throwHitbox.SetActive (false);
+		proximityBox.SetActive (false);
+		specialHitboxHit = false;
+		lightHitboxHit = false;
+		mediumHitboxHit = false;
+		heavyHitboxHit = false;
+
+	}
+
+	public void SetPlayer(bool playerOne){
+		if (playerOne) {
+			fireball.GetComponent<ProjectileScript> ().projectileOwner = 0;
+
+			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			jumpMediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			jumpHeavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			lightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			mediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			heavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			//sp1Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			fireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerTwoHurtbox");
+			fireball.GetComponentInChildren<ProximityBlockScript>().tagToDamage = "playerTwo";
+			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerTwo";
+
+		} else {
+			fireball.GetComponent<ProjectileScript> ().projectileOwner = 1;
+
+			jumpLightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			jumpMediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			jumpHeavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			lightHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			mediumHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			heavyHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			//sp1Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			sp3Hitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			fireball.GetComponentInChildren<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+			throwHitbox.GetComponent<HitboxScript>().AddTagToDamage("playerOneHurtbox");
+
+			fireball.GetComponentInChildren<ProximityBlockScript>().tagToDamage = "playerOne";
+			proximityBox.GetComponent<ProximityBlockScript>().tagToDamage = "playerOne";
+		}
+	}
+}

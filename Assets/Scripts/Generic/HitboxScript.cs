@@ -62,12 +62,14 @@ public class HitboxScript : MonoBehaviour {
 		// do work if tags match
 		if (match && isEnabled) {
 			
-			if (isThrow){
-				throwFunc (other.transform.parent.transform);
-			}
+
 			// deal the damage
 
 			bool blocked = other.GetComponentInParent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback, isFreezingAttack, launcher);
+
+			if (isThrow && !blocked){
+				throwFunc (other.transform.parent.transform);
+			}
 			// run optional function
 			if (optionalFunc != null){
 				// only run when opt is allowed on block and move is not blocked or hits
