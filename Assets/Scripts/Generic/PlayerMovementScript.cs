@@ -25,6 +25,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	public delegate void vDelegate();
 	 vDelegate cancelAttacks;
 	BoxCollider2D movementBox;
+	bool gettingUp = false;
 
 	// Use this for initialization
 	void Awake () {
@@ -133,6 +134,28 @@ public class PlayerMovementScript : MonoBehaviour {
 			hurtboxes.eulerAngles = new Vector2(0, 0);
 		}
 	}
+	public void ForceFlip(){
+
+		if (transform.position.x > otherPlayer.transform.position.x && OnLeft == true) {
+			OnLeft = false;
+			if (LeftFacingSprites) {
+				SR.flipX = false;
+			} else {
+				SR.flipX = true;
+			}
+			attacksObject.eulerAngles = new Vector2 (0, 180);
+			hurtboxes.eulerAngles = new Vector2 (0, 180);
+		} else if (transform.position.x < otherPlayer.transform.position.x && OnLeft == false) {
+			OnLeft = true;
+			if (LeftFacingSprites) {
+				SR.flipX = true;
+			} else {
+				SR.flipX = false;
+			}
+			attacksObject.eulerAngles = new Vector2 (0, 0);
+			hurtboxes.eulerAngles = new Vector2 (0, 0);
+		}
+	}
 	public void JumpCheck(float x, float y){
 		if (y > .4f) {
 			if (x > .25f) {
@@ -212,7 +235,11 @@ public class PlayerMovementScript : MonoBehaviour {
 				StopMovement ();
 				spriteAnimator.PlayLanding ();
 				landingRecoveryFrames--;
-			} else {
+			} else if (state.GetState () == "falling hit" && !gettingUp) {
+				state.SetState ("invincible");
+				StopAllCoroutines ();
+				StartCoroutine (GetUpAfterKnockdown ());
+			}else {
 				state.SetState ("neutral");
 			}
 			movementBox.offset = moveboxOffset;
@@ -298,5 +325,17 @@ public class PlayerMovementScript : MonoBehaviour {
 		cancelAttacks ();
 		canMove = false;
 	}
-
+	IEnumerator GetUpAfterKnockdown(){
+		Debug.Log ("landed");
+		gettingUp = true;
+		yield return new WaitForSeconds (.5f);
+		spriteAnimator.PlayGetup ();
+		for (int i = 0; i < 30; i++) {
+			yield return null;
+		}
+		//Debug.Log ("landed");
+		state.SetState ("neutral");
+		spriteAnimator.PlayNeutralAnim ();
+		gettingUp = false;
+	}
 }

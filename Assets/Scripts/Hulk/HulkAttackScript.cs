@@ -59,6 +59,7 @@ public class HulkAttackScript : MonoBehaviour {
 		heavyHitboxScript.SetOptFunc (HeavyHit);
 		throwHitboxScript.SetThrowFunc (ThrowHit);
 		sp3Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
+		sp1Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
 
 
 	}
@@ -146,6 +147,7 @@ public class HulkAttackScript : MonoBehaviour {
 				}
 				// add force
 				if (x == 24){
+					specialHitboxHit = true;
 					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (17, 25);
 
 					otherPlayer.GetComponent<PlayerMovementScript> ().DsableBodyBox ();
@@ -314,6 +316,7 @@ public class HulkAttackScript : MonoBehaviour {
 				}
 				if (x == 12) {
 					heavyHitbox.SetActive (false);
+					proximityBox.SetActive (false);
 					state.SetState ("heavy recovery");
 				}
 
@@ -545,28 +548,29 @@ public class HulkAttackScript : MonoBehaviour {
 			yield return null;
 		}
 
+		PMS.ForceFlip ();
 		if (PMS.OnLeft) {
 			transform.position = new Vector3 (otherPlayer.transform.position.x-12, 10, otherPlayer.transform.position.z);
+			superHitbox.transform.eulerAngles = new Vector3 (0, 0, 0);
 		} else {
 			transform.position = new Vector3 (otherPlayer.transform.position.x+12, 10, otherPlayer.transform.position.z);
+			superHitbox.transform.eulerAngles = new Vector3 (0, 180, 0);
 		}
+		superHitbox.transform.position = transform.position;
 		superHitbox.SetActive (true);
 		for (int i = 0; i < 40; i++) {
-			if (PMS.OnLeft) {
-				PMS.MoveToward (15, -15);
-			} else {
-				PMS.MoveToward (-15, -15);
-			}
+			PMS.MoveToward (15, -15);
+			
 			yield return null;
 		}
 		PMS.EnableCollider (false);
 		PMS.StopMovement ();
 		superHitbox.GetComponent<AnimateOnce> ().Animate ();
 		superHitbox.GetComponent<FollowScript> ().transformToFollow = null;
+
+		PMS.MoveToward (-15, 15);
 		for (int x = 0; x < 25;x++) {
-			if (x == 10) {
-				PMS.MoveToward (-15, 15);
-			}
+			
 			yield return null;
 		}
 		state.SetState ("neutral");

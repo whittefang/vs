@@ -75,16 +75,16 @@ public class HealthScript : MonoBehaviour {
 	// if attack is blocked returns true else it returns false
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
-		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false){
+		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false){
 
 		// check for invincible or blocking
 		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
-		    (isThrow && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack")) {
+			(isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack")) {
 
 			Debug.Log (isThrow + " " + state.GetState ());
 			// player got hit
 			// deal damage
-			if (state.GetState () == "hitstun" || state.GetState () == "falling hit") {
+			if (state.GetState () == "hitstun" || state.GetState () == "falling hit" || state.GetState() == "frozen") {
 				comboCounter++;
 				comboScaling -= .1f;
 
@@ -116,14 +116,7 @@ public class HealthScript : MonoBehaviour {
 
 
 
-			// play hit animation
-			if (isThrow) {
-				sounds.PlayThrowHit ();	
-				spriteAnimator.PlayHit (hitstun);
-			} else if (!freezingAttack) {
-				sounds.PlayHit ();
-				spriteAnimator.PlayHit (hitstun);
-			}
+
 			// set hitstun
 			StopAllCoroutines ();
 			PMS.landingRecoveryFrames = 0;
@@ -137,7 +130,15 @@ public class HealthScript : MonoBehaviour {
 				spriteAnimator.PlayHit (hitstun);
 			} else {
 				SR.material.SetFloat ("_EffectAmount", 0);
-				spriteAnimator.PlayHit (hitstun);
+				// play hit animation
+				if (isThrow) {
+					sounds.PlayThrowHit ();	
+					spriteAnimator.PlayHit (hitstun);
+				} else if (isKnockdownAttack || state.GetState () == "jumping" || state.GetState () == "jumping attack" || state.GetState () == "falling hit") {
+					spriteAnimator.PlayKnockdown ();
+				} else {
+					spriteAnimator.PlayHit (hitstun);
+				}
 			}
 
 			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher));
@@ -189,7 +190,7 @@ public class HealthScript : MonoBehaviour {
 		GameObject sparks = blocksparksPool.FetchObject ();
 		sparks.transform.position = position + new Vector3(Random.Range(-.75f, .75f), Random.Range(-1f, 1f),0);
 		sparks.SetActive(true);
-		timeManager.StopTime (7);
+		timeManager.StopTime (4);
 
 		PMS.CheckFacing ();
 		PMS.MoveToward (-bockPush.x, bockPush.y);
@@ -218,8 +219,14 @@ public class HealthScript : MonoBehaviour {
 
 	}
 	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false){
-		
+
+		 if (freezingAttack){
+			state.SetState ("frozen");
+		}else if (state.GetState () == "jumping" || state.GetState () == "jumping attack" || state.GetState () == "falling hit") {
+			state.SetState ("falling hit");
+		}else {
 			state.SetState ("hitstun");
+		}
 		
 		if (HitFunc != null) {
 			HitFunc ();
@@ -231,7 +238,7 @@ public class HealthScript : MonoBehaviour {
 			sparks.transform.position = position + new Vector3 (Random.Range (-.75f, .75f), Random.Range (-1f, 1f), 0);
 			sparks.SetActive (true);
 		}
-		timeManager.StopTime (5);
+		timeManager.StopTime (3);
 		PMS.CheckFacing ();
 		if (!freezingAttack) {
 			PMS.MoveToward (-hitPush.x, hitPush.y);
@@ -260,7 +267,7 @@ public class HealthScript : MonoBehaviour {
 			yield return null;
 		}
 
-		if (PMS.ForceGroundCheck ()) {
+		if (PMS.ForceGroundCheck () && (state.GetState() == "hitstun" || state.GetState() == "frozen")) {
 			state.SetState ("neutral");
 			PMS.EnableBodyBox ();
 		} else {

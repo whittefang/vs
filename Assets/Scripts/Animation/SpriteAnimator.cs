@@ -7,7 +7,7 @@ public class SpriteAnimator : MonoBehaviour {
 	AnimationDelegate walkAnim, walkAwayAnim, stopAnimations, neutralAnim, jumpTowardAnim, jumpAwayAnim, jumpNeutralAnim,
 					  lightAnim, mediumAnim, heavyAnim, jumpLightAnim, jumpMediumAnim, jumpHeavyAnim, specialOneAnim,
 					  specialTwoAnim,specialThreeAnim, throwTryAnim,throwCompleteAnim, superAnim,  blockAnim, winAnimation,
-					  landingAnimation, extraAnim1,extraAnim2,extraAnim3,extraAnim4;
+					  landingAnimation, extraAnim1,extraAnim2,extraAnim3,extraAnim4, knockdownAnim, getupAnim;
 	AnimationDelegateInt hitAnim;
 	public string currentState = "blank";
 	// Use this for initialization
@@ -117,6 +117,13 @@ public class SpriteAnimator : MonoBehaviour {
 	public void PlayLanding(){
 		landingAnimation();
 	}
+	public void PlayKnockdown(){
+		knockdownAnim();
+	}
+	public void PlayGetup(){
+		currentState = "getup";
+		getupAnim();
+	}
 	public void PlayExtra1(){
 		extraAnim1();
 	}
@@ -218,5 +225,11 @@ public class SpriteAnimator : MonoBehaviour {
 	}
 	public void setExtra4Animation(AnimationDelegate newAnim){
 		extraAnim4 = newAnim;
+	}
+	public void setKnockdownAnimation(AnimationDelegate newAnim){
+		knockdownAnim = newAnim;
+	}
+	public void setGetupAnimation(AnimationDelegate newAnim){
+		getupAnim = newAnim;
 	}
 }

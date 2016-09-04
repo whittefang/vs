@@ -26,11 +26,14 @@ public class FeliciaAnimScript : MonoBehaviour {
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
 	public Sprite[] SuperFrames;
+	public Sprite[] knockdownFrames;
+	public Sprite[] getUpFrames;
 	public Sprite landingSprite;
 	public SpriteAnimator spriteAnimator;
 	public Transform hurtboxBody;
 	public Transform hurtboxLimb;
 	public GameObject SuperBG;
+	PlayerMovementScript PMS;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
@@ -41,6 +44,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		PMS = GetComponent<PlayerMovementScript> ();
 		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
 		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
 
@@ -71,6 +75,8 @@ public class FeliciaAnimScript : MonoBehaviour {
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
 		spriteAnimator.setLandingAnimation (StartLandingAnim);
+		spriteAnimator.setKnockdownAnimation (StartknockdownAnim);
+		spriteAnimator.setGetupAnimation (StartGetUpAnim);
 		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
@@ -125,6 +131,30 @@ public class FeliciaAnimScript : MonoBehaviour {
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];
 			for (int x = 0; x < 5; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator KnockdownAnim(){
+		for(int i = 0; i < knockdownFrames.Length; ){
+			spriteRenderer.sprite = knockdownFrames [i];
+			if (i == 4 && PMS.ForceGroundCheck ()) {
+				i++;
+			} else if (i != 4) {
+				i++;
+			}
+			for (int x = 0; x < 3;) {
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+				yield return null;
+			}
+		}
+	}
+	IEnumerator GetUpAnim(){
+		for(int i = 0; i < getUpFrames.Length; i++){
+			spriteRenderer.sprite = getUpFrames [i];
+			for (int x = 0; x < 3; x++) {
 				yield return null;
 			}
 		}
@@ -661,6 +691,14 @@ public class FeliciaAnimScript : MonoBehaviour {
 		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
 		hurtboxLimb.gameObject.SetActive (false);
 		StopAllCoroutines ();
+	}
+	public void StartknockdownAnim(){
+		EndAnimations ();
+		StartCoroutine (KnockdownAnim());
+	}
+	public void StartGetUpAnim(){
+		EndAnimations ();
+		StartCoroutine (GetUpAnim());
 	}
 	public void StartLandingAnim(){
 		spriteRenderer.sprite = landingSprite;

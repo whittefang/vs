@@ -27,6 +27,8 @@ public class YukikoAnimationScript : MonoBehaviour {
 	public Sprite[] introFrames;
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
+	public Sprite[] knockdownFrames;
+	public Sprite[] getUpFrames;
 	public SpriteAnimator spriteAnimator;
 	public Transform hurtboxBody;
 	public Transform hurtboxLimb;
@@ -38,9 +40,11 @@ public class YukikoAnimationScript : MonoBehaviour {
 	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
 	SoundsPlayer sound;
+	PlayerMovementScript PMS;
 	// Use this for initialization
 	void Start () {
 
+		PMS = GetComponent<PlayerMovementScript> ();
 		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
 		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
 
@@ -72,6 +76,8 @@ public class YukikoAnimationScript : MonoBehaviour {
 		spriteAnimator.setExtra2Animation (StartMedium2Anim);
 		spriteAnimator.setExtra3Animation (StartMedium3Anim);
 		spriteAnimator.setExtra4Animation (StartHeavyLoopAnim);
+		spriteAnimator.setKnockdownAnimation (StartknockdownAnim);
+		spriteAnimator.setGetupAnimation (StartGetUpAnim);
 		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
 			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		}
@@ -149,6 +155,30 @@ public class YukikoAnimationScript : MonoBehaviour {
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];
 			for (int x = 0; x < 5; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator KnockdownAnim(){
+		for(int i = 0; i < knockdownFrames.Length; ){
+			spriteRenderer.sprite = knockdownFrames [i];
+			if (i == 6 && PMS.ForceGroundCheck ()) {
+				i++;
+			} else if (i != 6) {
+				i++;
+			}
+			for (int x = 0; x < 3;) {
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+				yield return null;
+			}
+		}
+	}
+	IEnumerator GetUpAnim(){
+		for(int i = 0; i < getUpFrames.Length; i++){
+			spriteRenderer.sprite = getUpFrames [i];
+			for (int x = 0; x < 3; x++) {
 				yield return null;
 			}
 		}
@@ -252,7 +282,7 @@ public class YukikoAnimationScript : MonoBehaviour {
 
 	}
 	IEnumerator Hit(int duration){
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = HitFrames [i];
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -262,28 +292,7 @@ public class YukikoAnimationScript : MonoBehaviour {
 				}	
 			}
 		}
-		while (duration > 0) {
-			if ((duration / 3) <= 3) {
-				int frame = 2 + (4 - (duration / 3));
-				if (frame >= 5) {
-					frame = 5;
-				}
-				spriteRenderer.sprite = HitFrames[frame ];
-				for (int x = 0; x < 3;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
-						x++;
-						duration--;
-					}	
-				}
-			} else {
-				yield return null;
-				if (!timeManager.CheckIfTimePaused ()) {
-					duration--;
-				}
 
-			}
-		}
 	}
 	IEnumerator Block(){
 		for (int i = 0; i < 4; i++) {
@@ -678,6 +687,14 @@ public class YukikoAnimationScript : MonoBehaviour {
 	public void StartSuperAnim(){
 		EndAnimations ();
 		StartCoroutine (SuperAnim());
+	}
+	public void StartknockdownAnim(){
+		EndAnimations ();
+		StartCoroutine (KnockdownAnim());
+	}
+	public void StartGetUpAnim(){
+		EndAnimations ();
+		StartCoroutine (GetUpAnim());
 	}
 	public void EndAnimations(){
 		StopAllCoroutines ();

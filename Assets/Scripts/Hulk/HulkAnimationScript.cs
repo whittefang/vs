@@ -25,10 +25,14 @@ public class HulkAnimationScript : MonoBehaviour {
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
 	public Sprite[] superFrames;
+	public Sprite[] knockdownFrames;
+	public Sprite[] getUpFrames;
 	public SpriteAnimator spriteAnimator;
 	public Transform hurtboxBody;
 	public Transform hurtboxLimb;
-	public GameObject Bag;
+	public GameObject chargeEffect;
+	public GameObject poundEffect;
+
 	public GameObject SuperBG;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
@@ -37,9 +41,11 @@ public class HulkAnimationScript : MonoBehaviour {
 	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
 	SoundsPlayer sound;
+	PlayerMovementScript PMS;
 	// Use this for initialization
 	void Start () {
 
+		PMS = GetComponent<PlayerMovementScript> ();
 		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
 		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
 
@@ -67,6 +73,8 @@ public class HulkAnimationScript : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
+		spriteAnimator.setKnockdownAnimation (StartknockdownAnim);
+		spriteAnimator.setGetupAnimation (StartGetUpAnim);
 		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
 			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		}
@@ -81,7 +89,7 @@ public class HulkAnimationScript : MonoBehaviour {
 
 	void SetJumpHitbox(){
 		hurtboxBody.transform.localPosition = new Vector2 (0, 0);
-		hurtboxBody.transform.localScale  = new Vector2 (1.75f, 1.75f);
+		hurtboxBody.transform.localScale  = new Vector2 (2.25f, 1.75f);
 	}
 	void SetHurtbox(Vector2 position, Vector2 scale, Transform hurtbox){
 		hurtbox.localPosition = position;
@@ -144,6 +152,30 @@ public class HulkAnimationScript : MonoBehaviour {
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];
 			for (int x = 0; x < 5; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator KnockdownAnim(){
+		for(int i = 0; i < knockdownFrames.Length; ){
+			spriteRenderer.sprite = knockdownFrames [i];
+			if (i == 3 && PMS.ForceGroundCheck ()) {
+				i++;
+			} else if (i != 3) {
+				i++;
+			}
+			for (int x = 0; x < 3;) {
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+				yield return null;
+			}
+		}
+	}
+	IEnumerator GetUpAnim(){
+		for(int i = 0; i < neutralJumpFrames.Length; i++){
+			spriteRenderer.sprite = neutralJumpFrames [i];
+			for (int x = 0; x < 3; x++) {
 				yield return null;
 			}
 		}
@@ -254,31 +286,10 @@ public class HulkAnimationScript : MonoBehaviour {
 				}	
 			}
 		}
-		while (duration > 0) {
-			if ((duration / 3) <= 3) {
-				int frame = 2 + (4 - (duration / 3));
-				if (frame >= 5) {
-					frame = 5;
-				}
-				spriteRenderer.sprite = HitFrames[frame ];
-				for (int x = 0; x < 3;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
-						x++;
-						duration--;
-					}	
-				}
-			} else {
-				yield return null;
-				if (!timeManager.CheckIfTimePaused ()) {
-					duration--;
-				}
 
-			}
-		}
 	}
 	IEnumerator Block(){
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = BlockFrames [i];
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -290,7 +301,7 @@ public class HulkAnimationScript : MonoBehaviour {
 	}
 	// depricated
 	IEnumerator Light(){
-		SetHurtbox(new Vector2 (1.5f, .5f), new Vector2 (2, .75f), hurtboxLimb);
+		SetHurtbox(new Vector2 (2f, -3.35f), new Vector2 (2.5f, 1.25f), hurtboxLimb);
 
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = lightFrames [i];
@@ -304,12 +315,12 @@ public class HulkAnimationScript : MonoBehaviour {
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator Medium(){
-		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
 
 			if (i == 2) {
-				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
+				poundEffect.SetActive (true);
+				SetHurtbox (new Vector2 (1.6f, -3f), new Vector2 (2.7f, 1f),hurtboxLimb);
 			}
 			if (i == 3) {
 				hurtboxLimb.gameObject.SetActive (false);
@@ -325,8 +336,8 @@ public class HulkAnimationScript : MonoBehaviour {
 	IEnumerator Heavy(){
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
-			if (i == 6) {
-				SetHurtbox(new Vector2 (2.1f, .2f), new Vector2 (2.5f, 1f), hurtboxLimb);
+			if (i == 1) {
+				SetHurtbox(new Vector2 (3f, -.7f), new Vector2 (3f, 1f), hurtboxLimb);
 			}
 			if (i == 10) {
 				hurtboxLimb.gameObject.SetActive (false);
@@ -341,6 +352,7 @@ public class HulkAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpLight(){
 		SetJumpHitbox ();
+		SetHurtbox(new Vector2 (2f, .6f), new Vector2 (3f, 1f), hurtboxLimb);
 		for (int i = 0; i < 3; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
 			for (int x = 0; x < 3;) {
@@ -353,6 +365,7 @@ public class HulkAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpMedium(){
 		SetJumpHitbox ();
+		SetHurtbox(new Vector2 (1f, -1f), new Vector2 (2f, 1.5f), hurtboxLimb);
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
@@ -366,11 +379,10 @@ public class HulkAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpHeavy(){
 		SetJumpHitbox ();
+		SetHurtbox(new Vector2 (1.2f, -1.6f), new Vector2 (3f, 2f), hurtboxLimb);
 		for (int i = 0; i < 2; i++) {
-
-			SetHurtbox(new Vector2 (1.8f, -.3f), new Vector2 (2f, 1f), hurtboxLimb);
 			spriteRenderer.sprite = jumpHeavyFrames [i];
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 8;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
@@ -438,7 +450,12 @@ public class HulkAnimationScript : MonoBehaviour {
 				x++;
 			}
 		}
+		chargeEffect.SetActive (true);
+		SetHurtbox(new Vector2 (1.6f, -1.7f), new Vector2 (6f, 3.5f), hurtboxBody);
 		for (int ii = 0; ii < 8; ii++) {
+			if (ii == 2) {
+				chargeEffect.SetActive (false);
+			}
 			for (int i = 1; i < 3; i++) {
 				spriteRenderer.sprite = SpecialThreeFrames [i];
 				for (int x = 0; x < 3;) {
@@ -449,6 +466,7 @@ public class HulkAnimationScript : MonoBehaviour {
 				}
 			}	
 		}
+		chargeEffect.SetActive (false);
 	}
 	IEnumerator ThrowTry(){
 		spriteRenderer.sprite = throwFrames [0];
@@ -482,9 +500,9 @@ public class HulkAnimationScript : MonoBehaviour {
 		// super anim
 		// super sound
 		sound.PlaySuperBg();
-		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
+		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, SuperBG.transform.position.z);
 		SuperBG.SetActive(true);
-		timeManager.StopTime (75);
+		timeManager.StopTime (110);
 		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
@@ -602,10 +620,19 @@ public class HulkAnimationScript : MonoBehaviour {
 		EndAnimations ();
 		StartCoroutine (SuperAnim());
 	}
+	public void StartknockdownAnim(){
+		EndAnimations ();
+		StartCoroutine (KnockdownAnim());
+	}
+	public void StartGetUpAnim(){
+		EndAnimations ();
+		StartCoroutine (GetUpAnim());
+	}
 	public void EndAnimations(){
 		StopAllCoroutines ();
 		hurtboxBody.transform.localScale  = hurtboxBodyOriginalScale;
 		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
+		chargeEffect.SetActive (false);
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 }

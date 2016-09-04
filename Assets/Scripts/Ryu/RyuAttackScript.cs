@@ -8,7 +8,7 @@ public class RyuAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject fireball, superFireball, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
-					sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
+	sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox,sp3HitboxP2, fireballGunpoint, throwHitbox, proximityBox;
 
 	ProjectileScript fireballProjectileScript , superProjectileScript;
 	TimeManagerScript timeManager;
@@ -503,10 +503,11 @@ public class RyuAttackScript : MonoBehaviour {
 					sp3Hitbox.SetActive(false);
 				}
 				if (x == 66) {
-					sp3Hitbox.SetActive(true);
+					sp3Hitbox.SetActive(false);
+					sp3HitboxP2.SetActive(true);
 				}
 				if (x == 68) {
-					sp3Hitbox.SetActive(false);
+					sp3HitboxP2.SetActive(false);
 					proximityBox.SetActive (false);
 				}
 
@@ -606,6 +607,7 @@ public class RyuAttackScript : MonoBehaviour {
 		sp2HitboxPart1.SetActive (false);
 		sp2HitboxPart2.SetActive (false);
 		sp3Hitbox.SetActive (false);
+		sp3HitboxP2.SetActive (false);
 		throwHitbox.SetActive (false);
 		proximityBox.SetActive (false);
 		specialHitboxHit = false;

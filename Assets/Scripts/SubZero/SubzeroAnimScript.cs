@@ -22,6 +22,8 @@ public class SubzeroAnimScript : MonoBehaviour {
 	public Sprite[] introFrames;
 	public Sprite[] winFrames;
 	public Sprite[] deathFrames;
+	public Sprite[] knockdownFrames;
+	public Sprite[] getUpFrames;
 	public SpriteAnimator spriteAnimator;
 	public Transform hurtboxBody;
 	public Transform hurtboxLimb;
@@ -35,6 +37,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	SpriteRenderer spriteRenderer;
 	SoundsPlayer sound;
 
+	PlayerMovementScript PMS;
 	void Update(){
 		if (Input.GetKeyDown (KeyCode.DownArrow)) {
 			StartDeathAnim ();
@@ -43,6 +46,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		PMS = GetComponent<PlayerMovementScript> ();
 		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
 		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
 
@@ -70,6 +74,8 @@ public class SubzeroAnimScript : MonoBehaviour {
 		spriteAnimator.SetThrowCompleteAnimation (StartThrowCompleteAnim);
 		spriteAnimator.SetSuperAnimation (StartSuperAnim);
 		spriteAnimator.setWinAnimation (StartWinAnim);
+		spriteAnimator.setKnockdownAnimation (StartknockdownAnim);
+		spriteAnimator.setGetupAnimation (StartGetUpAnim);
 		hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		StartIntroAnim ();
 		sound = GetComponent<SoundsPlayer> ();
@@ -189,6 +195,30 @@ public class SubzeroAnimScript : MonoBehaviour {
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];
 			for (int x = 0; x < 5; x++) {
+				yield return null;
+			}
+		}
+	}
+	IEnumerator KnockdownAnim(){
+		for(int i = 0; i < knockdownFrames.Length; ){
+			spriteRenderer.sprite = knockdownFrames [i];
+			if (i == 3 && PMS.ForceGroundCheck ()) {
+				i++;
+			} else if (i != 3) {
+				i++;
+			}
+			for (int x = 0; x < 3;) {
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+				yield return null;
+			}
+		}
+	}
+	IEnumerator GetUpAnim(){
+		for(int i = 0; i < getUpFrames.Length; i++){
+			spriteRenderer.sprite = getUpFrames [i];
+			for (int x = 0; x < 3; x++) {
 				yield return null;
 			}
 		}
@@ -539,6 +569,14 @@ public class SubzeroAnimScript : MonoBehaviour {
 	public void StartSuperAnim(){
 		EndAnimations ();
 		StartCoroutine (SuperAnim());
+	}
+	public void StartknockdownAnim(){
+		EndAnimations ();
+		StartCoroutine (KnockdownAnim());
+	}
+	public void StartGetUpAnim(){
+		EndAnimations ();
+		StartCoroutine (GetUpAnim());
 	}
 	public void EndAnimations(){
 		StopAllCoroutines ();
