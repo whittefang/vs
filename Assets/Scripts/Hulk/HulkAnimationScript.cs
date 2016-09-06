@@ -337,6 +337,7 @@ public class HulkAnimationScript : MonoBehaviour {
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
 			if (i == 1) {
+				sound.PlayHeavy ();
 				SetHurtbox(new Vector2 (3f, -.7f), new Vector2 (3f, 1f), hurtboxLimb);
 			}
 			if (i == 10) {
@@ -401,15 +402,17 @@ public class HulkAnimationScript : MonoBehaviour {
 
 			}
 		}
+
+		sound.PlaySP1 ();
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
 
-			if (i == 2) {
-				sound.PlaySP1 ();
-			}
+
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
+					if (i == 2) {
+					}
 					x++;
 				}
 			}
@@ -420,7 +423,6 @@ public class HulkAnimationScript : MonoBehaviour {
 	IEnumerator SpecialTwo(){
 		for (int i = 0; i < 13; i++) {
 			if (i == 1) {
-				sound.PlaySP2 ();
 			}
 			spriteRenderer.sprite = SpecialTwoFrames [i];
 			// hold on rising uppercut
@@ -469,6 +471,7 @@ public class HulkAnimationScript : MonoBehaviour {
 		chargeEffect.SetActive (false);
 	}
 	IEnumerator ThrowTry(){
+		sound.PlaySP2();
 		spriteRenderer.sprite = throwFrames [0];
 		for (int x = 0; x < 10;) {
 			yield return null;

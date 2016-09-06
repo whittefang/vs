@@ -192,6 +192,7 @@ public class YukikoAttackScript : MonoBehaviour {
 		spriteAnimator.PlayExtra1 ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
+		sounds.PlayMedium ();
 		for (int x = 0; x < 42;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 6) {
@@ -393,6 +394,9 @@ public class YukikoAttackScript : MonoBehaviour {
 //				StopAllCoroutines ();
 //				StartCoroutine (heavyEnum ());
 //			} else if (persona.GetAttackState () != 0){
+			if (!persona.isActive){
+				sounds.PlayHeavy ();
+			}
 				ActivatePersona(persona.StartAttacksAnim);
 //			}
 //		} else if (state.GetState () == "jumping" && persona.CheckAlive()) {

@@ -458,6 +458,8 @@ public class YukikoAnimationScript : MonoBehaviour {
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator SpecialOne(){
+		sound.PlaySP1 ();
+	
 		for (int i = 0; i < 9; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
 
@@ -466,15 +468,14 @@ public class YukikoAnimationScript : MonoBehaviour {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused ()) {
 						x++;
-						if (i == 2) {
-							sound.PlaySP1 ();
-						}
+
 					}
 				}
 			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
+					
 					x++;
 				}
 			}

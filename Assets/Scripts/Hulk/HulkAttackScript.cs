@@ -110,6 +110,7 @@ public class HulkAttackScript : MonoBehaviour {
 
 		spriteAnimator.PlayThrowComplete ();
 		PMS.DsableBodyBox ();
+		sounds.PlayExtra ();
 		ThrowPoint.transform.localPosition = new Vector2 (4, 0);
 		otherPlayer.position = ThrowPoint.transform.position;
 		Vector2 endPoint = new Vector2(4f,0);
@@ -375,7 +376,6 @@ public class HulkAttackScript : MonoBehaviour {
 					sp1Buffer = false;
 				}
 				if (x == 17) {
-					sounds.PlayExtra ();
 					fireball.transform.position = transform.position;
 					if (PMS.OnLeft) {
 						fireball.transform.eulerAngles = new Vector3 (0, 0, 0);
@@ -478,7 +478,7 @@ public class HulkAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
-		state.SetState ("projectile invulnerable");
+		state.SetState ("attack");
 		canMoveDuringCharge = true;
 		for (int x = 0; x < 35;) {
 
