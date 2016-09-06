@@ -13,7 +13,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	public Sprite[] jumpMediumFrames;
 
 	public GameObject sp1Fireball, sp3TrapPre, sp3TrapAttack, attack1Hitbox,attack2Hitbox, attack3Hitbox, mediumHitbox
-					, dpHitbox, superHitbox;
+					, dpHitbox, superHitbox, superEffects;
 	SpriteRenderer spriteRenderer;
 	TimeManagerScript timeManager;
 	SoundsPlayer sound;
@@ -26,6 +26,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	int maxCards = 4;
 	int currentCards = 4;
 	GameObject hitboxes;
+	public PersonaCardsScript Cards;
 	public YukikoAttackScript yukiAttack;
 	// Use this for initialization
 	void Awake () {
@@ -36,15 +37,18 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		hitboxes = attack1Hitbox.transform.parent.gameObject;
 	}
 	public void SetOtherPlayer(bool isP1){
+		Cards.transform.parent = GameObject.Find ("Camera").transform;
 		if (isP1) {
 			tag = "P1Persona";
 			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
 			tag = "P2Persona";
+			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
 	}
 	IEnumerator SendOut(){
+		attackStage=-1;
 		spriteRenderer.sprite = SendoutFrames [0];
 		Vector2 direction;
 		if (transform.position.x > otherPlayer.position.x) {
@@ -132,7 +136,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 	IEnumerator Attack2(){
 		int animationFrame = 0;
-
+		Vector2 direction;
+		if (transform.position.x > otherPlayer.position.x) {
+			direction = new Vector2 (-10, 0);
+		} else {
+			direction = new Vector2 (10, 0);				
+		}
 		attackStage=-1;
 		spriteRenderer.sprite = Attack2Frames [0];
 		for (int i = 0; i < 39;) {
@@ -143,10 +152,10 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 				}
 				animationFrame++;
 			}
-			if (i == 10) {
+			if (i == 13) {
 				attack2Hitbox.SetActive (true);
 			}
-			if (i == 12) {
+			if (i == 15) {
 				attack2Hitbox.SetActive (false);
 			}
 			if (i == 17) {
@@ -155,6 +164,11 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (i < 10) {
+					RB.velocity = direction;
+				} else {
+					RB.velocity = Vector2.zero;
+				}
 				i++;
 			}
 
@@ -165,6 +179,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	IEnumerator Attack3(){
 		transform.position = new Vector3 (transform.position.x, transform.position.y -1.2f, transform.position.z);
 		int animationFrame = 0;
+		Vector2 direction;
+		if (transform.position.x > otherPlayer.position.x) {
+			direction = new Vector2 (-10, 0);
+		} else {
+			direction = new Vector2 (10, 0);				
+		}
 		attackStage= -1;
 		spriteRenderer.sprite = Attack3Frames [0];
 		for (int i = 0; i < 27;) {
@@ -183,15 +203,21 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			}
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
+				if (i < 10) {
+					RB.velocity = direction;
+				} else {
+					RB.velocity = Vector2.zero;
+				}
 				i++;
 			}
 
 		}
-		attackStage = 0;
+		attackStage = -1;
 		//StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator SpecialOne(){
 
+		attackStage = -2;
 		int animationFrame = 0;
 		spriteRenderer.sprite = SpecialOneFrames [0];
 		for (int i = 0; i < 21;) {
@@ -221,6 +247,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator SpecialTwo(){
+		attackStage = -2;
 		if (transform.position.x > otherPlayer.position.x) {
 			transform.position = new Vector3 (transform.position.x+1f, transform.position.y + 1f, transform.position.z);
 		}else {
@@ -254,6 +281,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator SpecialThree(){
+		attackStage = -2;
 		int animationFrame = 0;
 		spriteRenderer.sprite = SpecialThreeFrames [0];
 		for (int i = 0; i < 42;) {
@@ -285,6 +313,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	}
 	IEnumerator Super(){
 		int animationFrame = 0;
+		superEffects.SetActive (true);
 		for (int i = 0; i < 60;) {
 			
 
@@ -326,7 +355,6 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		dpHitbox.SetActive (false);
 
 
-		attackStage = 0;
 		isActive = false;
 		for (int i = 0; i < 10;) {
 			yield return null;
@@ -337,6 +365,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			}
 		}
 		gameObject.SetActive (false);
+		attackStage = 0;
 	}
 	public void Summon(){
 		StartCoroutine (SummonEffect ());
@@ -345,16 +374,17 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	IEnumerator SummonEffect(){	
 
 		CheckFacing ();
-		spriteRenderer.color  = new Color(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b,0);
-			
-		for (int i = 0; i < 10;) {
-			yield return null;
-			if (!timeManager.CheckIfTimePaused()) {
-				i++;
-				spriteRenderer.color  = new Color(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b, spriteRenderer.color.a + .1f);
-			
-			}
-		}
+		yield return null;
+//		spriteRenderer.color  = new Color(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b,0);
+//			
+//		for (int i = 0; i < 10;) {
+//			yield return null;
+//			if (!timeManager.CheckIfTimePaused()) {
+//				i++;
+//				spriteRenderer.color  = new Color(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b, spriteRenderer.color.a + .1f);
+//			
+//			}
+//		}
 
 	}
 	void CheckFacing(){
@@ -385,6 +415,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		currentCards--;
 		StopAllCoroutines ();
 		UnSummon ();
+		Cards.RemoveCard ();
 		//play hit sound(glass break)
 		if (currentCards <= 0) {
 			alive = false;
@@ -393,11 +424,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	}
 	void ReActivate(){
 		currentCards = maxCards;
+		Cards.ResetCards ();
 		alive = true;
 	}
 
 	public void StartAttacksAnim(){
-		if (alive) {
+		if (alive && attackStage != -2) {
 			if (attackStage != -1) {
 				EndAnimations ();
 			}
@@ -432,7 +464,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		}
 	}
 		public void StartSpecialOneAnim(){
-		if (alive) {
+		if (alive && attackStage != -2) {
 			EndAnimations ();
 			CheckFacing ();
 			isActive = true;
@@ -440,7 +472,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		}
 	}
 	public void StartSpecialTwoAnim(){
-		if (alive) {
+		if (alive&& attackStage != -2) {
 			EndAnimations ();
 			CheckFacing ();
 			isActive = true;
@@ -448,7 +480,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		}
 	}
 	public void StartSpecialThreeAnim(){
-		if (alive) {
+		if (alive&& attackStage != -2) {
 			EndAnimations ();
 			CheckFacing ();
 			isActive = true;

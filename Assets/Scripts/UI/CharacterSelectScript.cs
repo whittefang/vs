@@ -137,7 +137,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		case 0: 
 			return "felicia";
 		case 1: 
-			return "random";
+			return "hulk";
 		case 2: 
 			return "ryu";
 		case 3: 
@@ -145,7 +145,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		case 4: 
 			return "subzero";
 		case 5: 
-			return "random";
+			return "yukiko";
 		case 6: 
 			return "random";
 		default:

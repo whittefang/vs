@@ -218,8 +218,11 @@ public class SubzeroAnimScript : MonoBehaviour {
 	IEnumerator GetUpAnim(){
 		for(int i = 0; i < getUpFrames.Length; i++){
 			spriteRenderer.sprite = getUpFrames [i];
-			for (int x = 0; x < 3; x++) {
+			for (int x = 0; x < 3;) {
 				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
 			}
 		}
 	}

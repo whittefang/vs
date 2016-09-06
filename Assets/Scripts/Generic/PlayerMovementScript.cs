@@ -239,7 +239,7 @@ public class PlayerMovementScript : MonoBehaviour {
 				state.SetState ("invincible");
 				StopAllCoroutines ();
 				StartCoroutine (GetUpAfterKnockdown ());
-			}else {
+			}else if (!gettingUp){
 				state.SetState ("neutral");
 			}
 			movementBox.offset = moveboxOffset;
@@ -330,10 +330,14 @@ public class PlayerMovementScript : MonoBehaviour {
 		gettingUp = true;
 		yield return new WaitForSeconds (.5f);
 		spriteAnimator.PlayGetup ();
-		for (int i = 0; i < 30; i++) {
+		Debug.Log ("startgetup");
+		for (int i = 0; i < 30;) {
 			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				i++;
+			}
+			Debug.Log ("getup");
 		}
-		//Debug.Log ("landed");
 		state.SetState ("neutral");
 		spriteAnimator.PlayNeutralAnim ();
 		gettingUp = false;

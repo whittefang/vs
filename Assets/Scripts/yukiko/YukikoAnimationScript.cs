@@ -91,8 +91,8 @@ public class YukikoAnimationScript : MonoBehaviour {
 
 
 	void SetJumpHitbox(){
-		hurtboxBody.transform.localPosition = new Vector2 (0, 0);
-		hurtboxBody.transform.localScale  = new Vector2 (1.75f, 1.75f);
+		hurtboxBody.transform.localPosition = new Vector2 (0, 1.6f);
+		hurtboxBody.transform.localScale  = new Vector2 (1.2f,1.5f);
 	}
 	void SetHurtbox(Vector2 position, Vector2 scale, Transform hurtbox){
 		hurtbox.localPosition = position;
@@ -307,7 +307,6 @@ public class YukikoAnimationScript : MonoBehaviour {
 	}
 	// depricated
 	IEnumerator Light(){
-		SetHurtbox(new Vector2 (1.5f, .5f), new Vector2 (2, .75f), hurtboxLimb);
 
 		for (int i = 0; i < 13; i++) {
 			spriteRenderer.sprite = lightFrames [i];
@@ -318,11 +317,9 @@ public class YukikoAnimationScript : MonoBehaviour {
 				}
 			}
 		}
-		hurtboxLimb.gameObject.SetActive (false);
 	}
 	// depricated
 	IEnumerator Light2(){
-		SetHurtbox(new Vector2 (1.5f, .5f), new Vector2 (2, .75f), hurtboxLimb);
 
 		for (int i = 0; i < 13; i++) {
 			spriteRenderer.sprite = lightFrames1 [i];
@@ -333,15 +330,12 @@ public class YukikoAnimationScript : MonoBehaviour {
 				}
 			}
 		}
-		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator Medium(){
-		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 8; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
 
 			if (i == 2) {
-				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
 			}
 			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);
@@ -355,12 +349,10 @@ public class YukikoAnimationScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Medium2(){
-		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 10; i++) {
 			spriteRenderer.sprite = mediumFrames2 [i];
 
 			if (i == 2) {
-				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
 			}
 			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);
@@ -374,12 +366,10 @@ public class YukikoAnimationScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Medium3(){
-		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = mediumFrames3 [i];
 
 			if (i == 2) {
-				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
 			}
 			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);

@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Rounds : MonoBehaviour {
 	//variable for prefab
-	public GameObject FeliciaPrefab, RyuPrefab, SubzeroPrefab;
+	public GameObject FeliciaPrefab, HulkPrefab, RyuPrefab, SubzeroPrefab, YukikoPrefab;
 	public string player1character = "ryu";
 	public string player2character = "ryu";
 	public TextMesh textShadow;
@@ -21,9 +21,11 @@ public class Rounds : MonoBehaviour {
 	voidDel win;
 	ExMeter ex;
 	FollowScript fs;
-	public Texture2D[] ryuColor;
 	public Texture2D[] feliciaColor;
+	public Texture2D[] hulkColor;
+	public Texture2D[] ryuColor;
 	public Texture2D[] subzeroColor;
+	public Texture2D[] yukikoColor;
 	public int player1ColorNumber = 0;
 	public int player2ColorNumber = 0;
 	LeftHpBarChange leftHpBarSprite;
@@ -201,6 +203,19 @@ public class Rounds : MonoBehaviour {
 			rightHpBarSprite.SetRightBoarderArt("felicia");
 			}
 			break;
+		case "hulk":
+			player = Instantiate(HulkPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			if (isPlayerOne){
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(hulkColor[player1ColorNumber]);
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("felicia");
+			}
+			else{
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(hulkColor[player2ColorNumber]);
+				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+				rightHpBarSprite.SetRightBoarderArt("felicia");
+			}
+			break;
 		case "subzero":
 			player = Instantiate(SubzeroPrefab, spawnPosition, Quaternion.identity) as GameObject;
 			if (isPlayerOne){
@@ -212,6 +227,19 @@ public class Rounds : MonoBehaviour {
 			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
 			rightHpBarSprite.SetRightBoarderArt("subzero");
 			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(subzeroColor[player2ColorNumber]);
+			}
+			break;
+		case "yukiko":
+			player = Instantiate(YukikoPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			if (isPlayerOne){
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(yukikoColor[player1ColorNumber]);
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("subzero");
+			}
+			else{
+				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+				rightHpBarSprite.SetRightBoarderArt("subzero");
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(yukikoColor[player2ColorNumber]);
 			}
 			break;
 		default :

@@ -7,7 +7,7 @@ public class YukikoAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject fan1, fan2, sp1Fireball, sp3Trap, medium1Hitbox,medium2Hitbox,medium3Hitbox, heavyHitbox1,heavyHitbox2,heavyHitbox3, jumpMediumHitbox, jumpHeavyHitbox,
+	public GameObject fan1, fan2, sp1Fireball, sp3Trap, sp3TrapPre, medium1Hitbox,medium2Hitbox,medium3Hitbox, heavyHitbox1,heavyHitbox2,heavyHitbox3, jumpMediumHitbox, jumpHeavyHitbox,
 	sp2Hitbox, fireballGunpoint, throwHitbox, proximityBox;
 
 	ProjectileScript sp1FireballProjectileScript , fan1ProjectileScript, fan2ProjectileScript;
@@ -28,8 +28,10 @@ public class YukikoAttackScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
-			persona.SetOtherPlayer(true);
+			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
+			persona.SetOtherPlayer (true);
 		} else {
+			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 			persona.SetOtherPlayer (false);
 		}
 
@@ -67,7 +69,7 @@ public class YukikoAttackScript : MonoBehaviour {
 		throwHitboxScript.SetThrowFunc (ThrowHit);
 		sp1Fireball.GetComponentInChildren<HitboxScript> ().SetOptFunc (SpecialHit);
 		sp2Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
-		sp3Trap.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
+		sp3Trap.GetComponentInChildren<HitboxScript> ().SetOptFunc (SpecialHit);
 
 
 	}
@@ -118,31 +120,12 @@ public class YukikoAttackScript : MonoBehaviour {
 
 		spriteAnimator.PlayThrowComplete ();
 		PMS.DsableBodyBox ();
-		ThrowPoint.transform.localPosition = new Vector2 (-1, 0);
-		otherPlayer.position = ThrowPoint.transform.position;
-		Vector2 endPoint = new Vector2(1f,0);
-		for (int x = 0; x < 42;) {
+		for (int x = 0; x < 36;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x < 24) {
-					Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
-					ThrowPoint.transform.localPosition = newPoint;
-					otherPlayer.position = ThrowPoint.transform.position;
-				}
-				if (x == 1) {
-					endPoint= new Vector2 (-3f, 0);
-				}
-				if (x == 15) {
-					endPoint = new Vector2 (-3, 2f);
-				}
-				if (x == 18) {
-					endPoint = new Vector2 (-2f, 1.5f);
-				}
-				if (x == 21) {
-					endPoint = new Vector2 (1,1f);
-				}
-				if (x == 24) {
-					endPoint = new Vector2 (1,-1f);
+				if (x == 12) {
+
+					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (-10);
 				}
 				x++;
 			}
@@ -404,16 +387,16 @@ public class YukikoAttackScript : MonoBehaviour {
 		}
 	}
 	public void Heavy(){
-		if ((state.GetState() != "jumping" && state.GetState() != "hitstun" && state.GetState() != "heavy recovery") && persona.GetAttackState() != -1 && persona.CheckAlive()) {
-			if (persona.GetAttackState () == 0 && state.GetState() == "neutral") {
-				PMS.CheckFacing ();
-				StopAllCoroutines ();
-				StartCoroutine (heavyEnum ());
-			} else if (persona.GetAttackState () != 0){
+		if ((state.GetState() == "attack" || state.GetState() == "neutral" || state.GetState() == "light recovery" || state.GetState() == "medium recovery") && persona.GetAttackState() != -1 && persona.CheckAlive()) {
+//			if (persona.GetAttackState () == 0 && state.GetState() == "neutral") {
+//				PMS.CheckFacing ();
+//				StopAllCoroutines ();
+//				StartCoroutine (heavyEnum ());
+//			} else if (persona.GetAttackState () != 0){
 				ActivatePersona(persona.StartAttacksAnim);
-			}
-		} else if (state.GetState () == "jumping" && persona.CheckAlive()) {
-			StartCoroutine (jumpHeavyEnum ());
+//			}
+//		} else if (state.GetState () == "jumping" && persona.CheckAlive()) {
+//			StartCoroutine (jumpHeavyEnum ());
 		}
 
 	}
@@ -459,7 +442,7 @@ public class YukikoAttackScript : MonoBehaviour {
 
 	public void SpecialOne(){
 		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && !sp1Fireball.activeSelf && persona.CheckAlive()) {
+			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && !sp1Fireball.activeSelf && persona.CheckAlive() && persona.GetAttackState() != -2) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -489,6 +472,7 @@ public class YukikoAttackScript : MonoBehaviour {
 				if (x == 12 && canShoot) {
 
 					ActivatePersona(persona.StartSpecialOneAnim);
+					proximityBox.SetActive (false);
 					canShoot = false;
 				}
 				x++;
@@ -501,7 +485,7 @@ public class YukikoAttackScript : MonoBehaviour {
 	}
 	public void SpecialTwo(){
 		if ((state.GetState() == "neutral" ||  (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && persona.CheckAlive()){
+			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && persona.CheckAlive() && persona.GetAttackState() != -2){
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -534,7 +518,7 @@ public class YukikoAttackScript : MonoBehaviour {
 
 			if (!timeManager.CheckIfTimePaused ()) {
 				if (x == 3) {
-					state.SetState ("invincible");
+					state.SetState ("attack");
 				}
 				if (x == 3) {
 					sp2Buffer = false;
@@ -586,7 +570,7 @@ public class YukikoAttackScript : MonoBehaviour {
 	}
 	public void SpecialThree(){
 		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery" )) && persona.CheckAlive()) {
+			|| (state.GetState() =="heavy recovery" )) && persona.CheckAlive() && persona.GetAttackState() != -2) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
@@ -602,7 +586,7 @@ public class YukikoAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
-		state.SetState ("projectile invulnerable");
+		state.SetState ("attack");
 
 		ActivatePersona(persona.StartSpecialThreeAnim);
 
@@ -610,7 +594,10 @@ public class YukikoAttackScript : MonoBehaviour {
 		for (int x = 0; x < 25;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				
+				if (x == 15){
+
+					proximityBox.SetActive (false);
+				}
 
 				x++;
 			}
@@ -625,12 +612,13 @@ public class YukikoAttackScript : MonoBehaviour {
 	public void SetTrap(){
 		trapActive = true;
 		if (!inputScript.CheckRTRelease()) {
-			TrapDetonate ();
+			Invoke("TrapDetonate", .1f);
 		}
 	}
 	public void TrapDetonate(){
 		if (trapActive) {
 			trapActive = false;
+			sp3TrapPre.SetActive (false);
 			sp3Trap.SetActive (true);
 		}
 	}

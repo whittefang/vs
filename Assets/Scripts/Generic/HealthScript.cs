@@ -75,7 +75,7 @@ public class HealthScript : MonoBehaviour {
 	// if attack is blocked returns true else it returns false
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
-		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false){
+		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2)){
 
 		// check for invincible or blocking
 		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
@@ -141,7 +141,7 @@ public class HealthScript : MonoBehaviour {
 				}
 			}
 
-			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher));
+			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher, optionalPosition));
 
 			// check for death
 			CheckHealth ();
@@ -152,7 +152,7 @@ public class HealthScript : MonoBehaviour {
 			// player is blocking
 			spriteAnimator.PlayBlock ();
 			StopAllCoroutines ();
-			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback));
+			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback, optionalPosition));
 			healthAmount -= (int)((float)amount * .05f);
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft ((int)((float)amount * .05f));
@@ -184,7 +184,7 @@ public class HealthScript : MonoBehaviour {
 			//gameObject.SetActive (false);
 		}
 	}
-	IEnumerator InitiateBlockstun(int stunFrames, Vector3 position, Vector2 bockPush, bool isProjectile, bool useCornerKockback = true){
+	IEnumerator InitiateBlockstun(int stunFrames, Vector3 position, Vector2 bockPush, bool isProjectile, bool useCornerKockback = true, Vector2 optionalPosition = default(Vector2)){
 		state.SetState ("blockstun");
 		sounds.PlayBlock ();
 		GameObject sparks = blocksparksPool.FetchObject ();
@@ -218,7 +218,7 @@ public class HealthScript : MonoBehaviour {
 		}
 
 	}
-	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false){
+	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false, Vector2 optionalPosition = default(Vector2)){
 
 		 if (freezingAttack){
 			state.SetState ("frozen");
@@ -241,7 +241,11 @@ public class HealthScript : MonoBehaviour {
 		timeManager.StopTime (3);
 		PMS.CheckFacing ();
 		if (!freezingAttack) {
-			PMS.MoveToward (-hitPush.x, hitPush.y);
+			if (optionalPosition == default(Vector2) || (optionalPosition.x > transform.position.x && PMS.CheckIfOnLeft()) || (optionalPosition.x < transform.position.x && !PMS.CheckIfOnLeft())){
+				PMS.MoveToward (-hitPush.x, hitPush.y);
+			} else{
+				PMS.MoveToward(hitPush.x, hitPush.y);
+			} 
 		} else {
 			PMS.StopMovement ();
 		}
@@ -270,7 +274,7 @@ public class HealthScript : MonoBehaviour {
 		if (PMS.ForceGroundCheck () && (state.GetState() == "hitstun" || state.GetState() == "frozen")) {
 			state.SetState ("neutral");
 			PMS.EnableBodyBox ();
-		} else {
+		} else if (state.GetState() != "invincible"){
 			state.SetState ("falling hit");
 		}
 		if (freezingAttack) {
