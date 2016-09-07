@@ -38,7 +38,8 @@ public class PlayerMovementScript : MonoBehaviour {
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
-		
+
+		CheckFacing ();
 
 		if (OnLeft) {
 			if (LeftFacingSprites) {
