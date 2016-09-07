@@ -39,7 +39,11 @@ public class PlayerMovementScript : MonoBehaviour {
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
 
+<<<<<<< 796f6cc3aa81f0acfac40bbe6e047aa9596dfc45
 		//CheckFacing ();
+=======
+		CheckFacing ();
+>>>>>>> added baiken beginnings'
 
 		if (OnLeft) {
 			if (LeftFacingSprites) {
