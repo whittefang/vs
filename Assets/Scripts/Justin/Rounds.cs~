@@ -107,7 +107,7 @@ public class Rounds : MonoBehaviour {
 			case 5:
 				
 				P1W = 0;
-				http://i.imgur.com/faFSlHy.jpgP2W = 0;
+				P2W = 0;
 				RoundFlag = 1;
 				SceneManager.LoadScene(1);
 				ex.setExMetersToZero();
