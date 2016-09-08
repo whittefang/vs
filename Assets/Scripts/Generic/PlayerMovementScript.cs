@@ -39,7 +39,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
 
-		CheckFacing ();
+		//CheckFacing ();
 
 		if (OnLeft) {
 			if (LeftFacingSprites) {
