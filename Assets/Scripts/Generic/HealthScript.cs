@@ -227,7 +227,7 @@ public class HealthScript : MonoBehaviour {
 		}else {
 			state.SetState ("hitstun");
 		}
-		
+		sounds.PlayHit ();
 		if (HitFunc != null) {
 			HitFunc ();
 		}

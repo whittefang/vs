@@ -152,8 +152,9 @@ public class YukikoAttackScript : MonoBehaviour {
 	IEnumerator lightEnum(){
 		health.AddMeter (10);
 		lightBuffer = true;
-		spriteAnimator.PlayLight ();
+		sounds.PlayLight ();
 		PMS.StopMovement ();
+		spriteAnimator.PlayLight ();
 		state.SetState ("attack");
 		for (int x = 0; x < 45;) {
 			// startup
