@@ -46,7 +46,6 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
-		Cards.transform.position = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1f);
 	}
 	IEnumerator SendOut(){
 		attackStage=-1;

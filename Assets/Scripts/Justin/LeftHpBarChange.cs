@@ -9,6 +9,7 @@ public class LeftHpBarChange : MonoBehaviour {
 	public float maxHp = 200;
 	public float newestHp = 200;
 	public float currentLength = 8;
+	public float maxLength = 8;
 	public Renderer rendererLeft;
 	public GameObject DND;
 	public SpriteRenderer LeftBoarder;
@@ -20,6 +21,7 @@ public class LeftHpBarChange : MonoBehaviour {
 	void Update(){
 		if (Input.GetKeyDown ("h")) {
 			changeBarLeft (20);
+			Debug.Log(currentLength);
 			//changeBar (damage, LeftHpBar);
 			//changeBar2(damage, maxHpBar, LeftHpBar);
 		}
@@ -38,6 +40,16 @@ public class LeftHpBarChange : MonoBehaviour {
 			case "subzero" :
 				LeftBoarder.sprite = leftBoarders[2];
 				LeftBoarder.transform.localPosition = new Vector3(-.33f, .46f, 0f);
+				break;
+			case "hulk" :
+				LeftBoarder.sprite = leftBoarders[3];
+				LeftBoarder.transform.localPosition = new Vector3(-1.21f, -.23f, 0f);
+				break;
+			case "yukiko" :
+				LeftBoarder.sprite = leftBoarders[4];
+				LeftBoarder.transform.localPosition = new Vector3(-.16f, -.38f, 0f);
+				currentLength = 6.5f;
+				maxLength = 6.5f;
 				break;
 		}
 
@@ -74,7 +86,7 @@ public class LeftHpBarChange : MonoBehaviour {
 		}else{
 			Debug.Log ("floatChange = " + floatChange + "newestHp = " + newestHp + "damage = " + damage + "maxHp = " + maxHp);
 			//the bar at max x is 6, so we are decreaseing that number by a percentage and keeping track of how small it gets
-			floatChange = 8 * floatChange;
+			floatChange = maxLength * floatChange;
 			currentLength = currentLength - floatChange;
 			Debug.Log ("after change to length =" + currentLength);
 			LeftHpBar.transform.localScale = new Vector3 (currentLength, LeftHpBar.transform.localScale.y, LeftHpBar.transform.localScale.z);

@@ -9,10 +9,12 @@ public class RightHpBarChange : MonoBehaviour {
 	public float maxHpR = 200;
 	public float newestHpR = 200;
 	public float currentLengthR = 8;
+	public float maxLengthR = 8;
 	public Renderer rendererRight;
 	public GameObject DND;
 	public SpriteRenderer RightBoarder;
 	public Sprite[] rightBoarders;
+
 	void Start () {
 		rendererRight  = GetComponent<SpriteRenderer> ();
 	}
@@ -34,14 +36,24 @@ public class RightHpBarChange : MonoBehaviour {
 			case "felicia" :
 				RightBoarder.sprite = rightBoarders[1];
 				//RightBoarder.transform.localPosition = new Vector3(-.26f, -.04f, 0f);
-				RightBoarder.transform.localPosition = new Vector3(1.25f, -.04f, 0f);
+				RightBoarder.transform.localPosition = new Vector3(1.25f, -.03f, 0f);
 
 				break;
 			case "subzero" :
 				RightBoarder.sprite = rightBoarders[2];
 				//RightBoarder.transform.localPosition = new Vector3(.33f, .46f, 0f);
 				RightBoarder.transform.localPosition = new Vector3(.63f, .46f, 0f);
-
+				break;
+			case "hulk" :
+				RightBoarder.sprite = rightBoarders[3];
+				RightBoarder.transform.localPosition = new Vector3(.82f, -.38f, 0f);
+					
+				break;
+			case "yukiko" :
+				RightBoarder.sprite = rightBoarders[4];
+				RightBoarder.transform.localPosition = new Vector3(.4f, -.41414141f, 0f);
+				currentLengthR = 6.5f;
+				maxLengthR = 6.5f;
 				break;
 		}
 
@@ -82,7 +94,7 @@ public class RightHpBarChange : MonoBehaviour {
 		}else{
 			//Debug.Log ("floatChange = " + floatChange + "newestHp = " + newestHpR + "damage = " + damageR + "maxHp = " + maxHpR);
 			//the bar at max x is 6, so we are decreaseing that number by a percentage and keeping track of how small it gets
-			floatChange = 8 * floatChange;
+			floatChange = maxLengthR * floatChange;
 			currentLengthR = currentLengthR - floatChange;
 			//Debug.Log ("after change to length =" + currentLengthR);
 			RightHpBar.transform.localScale = new Vector3 (currentLengthR, RightHpBar.transform.localScale.y, RightHpBar.transform.localScale.z);
