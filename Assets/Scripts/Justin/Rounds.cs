@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Rounds : MonoBehaviour {
 	//variable for prefab
-	public GameObject FeliciaPrefab, HulkPrefab, RyuPrefab, SubzeroPrefab, YukikoPrefab;
+	public GameObject FeliciaPrefab, HulkPrefab, RyuPrefab, SubzeroPrefab, YukikoPrefab, BaikenPrefab;
 	public string player1character = "ryu";
 	public string player2character = "ryu";
 	public TextMesh textShadow;
@@ -26,6 +26,7 @@ public class Rounds : MonoBehaviour {
 	public Texture2D[] ryuColor;
 	public Texture2D[] subzeroColor;
 	public Texture2D[] yukikoColor;
+	public Texture2D[] baikenColor;
 	public int player1ColorNumber = 0;
 	public int player2ColorNumber = 0;
 	LeftHpBarChange leftHpBarSprite;
@@ -263,6 +264,19 @@ public class Rounds : MonoBehaviour {
 				rightRed.transform.localPosition = new Vector3(-.53f, -.07f, 3f);
 				rightRed.transform.localScale = new Vector3(6.5f, .5f, 0f);
 				
+			}
+			break;
+		case "baiken":
+			player = Instantiate(BaikenPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			if (isPlayerOne){
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(baikenColor[player1ColorNumber]);
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("subzero");
+			}
+			else{
+				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+				rightHpBarSprite.SetRightBoarderArt("subzero");
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(baikenColor[player2ColorNumber]);
 			}
 			break;
 		default :

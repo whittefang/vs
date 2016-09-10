@@ -147,7 +147,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		case 5: 
 			return "yukiko";
 		case 6: 
-			return "random";
+			return "baiken";
 		default:
 			return "random";	
 		}
