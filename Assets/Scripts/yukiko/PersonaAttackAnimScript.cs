@@ -48,12 +48,17 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
+<<<<<<< HEAD
 <<<<<<< 0c206546520682719fbc963f2e2321e846824096
 		Cards.transform.position = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1f);
 =======
 
 		Cards.transform.position  = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1);
 >>>>>>> baiken roughed out
+=======
+
+		Cards.transform.position  = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1);
+>>>>>>> 1d2a1d85f2ce514ccee74a205a8021585715b42a
 	}
 	IEnumerator SendOut(){
 		attackStage=-1;

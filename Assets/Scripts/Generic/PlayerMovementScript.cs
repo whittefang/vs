@@ -41,6 +41,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		IS.SetThumbstick (ProcessMovement);
 		ResetSpeed ();
 
+<<<<<<< HEAD
 <<<<<<< 6e52a03db23b4caeaa4481a607e51e7e5eecc68f
 <<<<<<< 796f6cc3aa81f0acfac40bbe6e047aa9596dfc45
 		//CheckFacing ();
@@ -50,6 +51,9 @@ public class PlayerMovementScript : MonoBehaviour {
 =======
 		//CheckFacing ();
 >>>>>>> sound fix
+=======
+		//CheckFacing ();
+>>>>>>> 1d2a1d85f2ce514ccee74a205a8021585715b42a
 
 		if (OnLeft) {
 			if (LeftFacingSprites) {
