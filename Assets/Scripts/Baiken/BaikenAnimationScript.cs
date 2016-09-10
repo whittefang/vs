@@ -36,7 +36,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 
 	CameraMoveScript cameraMove;
 	TimeManagerScript timeManager;
-	SpriteRenderer spriteRenderer;
+	public SpriteRenderer spriteRenderer;
 	SoundsPlayer sound;
 	PlayerMovementScript PMS;
 	// Use this for initialization
@@ -45,7 +45,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 		hurtboxBodyOriginalPosition = hurtboxBody.transform.localPosition;
 		hurtboxBodyOriginalScale = hurtboxBody.transform.localScale;
 
-		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		spriteAnimator.SetNeutralAnimation (StartNeutralAnim);
 		spriteAnimator.SetWalkAnim (StartWalkAnim);
@@ -72,6 +71,8 @@ public class BaikenAnimationScript : MonoBehaviour {
 		spriteAnimator.setKnockdownAnimation (StartknockdownAnim);
 		spriteAnimator.setGetupAnimation (StartGetUpAnim);
 		spriteAnimator.setExtra1Animation (StartSpecialTwoCompleteAnim);
+		spriteAnimator.setExtra2Animation (StartSpecialThreeHitAnim);
+		spriteAnimator.setExtra3Animation (StartSpecialThreeWhiffAnim);
 		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
 			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		}
@@ -160,7 +161,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 		}
 		for(int i = 0; i < winFrames.Length; i++){
 			spriteRenderer.sprite = winFrames [i];
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 6;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused ()) {
 					x++;
@@ -321,7 +322,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	// depricated
 	IEnumerator Light(){
-		SetHurtbox(new Vector2 (1.5f, .5f), new Vector2 (2, .75f), hurtboxLimb);
 
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = lightFrames [i];
@@ -335,13 +335,10 @@ public class BaikenAnimationScript : MonoBehaviour {
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator Medium(){
-		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 10; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
 
-			if (i == 2) {
-				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
-			}
+
 			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);
 			}
@@ -357,7 +354,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 		for (int i = 0; i < 14; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
 			if (i == 6) {
-				SetHurtbox(new Vector2 (2.1f, .2f), new Vector2 (2.5f, 1f), hurtboxLimb);
 			}
 			if (i == 10) {
 				hurtboxLimb.gameObject.SetActive (false);
@@ -399,7 +395,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 		SetJumpHitbox ();
 		for (int i = 0; i < 5; i++) {
 
-			SetHurtbox(new Vector2 (1.8f, -.3f), new Vector2 (2f, 1f), hurtboxLimb);
 			spriteRenderer.sprite = jumpHeavyFrames [i];
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -466,7 +461,39 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	IEnumerator SpecialThree(){
 		sound.PlaySP3 ();
-		for (int i = 0; i < 27; i++) {
+		for (int i = 0; i < 5; i++) {
+			spriteRenderer.sprite = SpecialThreeFrames [i];
+			if (i == 4) {
+				for (int x = 0; x < 9;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+	}
+	IEnumerator SpecialThreewWhiff(){
+		sound.PlaySP3 ();
+		for (int i = 5; i < 12; i++) {
+			spriteRenderer.sprite = SpecialThreeFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+	}
+	IEnumerator SpecialThreeHit(){
+		sound.PlaySP3 ();
+		for (int i = 5; i < 27; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -516,7 +543,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 
 		//sound.PlaySP1 ();
 		for (int i = 0; i < 21; i++) {
-			spriteRenderer.sprite = SpecialOneFrames [i];
+			spriteRenderer.sprite = superFrames [i];
 			if (i == 9) {
 				sound.PlaySP1 ();
 				for (int x = 0; x < 12;) {
@@ -639,6 +666,14 @@ public class BaikenAnimationScript : MonoBehaviour {
 	public void StartSpecialTwoCompleteAnim(){
 		EndAnimations ();
 		StartCoroutine (SpecialTwoComplete());
+	}
+	public void StartSpecialThreeHitAnim(){
+		EndAnimations ();
+		StartCoroutine (SpecialThreeHit());
+	}
+	public void StartSpecialThreeWhiffAnim(){
+		EndAnimations ();
+		StartCoroutine (SpecialThreewWhiff());
 	}
 	public void EndAnimations(){
 		StopAllCoroutines ();

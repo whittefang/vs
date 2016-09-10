@@ -2,12 +2,15 @@
 using System.Collections;
 
 public class CameraMoveScript : MonoBehaviour {
-	Transform p1, p2;
+	public Transform p1, p2;
 	public float LeftBound, rightBound, lowPoint, HighPoint;
 	bool playersAreSet = false, cameraEnabled = true;
+	public bool testMode = false;
 	// Use this for initialization
 	void Start (){
-
+		if (testMode) {
+			SetPlayers (p1.gameObject, p2.gameObject);
+		}
 	}
 	// Update is called once per frame
 	void FixedUpdate () {

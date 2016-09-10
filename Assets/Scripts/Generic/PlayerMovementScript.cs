@@ -7,7 +7,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	float currentSpeed = 0;
 	InputScript IS;
 	SpriteAnimator spriteAnimator;
-	SpriteRenderer SR;
+	public SpriteRenderer SR;
 	FighterStateMachineScript state;
 	float deadSize = .15f;
 	bool canMove = true, allowMoveTowards = true;
@@ -19,7 +19,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	public int landingRecoveryFrames = 0;
 	public GameObject otherPlayer;
 	public Transform attacksObject, hurtboxes;
-	public bool OnLeft, canProximityBlock, jumpAway = false;
+	public bool OnLeft, canProximityBlock, jumpAway = false, useChildSpriteRenderer = false;
 	public Vector2 moveboxOffset, moveboxSize;
 	TimeManagerScript timeManager;
 	public delegate void vDelegate();
@@ -31,7 +31,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	void Awake () {
 		movementBox = GetComponent<BoxCollider2D> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
-		SR = GetComponent<SpriteRenderer> ();
+		if (!useChildSpriteRenderer) {
+			SR = GetComponent<SpriteRenderer> ();
+		}
 		state = GetComponent<FighterStateMachineScript>();
 		IS = GetComponent<InputScript> ();
 		RB = GetComponent<Rigidbody2D> ();
@@ -119,8 +121,14 @@ public class PlayerMovementScript : MonoBehaviour {
 			OnLeft = false;
 			if (LeftFacingSprites) {
 				SR.flipX = false;
+				if (useChildSpriteRenderer) {
+					SR.transform.localPosition = new Vector3 (1, 0, 0);
+				}
 			} else {
 				SR.flipX = true;
+				if (useChildSpriteRenderer) {
+					SR.transform.localPosition = new Vector3 (-1, 0, 0);
+				}
 			}
 			attacksObject.eulerAngles = new Vector2(0, 180);
 			hurtboxes.eulerAngles = new Vector2(0, 180);
@@ -128,8 +136,14 @@ public class PlayerMovementScript : MonoBehaviour {
 			OnLeft = true;
 			if (LeftFacingSprites) {
 				SR.flipX = true;
+				if (useChildSpriteRenderer) {
+					SR.transform.localPosition = new Vector3 (-1, 0, 0);
+				}
 			} else {
 				SR.flipX = false;
+				if (useChildSpriteRenderer) {
+					SR.transform.localPosition = new Vector3 (1, 0, 0);
+				}
 			}
 			attacksObject.eulerAngles = new Vector2(0, 0);
 			hurtboxes.eulerAngles = new Vector2(0, 0);
@@ -272,7 +286,6 @@ public class PlayerMovementScript : MonoBehaviour {
 			if (speedy == 0) {
 				speedy = RB.velocity.y;
 			}
-			Debug.Log("move towards: " +speedx +"  "+ speedy);
 			if (OnLeft) {
 				RB.velocity = new Vector2 (speedx, speedy);
 			} else {
