@@ -38,15 +38,22 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	}
 	public void SetOtherPlayer(bool isP1){
 		Cards.transform.parent = GameObject.Find ("Camera").transform;
+
 		if (isP1) {
 			tag = "P1Persona";
 			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
 			tag = "P2Persona";
+
 			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
+<<<<<<< 0c206546520682719fbc963f2e2321e846824096
 		Cards.transform.position = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1f);
+=======
+
+		Cards.transform.position  = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1);
+>>>>>>> baiken roughed out
 	}
 	IEnumerator SendOut(){
 		attackStage=-1;

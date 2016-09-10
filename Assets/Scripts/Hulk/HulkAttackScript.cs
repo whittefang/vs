@@ -8,7 +8,7 @@ public class HulkAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject fireball, superHitbox, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
-	sp1Hitbox, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
+	sp1Hitbox, sp2Hitbox, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
 
 	ProjectileScript fireballProjectileScript;
 	TimeManagerScript timeManager;
@@ -29,7 +29,6 @@ public class HulkAttackScript : MonoBehaviour {
 		} else {
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
-
 		health = GetComponentInChildren<HealthScript> ();
 		health.SetHitFunc (CancelAttacks);
 		sounds = GetComponent<SoundsPlayer>();
@@ -59,6 +58,7 @@ public class HulkAttackScript : MonoBehaviour {
 		heavyHitboxScript.SetOptFunc (HeavyHit);
 		throwHitboxScript.SetThrowFunc (ThrowHit);
 		sp3Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
+		sp2Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
 		sp1Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
 
 
@@ -80,7 +80,7 @@ public class HulkAttackScript : MonoBehaviour {
 		spriteAnimator.PlayThrowTry ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 10;) {
+		for (int x = 0; x < 46;) {
 			if (!timeManager.CheckIfTimePaused()) {
 
 				// startup
@@ -114,7 +114,7 @@ public class HulkAttackScript : MonoBehaviour {
 		ThrowPoint.transform.localPosition = new Vector2 (4, 0);
 		otherPlayer.position = ThrowPoint.transform.position;
 		Vector2 endPoint = new Vector2(4f,0);
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 100;) {
 
 			if (!timeManager.CheckIfTimePaused ()) {
 				if (x < 24) {
@@ -148,17 +148,26 @@ public class HulkAttackScript : MonoBehaviour {
 				}
 				// add force
 				if (x == 24){
-					specialHitboxHit = true;
-					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (17, 25);
-
+					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (35, 25);
 					otherPlayer.GetComponent<PlayerMovementScript> ().DsableBodyBox ();
+					canMoveDuringCharge = true;
+				}
+				if (x == 36) {
+
+					PMS.EnableBodyBox ();
+				}
+
+				if (x > 40 && canMoveDuringCharge){
+					PMS.ForceFlip();
+					PMS.MoveToward (25, 0);
+					sp2Hitbox.SetActive (true);
 				}
 				x++;
 			}
 
 			yield return null;
 		}
-		PMS.EnableBodyBox ();
+		sp2Hitbox.SetActive (false);
 		state.SetState ("neutral");
 	}
 
@@ -242,7 +251,7 @@ public class HulkAttackScript : MonoBehaviour {
 		spriteAnimator.PlayMedium ();
 		state.SetState ("attack");
 		// startup
-		for (int x = 0; x < 21; ) {
+		for (int x = 0; x < 27; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 3){
@@ -277,6 +286,7 @@ public class HulkAttackScript : MonoBehaviour {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 9) {
 					jumpMediumHitbox.SetActive (true);
+					PMS.MoveToward (0, 5);
 				}
 				if (x == 20) {
 					jumpMediumHitbox.SetActive (false);
@@ -386,10 +396,32 @@ public class HulkAttackScript : MonoBehaviour {
 					fireball.SetActive (true);
 					proximityBox.SetActive (false);
 				}
-				if (x == 20) {
+				if (x == 22) {
+					sp1Hitbox.transform.localPosition = new Vector2 (1.8f, -3);
 					sp1Hitbox.SetActive (true);
 				}
-				if (x == 22) {
+				if (x == 24) {
+					sp1Hitbox.SetActive (false);
+				}
+				if (x == 30) {
+					sp1Hitbox.transform.localPosition = new Vector2 (4.4f, -3);
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 32) {
+					sp1Hitbox.SetActive (false);
+				}
+				if (x == 38) {
+					sp1Hitbox.transform.localPosition = new Vector2 (7.5f, -3);
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 40) {
+					sp1Hitbox.SetActive (false);
+				}
+				if (x ==46) {
+					sp1Hitbox.transform.localPosition = new Vector2 (10.8f, -3);
+					sp1Hitbox.SetActive (true);
+				}
+				if (x == 48) {
 					sp1Hitbox.SetActive (false);
 				}
 				x++;
@@ -479,23 +511,22 @@ public class HulkAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
+		PMS.DsableBodyBox ();
 		canMoveDuringCharge = true;
 		for (int x = 0; x < 35;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x > 9 && x < 20) {
+				if (x > 6 && x < 14) {
 					if (canMoveDuringCharge) {
-						PMS.MoveToward (40f);
-					} else {
-						PMS.StopMovement ();
+						PMS.MoveToward (4f, 25);
 					}
-					sp3Hitbox.SetActive(true);
-				
+					sp3Hitbox.SetActive(true);			
 				}
-				if (x == 20) {
-					PMS.StopMovement ();
+
+				if (x == 16) {
 					sp3Hitbox.SetActive(false);
 					proximityBox.SetActive (false);
+					PMS.StopMovement ();
 				}
 
 				x++;
@@ -503,16 +534,11 @@ public class HulkAttackScript : MonoBehaviour {
 
 			yield return null;
 		}
-		PMS.StopMovement ();
-		for (int x = 0; x < 10;) {
-			yield return null;
-			if (!timeManager.CheckIfTimePaused()) {
-				x++;
-			}
-		}
+
 		specialHitboxHit = false;
 		PMS.StopMovement ();
 		state.SetState ("neutral");
+		PMS.EnableBodyBox ();
 	}
 
 	public void Super(){

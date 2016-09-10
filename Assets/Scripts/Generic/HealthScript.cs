@@ -19,11 +19,12 @@ public class HealthScript : MonoBehaviour {
 	float comboScaling = 1, leftBound = -10.05f, rightBound = 10.05f;
 	LeftHpBarChange hpLeft;
 	RightHpBarChange hpRight;
-	SpriteRenderer SR;
+	public bool useChildSpriteRenderer = false;
+	public SpriteRenderer SR;
 	ExMeter exBar;
 	// Use this for initialization
 	void OnEnable () {
-		if (SR == null) {
+		if (SR == null && !useChildSpriteRenderer) {
 			SR = GetComponentInParent<SpriteRenderer> ();
 		}
 		if (timeManager == null) {
@@ -81,7 +82,6 @@ public class HealthScript : MonoBehaviour {
 		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
 			(isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack")) {
 
-			Debug.Log (isThrow + " " + state.GetState ());
 			// player got hit
 			// deal damage
 			if (state.GetState () == "hitstun" || state.GetState () == "falling hit" || state.GetState() == "frozen") {
