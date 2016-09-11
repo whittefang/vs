@@ -51,7 +51,7 @@ public class RightHpBarChange : MonoBehaviour {
 				break;
 			case "yukiko" :
 				RightBoarder.sprite = rightBoarders[4];
-				RightBoarder.transform.localPosition = new Vector3(.4f, -.41f, 0f);
+				RightBoarder.transform.localPosition = new Vector3(.4f, -.41414141f, 0f);
 				currentLengthR = 6.5f;
 				maxLengthR = 6.5f;
 				break;

@@ -86,7 +86,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 
 
 	void SetJumpHitbox(){
-		hurtboxBody.transform.localPosition = new Vector2 (0, 2.1f);
+		hurtboxBody.transform.localPosition = new Vector2 (0, 0);
 		hurtboxBody.transform.localScale  = new Vector2 (1.75f, 1.75f);
 	}
 	void SetHurtbox(Vector2 position, Vector2 scale, Transform hurtbox){
@@ -471,7 +471,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 					}
 				}
 			}
-			for (int x = 0; x < 6;) {
+			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;

@@ -40,13 +40,12 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		Cards.transform.parent = GameObject.Find ("Camera").transform;
 
 		if (isP1) {
-			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			tag = "P1Persona";
 			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
 			tag = "P2Persona";
 
-			Cards.transform.eulerAngles = new Vector3 (0, 0, 0);
+			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
 
@@ -153,7 +152,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 39;) {
 
 			if (i%3 == 0) {
-				if (animationFrame < Attack2Frames.Length) {
+				if (animationFrame < Attack1Frames.Length) {
 					spriteRenderer.sprite = Attack2Frames [animationFrame];
 				}
 				animationFrame++;
@@ -196,7 +195,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 27;) {
 			
 			if (i%3 == 0) {
-				if (animationFrame < Attack3Frames.Length) {
+				if (animationFrame < Attack1Frames.Length) {
 					spriteRenderer.sprite = Attack3Frames [animationFrame];
 				}
 				animationFrame++;
@@ -229,7 +228,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (i%3 == 0) {
-					if (animationFrame < SpecialOneFrames.Length) {
+					if (animationFrame < Attack1Frames.Length) {
 						spriteRenderer.sprite = SpecialOneFrames [animationFrame];
 					}
 					animationFrame++;
@@ -266,7 +265,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 			if (i%3 == 0) {
 
-				if (animationFrame < SpecialTwoFrames.Length) {
+				if (animationFrame < Attack1Frames.Length) {
 					spriteRenderer.sprite = SpecialTwoFrames [animationFrame];
 				}
 				animationFrame++;
@@ -293,7 +292,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 42;) {
 
 			if (i%3 == 0) {
-				if (animationFrame < SpecialThreeFrames.Length) {
+				if (animationFrame < Attack1Frames.Length) {
 					spriteRenderer.sprite = SpecialThreeFrames [animationFrame];
 				}
 				animationFrame++;

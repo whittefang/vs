@@ -38,20 +38,14 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	}
 	public void SetOtherPlayer(bool isP1){
 		Cards.transform.parent = GameObject.Find ("Camera").transform;
-
 		if (isP1) {
-			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			tag = "P1Persona";
 			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
 			tag = "P2Persona";
-
-			Cards.transform.eulerAngles = new Vector3 (0, 0, 0);
+			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
-
-		Cards.transform.position = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1f);
-
 	}
 	IEnumerator SendOut(){
 		attackStage=-1;
@@ -229,7 +223,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (i%3 == 0) {
-					if (animationFrame < SpecialOneFrames.Length) {
+					if (animationFrame < Attack1Frames.Length) {
 						spriteRenderer.sprite = SpecialOneFrames [animationFrame];
 					}
 					animationFrame++;
@@ -266,7 +260,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 			if (i%3 == 0) {
 
-				if (animationFrame < SpecialTwoFrames.Length) {
+				if (animationFrame < Attack1Frames.Length) {
 					spriteRenderer.sprite = SpecialTwoFrames [animationFrame];
 				}
 				animationFrame++;
@@ -293,7 +287,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 42;) {
 
 			if (i%3 == 0) {
-				if (animationFrame < SpecialThreeFrames.Length) {
+				if (animationFrame < Attack1Frames.Length) {
 					spriteRenderer.sprite = SpecialThreeFrames [animationFrame];
 				}
 				animationFrame++;

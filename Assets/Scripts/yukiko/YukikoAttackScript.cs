@@ -222,13 +222,13 @@ public class YukikoAttackScript : MonoBehaviour {
 		for (int x = 0; x < 15; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 14){
+				if (x == 10){
 					fan2.transform.position = new Vector3( fireballGunpoint.transform.position.x, fireballGunpoint.transform.position.y-.5f, fireballGunpoint.transform.position.z);
 					if (PMS.CheckIfOnLeft ()) {
-						fan2.transform.eulerAngles = new Vector3(0, 0, -55);
+						fan2.transform.eulerAngles = new Vector3(0, 0, -45);
 						fan2ProjectileScript.direction = new Vector2 (.75f, -1f);
 					} else {
-						fan2.transform.eulerAngles = new Vector3(0, 180, -55);
+						fan2.transform.eulerAngles = new Vector3(0, 180, -45);
 						fan2ProjectileScript.direction = new Vector2 (-.75f, -1f);
 
 					}

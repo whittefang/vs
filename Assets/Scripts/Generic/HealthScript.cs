@@ -7,7 +7,7 @@ public class HealthScript : MonoBehaviour {
 	public int exMax = 1000;
 	public int exCurrent = 0;
 	public delegate void DeathEvent();
-	DeathEvent DeathFunc, HitFunc, ParryFunc;
+	DeathEvent DeathFunc, HitFunc;
 	FighterStateMachineScript state;
 	SpriteAnimator spriteAnimator;
 	public PlayerMovementScript PMS, otherPlayerMovementScript;
@@ -77,13 +77,9 @@ public class HealthScript : MonoBehaviour {
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
 		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2)){
-		
-		Debug.Log(state.GetState() == "parry" + ParryFunc + isThrow);
-		if (state.GetState() == "parry" && ParryFunc != null && !isThrow){
-				ParryFunc();
-			
+
 		// check for invincible or blocking
-		}else if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
+		if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
 			(isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack")) {
 
 			// player got hit
@@ -288,9 +284,6 @@ public class HealthScript : MonoBehaviour {
 	}
 	public void SetHitFunc(DeathEvent newFunc){
 		HitFunc = newFunc;
-	}
-	public void SetParryFunc(DeathEvent newFunc){
-		ParryFunc = newFunc;
 	}
 	public void SetDeathFunc(DeathEvent newFunc){
 		DeathFunc = newFunc;
