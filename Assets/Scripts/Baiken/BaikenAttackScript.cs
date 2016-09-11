@@ -50,6 +50,8 @@ public class BaikenAttackScript : MonoBehaviour {
 		inputScript.assignRT (SpecialThree, null);
 
 		inputScript.assignBYButton (Super);
+		
+		GetComponentInChildren<HealthScript>().SetParryFunc(SpecialTwoComplete);
 
 		lightHitbox.GetComponent<HitboxScript>().SetOptFunc (LightHit);
 		mediumHitbox.GetComponent<HitboxScript>().SetOptFunc (MediumHit);
@@ -341,6 +343,7 @@ public class BaikenAttackScript : MonoBehaviour {
 				}
 				if (x == 10) {
 					sp1Hitbox.SetActive (true);
+					state.SetState ("projectile invulnerable");
 				}
 				if (x == 15) {
 					sp1Hitbox.SetActive (false);
@@ -361,6 +364,7 @@ public class BaikenAttackScript : MonoBehaviour {
 				if (x == 35) {
 					sp1Hitbox.SetActive (false);
 					proximityBox.SetActive (false);
+					state.SetState("attack");
 				}
 				x++;
 			}
@@ -386,7 +390,7 @@ public class BaikenAttackScript : MonoBehaviour {
 	IEnumerator SpecialTwoEnum(){
 
 		health.AddMeter (30);
-		proximityBox.SetActive (true);
+	//	proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialTwo ();
 		PMS.StopMovement ();
 		sp2Buffer = true;
@@ -400,15 +404,15 @@ public class BaikenAttackScript : MonoBehaviour {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 2) {
-					state.SetState ("invincible");
-					sp2ParryBox.SetActive (true);
+					state.SetState ("parry");
+				//	sp2ParryBox.SetActive (true);
 				}
 				if (x == 3) {
 					sp2Buffer = false;
 				}
 				if (x == 15) {
 					state.SetState ("attack");
-					sp2ParryBox.SetActive (false);
+		//			sp2ParryBox.SetActive (false);
 				}
 					
 				x++;
@@ -478,7 +482,7 @@ public class BaikenAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 
-		for (int x = 0; x < 12;) {
+		for (int x = 0; x < 24;) {
 
 			if (!timeManager.CheckIfTimePaused ()) {
 				x++;

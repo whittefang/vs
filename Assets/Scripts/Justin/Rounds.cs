@@ -35,6 +35,8 @@ public class Rounds : MonoBehaviour {
 	public GameObject leftGreen, leftRed;
 	public GameObject rightGreen, rightRed;
 
+	public GameObject exLeftBorder, exRightBorder; 
+
 	void Awake(){
 		if (FalseMeansTest == true) {
 			Debug.Log("object can not be destroyed");
@@ -52,6 +54,12 @@ public class Rounds : MonoBehaviour {
 			}
 			PlayersSpawn();
 			fs.transformToFollow = GameObject.Find("Camera");
+			
+			exLeftBorder.SetActive(true);
+			exRightBorder.SetActive(true);
+		}else{
+			exLeftBorder.SetActive(false);
+			exRightBorder.SetActive(false);
 		}
 
 	}

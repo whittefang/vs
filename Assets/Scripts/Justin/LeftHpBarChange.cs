@@ -31,23 +31,23 @@ public class LeftHpBarChange : MonoBehaviour {
 		switch (name){
 			case "ryu" :
 				LeftBoarder.sprite = leftBoarders[0];
-				LeftBoarder.transform.localPosition = new Vector3(0f, .04f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(0f, .04f, -1.5f);
 				break;
 			case "felicia" :
 				LeftBoarder.sprite = leftBoarders[1];
-				LeftBoarder.transform.localPosition = new Vector3(-1f, -.04f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(-1f, -.04f, -1.5f);
 				break;
 			case "subzero" :
 				LeftBoarder.sprite = leftBoarders[2];
-				LeftBoarder.transform.localPosition = new Vector3(-.33f, .46f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(-.33f, .46f, -1.5f);
 				break;
 			case "hulk" :
 				LeftBoarder.sprite = leftBoarders[3];
-				LeftBoarder.transform.localPosition = new Vector3(-1.21f, -.23f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(-1.21f, -.23f, -1.5f);
 				break;
 			case "yukiko" :
 				LeftBoarder.sprite = leftBoarders[4];
-				LeftBoarder.transform.localPosition = new Vector3(-.16f, -.38f, 0f);
+				LeftBoarder.transform.localPosition = new Vector3(-.16f, -.38f, -1.5f);
 				currentLength = 6.5f;
 				maxLength = 6.5f;
 				break;

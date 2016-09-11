@@ -40,12 +40,13 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		Cards.transform.parent = GameObject.Find ("Camera").transform;
 
 		if (isP1) {
+			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			tag = "P1Persona";
 			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 		} else {
 			tag = "P2Persona";
 
-			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
+			Cards.transform.eulerAngles = new Vector3 (0, 0, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 		}
 
