@@ -20,9 +20,7 @@ public class PersonaCardsScript : MonoBehaviour {
 		}
 	}
 	public void RemoveCard(){
-		if (spot < 4){
-			Cards [spot].SetActive (false);
-			spot++;
-		}
+		Cards [spot].SetActive (false);
+		spot++;
 	}
 }

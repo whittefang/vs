@@ -55,7 +55,11 @@ public class Rounds : MonoBehaviour {
 			PlayersSpawn();
 			fs.transformToFollow = GameObject.Find("Camera");
 			
-			
+			exLeftBorder.SetActive(true);
+			exRightBorder.SetActive(true);
+		}else{
+			exLeftBorder.SetActive(false);
+			exRightBorder.SetActive(false);
 		}
 
 	}
@@ -114,7 +118,7 @@ public class Rounds : MonoBehaviour {
 			case 5:
 				
 				P1W = 0;
-				http://i.imgur.com/faFSlHy.jpgP2W = 0;
+				P2W = 0;
 				RoundFlag = 1;
 				SceneManager.LoadScene(1);
 				ex.setExMetersToZero();
@@ -245,12 +249,12 @@ public class Rounds : MonoBehaviour {
 				
 				leftGreen = GameObject.Find("LeftHpBar");
 				leftGreen.transform.eulerAngles = new Vector3( 0f, 0f, -2.306f);
-				leftGreen.transform.localPosition = new Vector3(.79f, -.03f, 2f);
+				leftGreen.transform.localPosition = new Vector3(.79f, -.03f, -1.1f);
 				leftGreen.transform.localScale = new Vector3(6.5f, .5f, 0f);
 
 				leftRed = GameObject.Find("LeftHpBarRed");
 				leftRed.transform.eulerAngles = new Vector3( 0f, 0f, -2.306f);
-				leftRed.transform.localPosition = new Vector3(.79f, -.03f, 3f);
+				leftRed.transform.localPosition = new Vector3(.79f, -.03f, -.5f);
 				leftRed.transform.localScale = new Vector3(6.5f, .5f, 0f);	
 			}
 			else{

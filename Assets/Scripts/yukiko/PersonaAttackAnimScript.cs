@@ -153,7 +153,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 39;) {
 
 			if (i%3 == 0) {
-				if (animationFrame < Attack1Frames.Length) {
+				if (animationFrame < Attack2Frames.Length) {
 					spriteRenderer.sprite = Attack2Frames [animationFrame];
 				}
 				animationFrame++;
@@ -196,7 +196,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 27;) {
 			
 			if (i%3 == 0) {
-				if (animationFrame < Attack1Frames.Length) {
+				if (animationFrame < Attack3Frames.Length) {
 					spriteRenderer.sprite = Attack3Frames [animationFrame];
 				}
 				animationFrame++;
@@ -229,7 +229,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (i%3 == 0) {
-					if (animationFrame < Attack1Frames.Length) {
+					if (animationFrame < SpecialOneFrames.Length) {
 						spriteRenderer.sprite = SpecialOneFrames [animationFrame];
 					}
 					animationFrame++;
@@ -266,7 +266,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 			if (i%3 == 0) {
 
-				if (animationFrame < Attack1Frames.Length) {
+				if (animationFrame < SpecialTwoFrames.Length) {
 					spriteRenderer.sprite = SpecialTwoFrames [animationFrame];
 				}
 				animationFrame++;
@@ -293,7 +293,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		for (int i = 0; i < 42;) {
 
 			if (i%3 == 0) {
-				if (animationFrame < Attack1Frames.Length) {
+				if (animationFrame < SpecialThreeFrames.Length) {
 					spriteRenderer.sprite = SpecialThreeFrames [animationFrame];
 				}
 				animationFrame++;

@@ -516,9 +516,12 @@ public class HulkAttackScript : MonoBehaviour {
 		for (int x = 0; x < 35;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
+				if(x == 2){
+					state.SetState("invincible");
+				}
 				if (x > 6 && x < 14) {
 					if (canMoveDuringCharge) {
-						PMS.MoveToward (4f, 25);
+						PMS.MoveToward (10f, 25);
 					}
 					sp3Hitbox.SetActive(true);			
 				}
@@ -527,6 +530,8 @@ public class HulkAttackScript : MonoBehaviour {
 					sp3Hitbox.SetActive(false);
 					proximityBox.SetActive (false);
 					PMS.StopMovement ();
+
+					state.SetState("attack");
 				}
 
 				x++;
