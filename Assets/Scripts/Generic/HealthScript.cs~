@@ -78,7 +78,6 @@ public class HealthScript : MonoBehaviour {
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
 		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2)){
 		
-		Debug.Log(state.GetState() == "parry" + ParryFunc + isThrow);
 		if (state.GetState() == "parry" && ParryFunc != null && !isThrow){
 				ParryFunc();
 			

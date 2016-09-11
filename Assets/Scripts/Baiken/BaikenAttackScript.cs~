@@ -410,7 +410,7 @@ public class BaikenAttackScript : MonoBehaviour {
 				if (x == 3) {
 					sp2Buffer = false;
 				}
-				if (x == 15) {
+				if (x == 45) {
 					state.SetState ("attack");
 		//			sp2ParryBox.SetActive (false);
 				}

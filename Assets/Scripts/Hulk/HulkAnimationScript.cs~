@@ -549,7 +549,7 @@ public class HulkAnimationScript : MonoBehaviour {
 		sound.PlaySuperBg();
 		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, SuperBG.transform.position.z);
 		SuperBG.SetActive(true);
-		timeManager.StopTime (95);
+		timeManager.StopTime (110);
 		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
