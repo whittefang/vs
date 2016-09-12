@@ -539,7 +539,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 		if (cameraMove != null) {
 			cameraMove.EnableCameraMovement (false);
 		}
-		for (int i = 1; i < 9; i++) {
+		for (int i = 1; i < 19; i++) {
 			spriteRenderer.sprite = throwFrames [i];
 
 			for (int x = 0; x < 3;) {

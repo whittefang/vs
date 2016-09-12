@@ -92,8 +92,10 @@ public class HitboxScript : MonoBehaviour {
 					gameObject.SetActive (false);
 				}
 				if (isProjectile &&!multiHit && other.GetComponentInParent<FighterStateMachineScript>().GetState() != "projectile invulnerable") {
-					GetComponent<BoxCollider2D> ().enabled = false;
-					GetComponentInParent<ProjectileScript> ().Kill ();
+					if (GetComponentInParent<ProjectileScript> () != null) {
+						GetComponent<BoxCollider2D> ().enabled = false;
+						GetComponentInParent<ProjectileScript> ().Kill ();
+					}
 				}
 			}
 		}

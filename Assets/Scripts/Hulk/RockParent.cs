@@ -11,7 +11,7 @@ public class RockParent : MonoBehaviour {
 		foreach (Transform x in transform.GetComponentsInChildren<Transform>(true)) {
 			x.transform.gameObject.SetActive (true);
 		}
-		Invoke("DisableSelf", .9f);
+		Invoke("DisableSelf", 1.5f);
 	}
 	void DisableSelf(){
 		gameObject.SetActive (false);

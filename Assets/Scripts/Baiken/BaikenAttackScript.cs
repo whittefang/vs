@@ -62,6 +62,7 @@ public class BaikenAttackScript : MonoBehaviour {
 		mediumHitbox.GetComponent<HitboxScript>().SetOptFunc (MediumHit);
 		heavyHitbox.GetComponent<HitboxScript>().SetOptFunc (HeavyHit);
 		throwHitbox.GetComponent<HitboxScript>().SetThrowFunc (ThrowHit);
+		sp1Hitbox.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
 		sp3HookHitbox.GetComponentInChildren<HitboxScript> (true).SetOptFunc (ChainHit);
 		int max = (int)(chainGrabDistance / .53f);
 		chainLinks = new List<GameObject> ();
@@ -118,7 +119,7 @@ public class BaikenAttackScript : MonoBehaviour {
 
 		spriteAnimator.PlayThrowComplete ();
 		PMS.DsableBodyBox ();
-		for (int x = 0; x < 42;) {
+		for (int x = 0; x < 60;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 
@@ -370,7 +371,6 @@ public class BaikenAttackScript : MonoBehaviour {
 				if (x == 27) {
 					sp1Hitbox.SetActive (false);
 					proximityBox.SetActive (false);
-					state.SetState("attack");
 				}
 				x++;
 			}
@@ -592,15 +592,15 @@ public class BaikenAttackScript : MonoBehaviour {
 		bool canShoot = true;
 		for (int x = 0; x < 120;) {
 			// active
-			if (x == 30){
+			if (x == 5){
 				transform.position = new Vector3(transform.position.x,transform.position.y,1000);
 			}
-			if (x == 35) {
+			if (x == 10) {
 				superHitbox.SetActive (true);
 				superKanji.transform.position = new Vector3(otherPlayer.transform.position.x, superKanji.transform.position.y, superKanji.transform.position.z);
 				superKanji.SetActive (true);
 			}
-			if (x == 40){
+			if (x == 15){
 				if (PMS.OnLeft) {
 					otherPlayer.transform.position = new Vector3 (otherPlayer.transform.position.x - 2.5f, otherPlayer.transform.position.y, 0);
 					transform.position = new Vector3 (otherPlayer.transform.position.x + 2.5f, transform.position.y, 0);
@@ -609,7 +609,7 @@ public class BaikenAttackScript : MonoBehaviour {
 					transform.position = new Vector3 (otherPlayer.transform.position.x - 2.5f, transform.position.y, 0);
 				}
 			}
-			if (x == 60) {
+			if (x == 20) {
 				superKanji.SetActive (false);
 			}
 			if (!timeManager.CheckIfTimePaused()) {

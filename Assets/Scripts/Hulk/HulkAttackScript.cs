@@ -386,7 +386,7 @@ public class HulkAttackScript : MonoBehaviour {
 					sp1Buffer = false;
 				}
 				if (x == 17) {
-					fireball.transform.position = transform.position;
+					fireball.transform.position = new Vector3(transform.position.x, transform.position.y, -.1f);
 					if (PMS.OnLeft) {
 						fireball.transform.eulerAngles = new Vector3 (0, 0, 0);
 					} else {
@@ -396,34 +396,7 @@ public class HulkAttackScript : MonoBehaviour {
 					fireball.SetActive (true);
 					proximityBox.SetActive (false);
 				}
-				if (x == 22) {
-					sp1Hitbox.transform.localPosition = new Vector2 (1.8f, -3);
-					sp1Hitbox.SetActive (true);
-				}
-				if (x == 24) {
-					sp1Hitbox.SetActive (false);
-				}
-				if (x == 30) {
-					sp1Hitbox.transform.localPosition = new Vector2 (4.4f, -3);
-					sp1Hitbox.SetActive (true);
-				}
-				if (x == 32) {
-					sp1Hitbox.SetActive (false);
-				}
-				if (x == 38) {
-					sp1Hitbox.transform.localPosition = new Vector2 (7.5f, -3);
-					sp1Hitbox.SetActive (true);
-				}
-				if (x == 40) {
-					sp1Hitbox.SetActive (false);
-				}
-				if (x ==46) {
-					sp1Hitbox.transform.localPosition = new Vector2 (10.8f, -3);
-					sp1Hitbox.SetActive (true);
-				}
-				if (x == 48) {
-					sp1Hitbox.SetActive (false);
-				}
+
 				x++;
 			}
 			yield return null;
