@@ -1,0 +1,157 @@
+fileFormatVersion: 2
+guid: 5e799a189be97f2468d8e92420498fbb
+timeCreated: 1473630818
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: t00901_0
+    21300002: t00901_1
+    21300004: t00901_2
+    21300006: t00901_3
+    21300008: t00901_4
+    21300010: t00901_5
+    21300012: t00901_6
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 60
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: t00901_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 399
+        width: 110
+        height: 92
+      alignment: 9
+      pivot: {x: 0.79787356, y: 0.53362703}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: t00901_1
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 391
+        width: 116
+        height: 121
+      alignment: 9
+      pivot: {x: 0.8571238, y: 0.46607175}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: t00901_2
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 377
+        width: 148
+        height: 135
+      alignment: 9
+      pivot: {x: 0.8492834, y: 0.5774043}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: t00901_3
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 194
+        width: 165
+        height: 178
+      alignment: 9
+      pivot: {x: 0.8142658, y: 0.4627118}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: t00901_4
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 161
+        width: 177
+        height: 206
+      alignment: 9
+      pivot: {x: 0.80797994, y: 0.55581}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: t00901_5
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 172
+        width: 153
+        height: 197
+      alignment: 9
+      pivot: {x: 0.84369934, y: 0.528125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: t00901_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 52
+        width: 103
+        height: 74
+      alignment: 9
+      pivot: {x: 0.7809974, y: 0.601629}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

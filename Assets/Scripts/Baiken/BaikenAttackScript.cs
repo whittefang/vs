@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BaikenAttackScript : MonoBehaviour {
 
@@ -8,8 +9,9 @@ public class BaikenAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject lightHitbox, mediumHitbox, mediumHitbox2, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
-	sp1Hitbox, sp2Hitbox, sp2ParryBox, sp3Hitbox1,sp3Hitbox2,sp3Hitbox3,sp3hitboxComplete, sp3hitboxComplete2,fireballGunpoint,
+	sp1Hitbox, sp2Hitbox, sp2ParryBox, sp3HookHitbox, sp3Hook,sp3hitboxComplete, sp3hitboxComplete2,fireballGunpoint,
 	superHitbox,superHitbox2, throwHitbox, proximityBox;
+	public GameObject jumpMediumEffect, sp1Effect;
 
 	ProjectileScript fireballProjectileScript , superProjectileScript;
 	TimeManagerScript timeManager;
@@ -17,12 +19,15 @@ public class BaikenAttackScript : MonoBehaviour {
 	SoundsPlayer sounds;
 	public HitboxScript lightHitboxScript, mediumHitboxScript, heavyHitboxScript, throwHitboxScript;
 	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false, specialHitboxHit = false;
-	public GameObject ThrowPoint;
+	public GameObject ThrowPoint, superKanji;
 
 	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false, isCountering = false;
 	HealthScript health;
 	Transform otherPlayer;
 	bool hitChain = false;
+	List<GameObject> chainLinks;
+	public GameObject linkPrefab;
+	float chainGrabDistance = 6;
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
@@ -57,10 +62,13 @@ public class BaikenAttackScript : MonoBehaviour {
 		mediumHitbox.GetComponent<HitboxScript>().SetOptFunc (MediumHit);
 		heavyHitbox.GetComponent<HitboxScript>().SetOptFunc (HeavyHit);
 		throwHitbox.GetComponent<HitboxScript>().SetThrowFunc (ThrowHit);
-		sp3Hitbox1.GetComponentInChildren<HitboxScript> (true).SetOptFunc (ChainHit);
-		sp3Hitbox2.GetComponentInChildren<HitboxScript> (true).SetOptFunc (ChainHit);
-		sp3Hitbox3.GetComponentInChildren<HitboxScript> (true).SetOptFunc (ChainHit);
-
+		sp3HookHitbox.GetComponentInChildren<HitboxScript> (true).SetOptFunc (ChainHit);
+		int max = (int)(chainGrabDistance / .53f);
+		chainLinks = new List<GameObject> ();
+		for (int i = 0; i < max; i++) {
+			chainLinks.Add (Instantiate (linkPrefab) as GameObject);
+			chainLinks [i].SetActive (false);
+		}
 
 	}
 	void Update(){
@@ -167,13 +175,13 @@ public class BaikenAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayJumpLight ();
 		state.SetState ("jump attack");
-		for (int x = 0; x < 15; ) {
+		for (int x = 0; x < 26; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 4){
+				if (x == 15){
 					jumpLightHitbox.SetActive (true);
 				}
-				if (x == 10){
+				if (x == 25){
 					jumpLightHitbox.SetActive (false);
 					proximityBox.SetActive (false);
 				}
@@ -206,24 +214,20 @@ public class BaikenAttackScript : MonoBehaviour {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 3){
-					mediumBuffer = false;	
+					mediumBuffer = false;
+					PMS.MoveToward (15, 0);
 				}
 				// active
-				if (x == 12) {
-					PMS.StopMovement ();
+				if (x == 9) {
 					mediumHitbox.SetActive (true);
 				}
-				// recovery
-				if (x == 16){
+				if (x == 12) {
+
+					PMS.StopMovement ();
 					mediumHitbox.SetActive (false);
-					mediumHitbox2.SetActive (true);
 					state.SetState ("medium recovery");
-					proximityBox.SetActive (false);
 				}
-				// recovery
-				if (x == 19){
-					mediumHitbox2.SetActive (false);
-				}
+					
 				x++;
 			}
 
@@ -237,14 +241,21 @@ public class BaikenAttackScript : MonoBehaviour {
 		spriteAnimator.PlayJumpMedium ();
 		state.SetState ("jump attack");
 		for (int x = 0; x < 27;) {
-
+			
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 6) {
+					PMS.MoveToward (-5, 10);
+				}
+				if (x == 12) {
+					jumpMediumEffect.SetActive (true);
+				}
 				if (x == 15) {
 					jumpMediumHitbox.SetActive (true);
 				}
-				if (x == 26) {
+				if (x == 17) {
 					jumpMediumHitbox.SetActive (false);
 					proximityBox.SetActive (false);
+					PMS.MoveToward (-10, 0);
 				}
 				x++;
 			}
@@ -299,12 +310,20 @@ public class BaikenAttackScript : MonoBehaviour {
 		state.SetState ("jump attack");
 		for (int x = 0; x < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 14) {
+				if (x == 12) {
+					jumpHeavyHitbox.transform.localPosition = new Vector3 (-.75f, -1.3f, 0);
 					jumpHeavyHitbox.SetActive (true);
 				}
-				if (x == 20) {
+				if (x == 15) {
+					jumpHeavyHitbox.transform.localPosition = new Vector3 (-3.7f, -.3f, 0);
+					jumpHeavyHitbox.SetActive (true);
+				}
+				if (x == 18) {
+					jumpHeavyHitbox.transform.localPosition = new Vector3 (-4.1f, 2.8f, 0);
+					jumpHeavyHitbox.SetActive (true);
+				}
+				if (x == 21){
 					jumpHeavyHitbox.SetActive (false);
-					proximityBox.SetActive (false);
 				}
 
 				x++;
@@ -334,34 +353,21 @@ public class BaikenAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		bool canShoot = true;
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 36;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				// active
 				if (x == 3){
 					sp1Buffer = false;
 				}
-				if (x == 10) {
-					sp1Hitbox.SetActive (true);
-					state.SetState ("projectile invulnerable");
-				}
 				if (x == 15) {
-					sp1Hitbox.SetActive (false);
+					sp1Effect.SetActive (true);
+				}
+				if (x == 18) {
 					sp1Hitbox.SetActive (true);
 				}
-				if (x == 20) {
-					sp1Hitbox.SetActive (false);
-					sp1Hitbox.SetActive (true);
-				}
-				if (x == 25) {
-					sp1Hitbox.SetActive (false);
-					sp1Hitbox.SetActive (true);
-				}
-				if (x == 30) {
-					sp1Hitbox.SetActive (false);
-					sp1Hitbox.SetActive (true);
-				}
-				if (x == 35) {
+	
+				if (x == 27) {
 					sp1Hitbox.SetActive (false);
 					proximityBox.SetActive (false);
 					state.SetState("attack");
@@ -482,88 +488,48 @@ public class BaikenAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 
-		for (int x = 0; x < 24;) {
-
+		// pre throw frames
+		for (int x = 0; x < 16;) {
 			if (!timeManager.CheckIfTimePaused ()) {
 				x++;
 			}
 			yield return null;
 		}
-		int chainStage = 0;
+
 		hitChain = false;
-		ThrowPoint.transform.localPosition = new Vector3 (1.5f,0 , 0);
-		for (int x = 0; x < 5;) {
-
-			if (x == 0) {
-				sp3Hitbox1.SetActive(true);
-				proximityBox.SetActive (false);
-				ThrowPoint.transform.localPosition = new Vector3 (3.9f, 0, 0);
-				for (int i = 0; i < 3; i++) {
-					if (!timeManager.CheckIfTimePaused ()) {
-						i++;
-					}
-					yield return null;
-				}
-			}
-			if (x == 1 && !hitChain) {
-				chainStage = 1;
-				sp3Hitbox1.SetActive(false);
-				sp3Hitbox2.SetActive(true);
-				ThrowPoint.transform.localPosition = new Vector3 (6f, 0, 0);
-				for (int i = 0; i < 3; i++) {
-					if (!timeManager.CheckIfTimePaused ()) {
-						i++;
-					}
-					yield return null;
-				}
-			}
-			if (x == 2 && !hitChain) {
-				chainStage = 2;
-				sp3Hitbox2.SetActive(false);
-				sp3Hitbox3.SetActive(true);
-				proximityBox.SetActive (false);
-				ThrowPoint.transform.localPosition = new Vector3 (8.1f, 0, 0);
-				for (int i = 0; i < 3; i++) {
-					if (!timeManager.CheckIfTimePaused ()) {
-						i++;
-					}
-					yield return null;
-				}
-			}
-			if (x == 3 && chainStage >= 2) {
-				sp3Hitbox3.SetActive(false);
-				sp3Hitbox2.SetActive(true);
-				ThrowPoint.transform.localPosition = new Vector3 (6f, 0, 0);
-				for (int i = 0; i < 3; i++) {
-					if (!timeManager.CheckIfTimePaused ()) {
-						i++;
-					}
-					yield return null;
-				}
-			}
-			if (x == 4 && chainStage >= 1) {
-				sp3Hitbox2.SetActive(false);
-				sp3Hitbox1.SetActive(false);
-				ThrowPoint.transform.localPosition = new Vector3 (3.9f, 0, 0);
-				for (int i = 0; i < 3; i++) {
-					if (!timeManager.CheckIfTimePaused ()) {
-						i++;
-					}
-					yield return null;
-				}
-			}
-			if (hitChain){
-				otherPlayer.transform.position = new Vector3(ThrowPoint.transform.position.x, otherPlayer.transform.position.y, 0);
-			}
-			x++;
+		int linkSpot = 0;
+		// active hook going out
+		sp3HookHitbox.SetActive(true);
+		sp3Hook.SetActive(true);
+		sp3Hook.transform.localPosition = new Vector3 (.85f, .66f, 0);
+		while (sp3Hook.transform.localPosition.x < chainGrabDistance && !hitChain) {
+			chainLinks [linkSpot].transform.position = sp3Hook.transform.position;
+			chainLinks [linkSpot].SetActive (true);
+			linkSpot++;
+			sp3Hook.transform.localPosition += new Vector3 (.53f, 0, 0);
+			yield return null;
 		}
-
+		// active hook retracting
+		sp3HookHitbox.SetActive(false);
+		while (sp3Hook.transform.localPosition.x > .85 ) {
+			sp3Hook.transform.localPosition -= new Vector3 (.53f, 0, 0);
+			chainLinks [linkSpot].SetActive (false);
+			linkSpot--;
+			if (hitChain){
+				otherPlayer.transform.position = new Vector3(sp3Hook.transform.position.x, otherPlayer.transform.position.y, 0);
+			}
+			yield return null;
+		}
+		if (linkSpot >= 0) {
+			chainLinks [linkSpot].SetActive (false);
+		}
+		sp3Hook.SetActive(false);
 		if (hitChain){
 
 			ThrowPoint.transform.localPosition = new Vector3 (1.5f,0 , 0);
 			otherPlayer.transform.position = new Vector3(ThrowPoint.transform.position.x, otherPlayer.transform.position.y, 0);
 		}
-		sp3Hitbox1.SetActive(false);
+		sp3Hook.SetActive(false);
 
 		int recovery = 0;
 		if (hitChain) {
@@ -624,39 +590,29 @@ public class BaikenAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		bool canShoot = true;
-		for (int x = 0; x < 80;) {
+		for (int x = 0; x < 120;) {
 			// active
-
+			if (x == 30){
+				transform.position = new Vector3(transform.position.x,transform.position.y,1000);
+			}
+			if (x == 35) {
+				superHitbox.SetActive (true);
+				superKanji.transform.position = new Vector3(otherPlayer.transform.position.x, superKanji.transform.position.y, superKanji.transform.position.z);
+				superKanji.SetActive (true);
+			}
+			if (x == 40){
+				if (PMS.OnLeft) {
+					otherPlayer.transform.position = new Vector3 (otherPlayer.transform.position.x - 2.5f, otherPlayer.transform.position.y, 0);
+					transform.position = new Vector3 (otherPlayer.transform.position.x + 2.5f, transform.position.y, 0);
+				} else {
+					otherPlayer.transform.position =  new Vector3 (otherPlayer.transform.position.x + 2.5f, otherPlayer.transform.position.y, 0);
+					transform.position = new Vector3 (otherPlayer.transform.position.x - 2.5f, transform.position.y, 0);
+				}
+			}
+			if (x == 60) {
+				superKanji.SetActive (false);
+			}
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 2) {
-					sounds.PlayExtra ();
-					PMS.MoveToward (25);
-					proximityBox.SetActive (false);
-				}
-				if (x == 10) {
-					superHitbox.SetActive (true);
-				}
-				if (x == 12) {
-					superHitbox.SetActive (false);
-				}
-				if (x == 26) {
-					superHitbox.SetActive (true);
-					PMS.StopMovement ();
-				}
-				if (x == 28) {
-					superHitbox.SetActive (false);
-				}
-				if (x == 50) {
-					PMS.MoveToward (15);
-				}
-				if (x == 58) {
-					superHitbox2.SetActive (true);
-				}
-				if (x == 60) {
-					superHitbox2.SetActive (false);
-					proximityBox.SetActive (false);
-					PMS.StopMovement ();
-				}
 				x++;
 			}
 			yield return null;
@@ -679,8 +635,8 @@ public class BaikenAttackScript : MonoBehaviour {
 	}
 	public void ChainHit(){
 		specialHitboxHit = true;
-		spriteAnimator.StopAnimations ();
 		hitChain = true;
+		sp3HookHitbox.SetActive(true);
 
 	}
 	public void CancelAttacks(){
@@ -700,9 +656,7 @@ public class BaikenAttackScript : MonoBehaviour {
 		sp1Hitbox.SetActive (false);
 		sp2Hitbox.SetActive (false);
 		sp2ParryBox.SetActive (false);
-		sp3Hitbox1.SetActive (false);
-		sp3Hitbox2.SetActive (false);
-		sp3Hitbox3.SetActive (false);
+		sp3Hook.SetActive (false);
 		superHitbox.SetActive (false);
 		superHitbox2.SetActive (false);
 		throwHitbox.SetActive (false);

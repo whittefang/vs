@@ -29,7 +29,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 	public SpriteAnimator spriteAnimator;
 	public Transform hurtboxBody;
 	public Transform hurtboxLimb;
-	public GameObject Bag;
+	public GameObject superBackgroundBlack;
 	public GameObject SuperBG;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
@@ -222,8 +222,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 				}
 			}
 		}
-		Bag.transform.position = transform.position;
-		Bag.SetActive (true);
 		if (GetComponent<InputScript> () != null) {
 			GetComponent<InputScript> ().inputEnabled = true;
 		}
@@ -332,30 +330,24 @@ public class BaikenAnimationScript : MonoBehaviour {
 				}
 			}
 		}
-		hurtboxLimb.gameObject.SetActive (false);
-	}
-	IEnumerator Medium(){
-		for (int i = 0; i < 10; i++) {
-			spriteRenderer.sprite = mediumFrames [i];
-
-
-			if (i == 5) {
-				hurtboxLimb.gameObject.SetActive (false);
-			}
-			for (int x = 0; x < 4;) {
+		for (int i = 3; i > 0; i--) {
+			spriteRenderer.sprite = lightFrames [i];
+			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
 				}
 			}
 		}
+		hurtboxLimb.gameObject.SetActive (false);
 	}
-	IEnumerator Heavy(){
-		for (int i = 0; i < 14; i++) {
-			spriteRenderer.sprite = heavyFrames [i];
-			if (i == 6) {
+	IEnumerator Medium(){
+		for (int i = 0; i < 8; i++) {
+			spriteRenderer.sprite = mediumFrames [i];
+			if (i == 2) {
 			}
-			if (i == 10) {
+
+			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);
 			}
 			for (int x = 0; x < 3;) {
@@ -366,9 +358,48 @@ public class BaikenAnimationScript : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator Heavy(){
+		
+		for (int i = 0; i < 14; i++) {
+			spriteRenderer.sprite = heavyFrames [i];
+			if (i < 2) {
+				for (int x = 0; x < 2;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}
+			if (i > 8) {
+				for (int x = 0; x < 2;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}
+			if (i == 10) {
+				hurtboxLimb.gameObject.SetActive (false);
+			}
+			if (i == 12) {
+				for (int x = 0; x < 4;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}
+			for (int x = 0; x < 2;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+	}
 	IEnumerator JumpLight(){
 		SetJumpHitbox ();
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = jumpLightFrames [i];
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -380,7 +411,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpMedium(){
 		SetJumpHitbox ();
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
 
 			for (int x = 0; x < 3;) {
@@ -393,7 +424,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpHeavy(){
 		SetJumpHitbox ();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 9; i++) {
 
 			spriteRenderer.sprite = jumpHeavyFrames [i];
 			for (int x = 0; x < 3;) {
@@ -406,25 +437,13 @@ public class BaikenAnimationScript : MonoBehaviour {
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator SpecialOne(){
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 8; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
 
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
-				}
-			}
-		}
-		for (int ii = 0; ii < 3; ii++) {
-			for (int i = 3; i < 7; i++) {
-				spriteRenderer.sprite = SpecialOneFrames [i];
-
-				for (int x = 0; x < 3;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused()) {
-						x++;
-					}
 				}
 			}
 		}
@@ -446,7 +465,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 		}
 	}
 	IEnumerator SpecialTwoComplete(){
-		for (int i = 3; i <16 ; i++) {
+		for (int i = 3; i < 16 ; i++) {
 			if (i == 1) {
 				sound.PlaySP2 ();
 			}
@@ -461,20 +480,23 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	IEnumerator SpecialThree(){
 		sound.PlaySP3 ();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
-			if (i == 4) {
-				for (int x = 0; x < 9;) {
+			for (int x = 0; x < 4;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		while (true) {
+			for (int i = 4; i < 6; i++) {
+				spriteRenderer.sprite = SpecialThreeFrames [i];
+				for (int x = 0; x < 3;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused()) {
 						x++;
 					}
-				}
-			}
-			for (int x = 0; x < 6;) {
-				yield return null;
-				if (!timeManager.CheckIfTimePaused()) {
-					x++;
 				}
 			}
 		}
@@ -538,28 +560,35 @@ public class BaikenAnimationScript : MonoBehaviour {
 		sound.PlaySuperBg();
 		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
 		SuperBG.SetActive(true);
-		timeManager.StopTime (75);
+		timeManager.StopTime (90);
 		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
-		for (int i = 0; i < 21; i++) {
+		spriteRenderer.sprite = superFrames [0];
+		for (int x = 0; x < 30; x++) {
+			yield return null;
+		}
+		for (int i = 0; i < 6; i++) {
 			spriteRenderer.sprite = superFrames [i];
-			if (i == 9) {
-				sound.PlaySP1 ();
-				for (int x = 0; x < 12;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
-						x++;
-					}
-				}
-			}
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 9;) {
 				yield return null;
-				if (!timeManager.CheckIfTimePaused()) {
-					x++;
-				}
+				x++;
 			}
 		}
+		for (int x = 0; x < 45; x++) {
+			if (x == 40){
+				superBackgroundBlack.SetActive (true);
+			}
+			yield return null;
+		}
+		for (int i = 6; i < 10; i++) {
+			spriteRenderer.sprite = superFrames [i];
+			for (int x = 0; x < 9;) {
+				yield return null;
+				x++;
+			}
+		}
+		superBackgroundBlack.SetActive (false);
 	}
 	public void StartLightAnim(){
 		EndAnimations ();
@@ -680,5 +709,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 		hurtboxBody.transform.localScale  = hurtboxBodyOriginalScale;
 		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
 		hurtboxLimb.gameObject.SetActive (false);
+		superBackgroundBlack.SetActive (false);
 	}
 }
