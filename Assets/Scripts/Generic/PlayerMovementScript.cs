@@ -21,6 +21,8 @@ public class PlayerMovementScript : MonoBehaviour {
 	public Transform attacksObject, hurtboxes;
 	public bool OnLeft, canProximityBlock, jumpAway = false, useChildSpriteRenderer = false;
 	public Vector2 moveboxOffset, moveboxSize;
+	public GameObject jumpEffect;
+	public float groundY = -3.2f;
 	TimeManagerScript timeManager;
 	public delegate void vDelegate();
 	 vDelegate cancelAttacks;
@@ -42,7 +44,7 @@ public class PlayerMovementScript : MonoBehaviour {
 		ResetSpeed ();
 
 
-
+		//CheckFacing ();
 		if (OnLeft) {
 			if (LeftFacingSprites) {
 				SR.flipX = true;
@@ -172,24 +174,35 @@ public class PlayerMovementScript : MonoBehaviour {
 		}
 	}
 	public void JumpCheck(float x, float y){
-		if (y > .4f) {
-			if (x > .25f) {
-				// forward
-				jumpAway = false;
-				TowardJump();
+		if (y > .4f && state.GetState() == "neutral") {
+			StartCoroutine (PreJump (x));
+		}
+	}
+	IEnumerator PreJump(float x){
+		state.SetState ("prejump");
+		for (int i = 0; i < 4;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				i++;
+			}
+		}
+		jumpEffect.transform.position = new Vector3 (transform.position.x, groundY, 1);
+		jumpEffect.SetActive (true);
+		if (x > .25f) {
+			// forward
+			jumpAway = false;
+			TowardJump();
 
-			} else if (x < -.25f) {
-				// back
-				AwayJump();
-			} else {
-				// neutral
-				jumpAway = false;
-				NeutralJump();
-			} 
+		} else if (x < -.25f) {
+			// back
+			AwayJump();
+		} else {
+			// neutral
+			jumpAway = false;
+			NeutralJump();
 		}
 	}
 	public void NeutralJump(){
-		if (state.GetState() == "neutral") {
 			state.SetState ("jumping");
 			gameObject.layer = jumpingMask;
 			// prejump frames
@@ -197,10 +210,9 @@ public class PlayerMovementScript : MonoBehaviour {
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2 (0, jumpForce));
 			groundedBuffer = 3;
-		}
+
 	}
 	public void TowardJump(){
-		if (state.GetState() == "neutral"){
 			state.SetState ("jumping");
 			gameObject.layer = jumpingMask;
 			// prejump frames
@@ -216,10 +228,9 @@ public class PlayerMovementScript : MonoBehaviour {
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2(jumpDistance, jumpForce));
 			groundedBuffer = 3;
-		}
+
 	}
 	public void AwayJump(){
-		if (state.GetState() == "neutral") {
 			state.SetState ("jumping");
 			gameObject.layer = jumpingMask;
 			// prejump frames
@@ -235,14 +246,14 @@ public class PlayerMovementScript : MonoBehaviour {
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2 (-jumpDistance, jumpForce));
 			groundedBuffer = 3;
-		}
+
 	}
 	void GroundCheck(){
 		// do a check for ground
 		//.35f
 		RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, groundDistance, groundMask);
 
-		if (groundCheck.collider != null && groundedBuffer <= 0) {
+		if (groundCheck.collider != null && groundedBuffer <= 0 && !timeManager.CheckIfTimePaused()) {
 
 			// landing frames
 			cancelAttacks();
@@ -261,7 +272,7 @@ public class PlayerMovementScript : MonoBehaviour {
 			movementBox.size = moveboxSize;
 			gameObject.layer = onGroundMask;
 			CheckFacing ();
-		} else if (groundedBuffer > 0) {
+		} else if (groundedBuffer > 0  && !timeManager.CheckIfTimePaused()) {
 			groundedBuffer--;
 
 		}
@@ -286,11 +297,17 @@ public class PlayerMovementScript : MonoBehaviour {
 			if (speedy == 0) {
 				speedy = RB.velocity.y;
 			}
-			if (OnLeft) {
-				RB.velocity = new Vector2 (speedx, speedy);
-			} else {
-				RB.velocity = new Vector2 (-speedx, speedy);
-			}
+			StartCoroutine(MoveTowardsEnum(speedx, speedy));
+		}
+	}
+	IEnumerator MoveTowardsEnum(float speedx, float speedy){
+		while (timeManager.CheckIfTimePaused()) {
+			yield return null;
+		}
+		if (OnLeft) {
+			RB.velocity = new Vector2 (speedx, speedy);
+		} else {
+			RB.velocity = new Vector2 (-speedx, speedy);
 		}
 	}
 	public bool CheckIfOnLeft(){
@@ -319,6 +336,7 @@ public class PlayerMovementScript : MonoBehaviour {
 			RB.gravityScale = 7;
 		}
 	}
+
 	public void setAttackCancel(vDelegate newFunc){
 		Debug.Log ("setcancel");
 		cancelAttacks = newFunc;

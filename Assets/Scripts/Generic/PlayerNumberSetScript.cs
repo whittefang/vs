@@ -23,11 +23,12 @@ public class PlayerNumberSetScript : MonoBehaviour {
 	public void SetPlayer(string playerTag, GameObject otherPlayer){
 		Player = playerTag;
 		if (Player == "playerOne") {
-			
+			GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ().p1Body = body.GetComponent<Rigidbody2D> ();
 			body.GetComponentInChildren<HealthScript>().sounds = otherPlayer.GetComponent<PlayerNumberSetScript>().soundPlayer.GetComponent<SoundsPlayer>();
 			soundPlayer.tag = "P1Sound";
 			body.GetComponent<InputScript> ().SetPlayerNumber (0);
 			body.GetComponent<PlayerMovementScript>().otherPlayer = otherPlayer.transform.GetChild(0).gameObject;
+			body.GetComponent<PlayerMovementScript> ().CheckFacing ();
 			foreach (Transform child in hurtboxes.transform) {
 				child.tag = "playerOneHurtbox";
 			}
@@ -45,10 +46,12 @@ public class PlayerNumberSetScript : MonoBehaviour {
 				optFunc(true);
 			}
 		} else {
+			GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ().p2Body = body.GetComponent<Rigidbody2D> ();
 			soundPlayer.tag = "P2Sound";
 			body.GetComponentInChildren<HealthScript>().sounds = otherPlayer.GetComponent<PlayerNumberSetScript>().soundPlayer.GetComponent<SoundsPlayer>();
 			body.GetComponent<InputScript> ().SetPlayerNumber (1);
 			body.GetComponent<PlayerMovementScript>().otherPlayer = otherPlayer.transform.GetChild(0).gameObject;
+			body.GetComponent<PlayerMovementScript> ().CheckFacing ();
 			foreach (Transform child in hurtboxes.transform) {
 				child.tag = "playerTwoHurtbox";
 			}

@@ -306,7 +306,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	}
 	// depricated
 	IEnumerator Light(){
-		sound.PlayHit ();
+		sound.PlayLight ();
 		spriteRenderer.sprite = lightFrames [0];
 		SetHurtbox(new Vector2 (1.25f, .7f), new Vector2 (1, .75f), hurtboxLimb);
 		for (int x = 0; x < 4;) {
@@ -325,7 +325,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 		spriteRenderer.sprite = lightFrames [0];
 	}
 	IEnumerator Medium(){
-		sound.PlayHit ();
+		sound.PlayMedium ();
 		SetHurtbox(new Vector2 (0f, -1f), new Vector2 (1.8f, 1.5f), hurtboxBody);
 		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
@@ -341,7 +341,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Heavy(){
-		sound.PlayHit ();
+		sound.PlayHeavy ();
 		SetHurtbox(new Vector2 (0f, -.8f), new Vector2 (1.8f, 1.75f), hurtboxBody);
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = heavyFrames [i];

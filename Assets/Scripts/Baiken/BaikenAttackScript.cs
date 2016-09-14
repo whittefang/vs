@@ -449,7 +449,7 @@ public class BaikenAttackScript : MonoBehaviour {
 		state.SetState ("invincible");
 		PMS.DsableBodyBox ();
 		sp2Hitbox.SetActive (true);
-		for (int x = 0; x < 30;) {
+		for (int x = 0; x < 45;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 2) {
@@ -535,6 +535,7 @@ public class BaikenAttackScript : MonoBehaviour {
 		if (hitChain) {
 			spriteAnimator.PlayExtra2 ();
 			recovery = 60;
+			state.SetState ("projectile invulnerable");
 		} else {
 			spriteAnimator.PlayExtra3 ();
 
@@ -590,26 +591,29 @@ public class BaikenAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		bool canShoot = true;
-		for (int x = 0; x < 120;) {
+		for (int x = 0; x < 60;) {
 			// active
-			if (x == 5){
+
+			if (x == 2) {
 				transform.position = new Vector3(transform.position.x,transform.position.y,1000);
-			}
-			if (x == 10) {
 				superHitbox.SetActive (true);
 				superKanji.transform.position = new Vector3(otherPlayer.transform.position.x, superKanji.transform.position.y, superKanji.transform.position.z);
 				superKanji.SetActive (true);
 			}
-			if (x == 15){
+			if (x == 4) {
+				superHitbox.SetActive (false);
+				proximityBox.SetActive (false);
+			}
+			if (x == 5){
 				if (PMS.OnLeft) {
-					otherPlayer.transform.position = new Vector3 (otherPlayer.transform.position.x - 2.5f, otherPlayer.transform.position.y, 0);
-					transform.position = new Vector3 (otherPlayer.transform.position.x + 2.5f, transform.position.y, 0);
+					otherPlayer.transform.position = new Vector3 (otherPlayer.transform.position.x - 4.5f, otherPlayer.transform.position.y, 0);
+					transform.position = new Vector3 (otherPlayer.transform.position.x + 4.5f, transform.position.y, 0);
 				} else {
-					otherPlayer.transform.position =  new Vector3 (otherPlayer.transform.position.x + 2.5f, otherPlayer.transform.position.y, 0);
-					transform.position = new Vector3 (otherPlayer.transform.position.x - 2.5f, transform.position.y, 0);
+					otherPlayer.transform.position =  new Vector3 (otherPlayer.transform.position.x + 4.5f, otherPlayer.transform.position.y, 0);
+					transform.position = new Vector3 (otherPlayer.transform.position.x - 4.5f, transform.position.y, 0);
 				}
 			}
-			if (x == 20) {
+			if (x == 10) {
 				superKanji.SetActive (false);
 			}
 			if (!timeManager.CheckIfTimePaused()) {
@@ -644,7 +648,7 @@ public class BaikenAttackScript : MonoBehaviour {
 		sp2Buffer = false;
 		lightBuffer = false;
 		sp1Buffer = false;
-
+		transform.position = new Vector3 (transform.position.x, transform.position.y, 0);
 		StopAllCoroutines ();
 		lightHitbox.SetActive (false);
 		mediumHitbox.SetActive (false);

@@ -7,6 +7,7 @@ public class HitboxScript : MonoBehaviour {
 	public int pnum;
 	public int hitstun;
 	public int blockstun;
+	public int hitstop = 5;
 	public Vector2 hitPush, blockPush;
 	public bool disableOnHit = false, isEnabled = true, isProjectile = false, isThrow, multiHit = false, 
 	useCornerPushback = true, omitOptFuncOnBlock = false, isFreezingAttack = false, launcher = false, knockdownAttack = false, useOptionalPosition;
@@ -14,6 +15,9 @@ public class HitboxScript : MonoBehaviour {
 	public int multihitAmount = 0;
 	public int multihitFrameBetween = 1;
 	public List<string> tagsToDamage;
+	public AudioClip hitSound;
+	public float hitPitch =1;
+	public float blockPitch =1;
 	public delegate void voidDel();
 	public delegate void voidArgDel(Transform pos);
 	voidDel optionalFunc;
@@ -69,7 +73,8 @@ public class HitboxScript : MonoBehaviour {
 			if (useOptionalPosition){
 				optionalPosition = transform.position;
 			}
-			bool blocked = other.GetComponentInParent<HealthScript> ().DealDamage (damage, hitstun, blockstun, other.transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback, isFreezingAttack, launcher, knockdownAttack,optionalPosition);
+			Debug.Log (transform.position);
+			bool blocked = other.GetComponentInParent<HealthScript> ().DealDamage (damage, hitstun, blockstun, transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback, isFreezingAttack, launcher, knockdownAttack,optionalPosition, hitstop, hitSound, hitPitch, blockPitch);
 
 			if (isThrow && !blocked){
 				throwFunc (other.transform.parent.transform);

@@ -194,10 +194,7 @@ public class RyuAttackScript : MonoBehaviour {
 				if (x == 4){
 					jumpLightHitbox.SetActive (true);
 				}
-				if (x == 10){
-					jumpLightHitbox.SetActive (false);
-					proximityBox.SetActive (false);
-				}
+
 				x++;
 			}
 			yield return null;
@@ -414,9 +411,10 @@ public class RyuAttackScript : MonoBehaviour {
 				if (x == 3) {
 					sp2Buffer = false;
 					//PMS.StopMovement ();
+				}
+				if (x == 9) {
 					sp2HitboxPart1.SetActive (true);
 				}
-
 				if (x == 10){
 					state.SetState ("attack");
 				}

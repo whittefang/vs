@@ -323,6 +323,9 @@ public class BaikenAnimationScript : MonoBehaviour {
 
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = lightFrames [i];
+			if (i == 1) {
+				sound.PlayLight ();
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -344,6 +347,9 @@ public class BaikenAnimationScript : MonoBehaviour {
 	IEnumerator Medium(){
 		for (int i = 0; i < 8; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
+			if (i == 1) {
+				sound.PlayMedium ();
+			}
 			if (i == 2) {
 			}
 
@@ -362,6 +368,9 @@ public class BaikenAnimationScript : MonoBehaviour {
 		
 		for (int i = 0; i < 14; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
+			if (i == 1) {
+				sound.PlayHeavy ();
+			}
 			if (i < 2) {
 				for (int x = 0; x < 2;) {
 					yield return null;
@@ -438,8 +447,18 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	IEnumerator SpecialOne(){
 		for (int i = 0; i < 8; i++) {
+			if (i == 1){
+				sound.PlaySP1 ();
+			}
 			spriteRenderer.sprite = SpecialOneFrames [i];
-
+			if (i == 5) {
+				for (int x = 0; x < 6;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -467,7 +486,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 	IEnumerator SpecialTwoComplete(){
 		for (int i = 3; i < 16 ; i++) {
 			if (i == 1) {
-				sound.PlaySP2 ();
+				sound.PlayExtra2 ();
 			}
 			spriteRenderer.sprite = SpecialTwoFrames [i];
 			for (int x = 0; x < 3;) {
@@ -481,6 +500,8 @@ public class BaikenAnimationScript : MonoBehaviour {
 	IEnumerator SpecialThree(){
 		sound.PlaySP3 ();
 		for (int i = 0; i < 4; i++) {
+			
+
 			spriteRenderer.sprite = SpecialThreeFrames [i];
 			for (int x = 0; x < 4;) {
 				yield return null;
@@ -502,7 +523,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 		}
 	}
 	IEnumerator SpecialThreewWhiff(){
-		sound.PlaySP3 ();
 		for (int i = 5; i < 12; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
 			for (int x = 0; x < 3;) {
@@ -514,7 +534,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 		}
 	}
 	IEnumerator SpecialThreeHit(){
-		sound.PlaySP3 ();
+		sound.PlayExtra3 ();
 		for (int i = 5; i < 27; i++) {
 			spriteRenderer.sprite = SpecialThreeFrames [i];
 			for (int x = 0; x < 3;) {
@@ -575,7 +595,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 				x++;
 			}
 		}
-		for (int x = 0; x < 45; x++) {
+		for (int x = 0; x < 10; x++) {
 			if (x == 40){
 				superBackgroundBlack.SetActive (true);
 			}

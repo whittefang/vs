@@ -5,6 +5,7 @@ public class TimeManagerScript : MonoBehaviour {
 
 	public bool timePaused = false;
 	public bool canPauseTime = true;
+	public Rigidbody2D p1Body, p2Body;
 	// Use this for initialization
 	void Awake () {
 		QualitySettings.vSyncCount = 0;
@@ -40,9 +41,21 @@ public class TimeManagerScript : MonoBehaviour {
 	}
 	IEnumerator StopTimeEnum(int numberOfFrames){
 		timePaused = true;
+		Vector2 p1Velocity, p2Velocity;
+		p1Velocity = p1Body.velocity;
+		p2Velocity = p2Body.velocity;
+		p1Body.velocity = Vector2.zero;
+		p2Body.velocity = Vector2.zero;
+		p1Body.isKinematic = true;
+		p2Body.isKinematic = true;
 		for (int x = 0; x < numberOfFrames; x++) {
 			yield return null;
 		}
+
+		p1Body.velocity = p1Velocity;
+		p2Body.velocity = p2Velocity;
+		p1Body.isKinematic = false;
+		p2Body.isKinematic = false;
 		timePaused = false;
 		
 	}

@@ -305,6 +305,7 @@ public class HulkAnimationScript : MonoBehaviour {
 	IEnumerator Light(){
 		SetHurtbox(new Vector2 (2f, -3.35f), new Vector2 (2.5f, 1.25f), hurtboxLimb);
 
+		sound.PlayLight ();
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = lightFrames [i];
 			for (int x = 0; x < 4;) {
@@ -319,7 +320,9 @@ public class HulkAnimationScript : MonoBehaviour {
 	IEnumerator Medium(){
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = mediumFrames [i];
-
+			if (i == 1) {
+				sound.PlayMedium ();
+			}
 			if (i == 2) {
 				poundEffect.SetActive (true);
 				SetHurtbox (new Vector2 (1.6f, -3f), new Vector2 (2.7f, 1f),hurtboxLimb);
@@ -371,7 +374,9 @@ public class HulkAnimationScript : MonoBehaviour {
 		SetHurtbox(new Vector2 (1f, -1f), new Vector2 (2f, 1.5f), hurtboxLimb);
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
-
+			if (i == 2) {
+				sound.PlayExtra2 ();
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {

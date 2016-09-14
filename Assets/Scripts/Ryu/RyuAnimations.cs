@@ -329,6 +329,9 @@ public class RyuAnimations : MonoBehaviour {
 
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = lightFrames [i];
+			if (i == 1) {
+				sound.PlayLight ();
+			}
 			for (int x = 0; x < 3;) {
 				 yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -341,6 +344,9 @@ public class RyuAnimations : MonoBehaviour {
 	IEnumerator Medium(){
 		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 7; i++) {
+			if (i == 1) {
+				sound.PlayMedium ();
+			}
 			spriteRenderer.sprite = mediumFrames [i];
 
 			if (i == 2) {
@@ -359,6 +365,9 @@ public class RyuAnimations : MonoBehaviour {
 	}
 	IEnumerator Heavy(){
 		for (int i = 0; i < 14; i++) {
+			if (i == 1) {
+				sound.PlayHeavy ();
+			}
 			spriteRenderer.sprite = heavyFrames [i];
 			if (i == 6) {
 				SetHurtbox(new Vector2 (2.1f, .2f), new Vector2 (2.5f, 1f), hurtboxLimb);
@@ -417,15 +426,15 @@ public class RyuAnimations : MonoBehaviour {
 	IEnumerator SpecialOne(){
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
-
+			if (i == 2) {
+				sound.PlaySP1 ();
+			}
 			if (i == 9) {
 				for (int x = 0; x < 12;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused ()) {
 						x++;
-						if (i == 2) {
-							sound.PlaySP1 ();
-						}
+
 					}
 				}
 			}

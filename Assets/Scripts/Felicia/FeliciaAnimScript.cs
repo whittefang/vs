@@ -308,6 +308,9 @@ public class FeliciaAnimScript : MonoBehaviour {
 		SetHurtbox(new Vector2 (1.75f, -.4f), new Vector2 (1.75f, .75f), hurtboxLimb);
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = lightFrames [i];
+			if (i == 1) {
+				sound.PlayLight ();
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -321,6 +324,9 @@ public class FeliciaAnimScript : MonoBehaviour {
 
 		SetHurtbox(new Vector2 (.8f, -.8f), new Vector2 (3f, 3f), hurtboxBody);
 		for (int i = 0; i < 10; i++) {
+			if (i == 1) {
+				sound.PlayMedium ();
+			}
 			spriteRenderer.sprite = mediumFrames [i];
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -334,6 +340,9 @@ public class FeliciaAnimScript : MonoBehaviour {
 
 		SetHurtbox(new Vector2 (.8f, -1.5f), new Vector2 (2f, 2f), hurtboxBody);
 		for (int i = 0; i < 8; i++) {
+			if (i == 1) {
+				sound.PlayHeavy ();
+			}
 			spriteRenderer.sprite = heavyFrames [i];
 			if (i == 3) {
 				SetHurtbox(new Vector2 (2.7f, -1.75f), new Vector2 (2.5f, 1f), hurtboxLimb);
@@ -394,7 +403,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 	}
 	IEnumerator JumpHeavy(){
 		SetJumpHitbox ();
-		sound.PlayHeavy ();
+		sound.PlayExtra2 ();
 		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = jumpHeavyFrames [i];
 			if (i == 3) {

@@ -14,7 +14,7 @@ public class HealthScript : MonoBehaviour {
 	TimeManagerScript timeManager;
 	ObjectPoolScript hitsparksPool, blocksparksPool;
 	public SoundsPlayer sounds;
-	TextMesh comboCounterText, comboDamageText,comboCounterShadowText, comboDamageShadowText;
+	TextMesh comboCounterText, comboDamageText,comboCounterShadowText, comboDamageShadowText, hitText;
 	public int comboCounter = 0, comboDamage = 0, freezingCounter = 0;
 	float comboScaling = 1, leftBound = -10.05f, rightBound = 10.05f;
 	LeftHpBarChange hpLeft;
@@ -55,6 +55,7 @@ public class HealthScript : MonoBehaviour {
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
 			comboCounterShadowText = GameObject.Find ("P1ComboCountShadow").GetComponent<TextMesh> ();
 			comboDamageShadowText = GameObject.Find ("P1DamageShadow").GetComponent<TextMesh> ();
+			hitText = GameObject.Find ("rhit").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		} else {
 			exCurrent =	(int)exBar.GetEx(false);
@@ -66,29 +67,44 @@ public class HealthScript : MonoBehaviour {
 			comboDamageText = GameObject.Find ("P2Damage").GetComponent<TextMesh> ();
 			comboCounterShadowText = GameObject.Find ("P2ComboCountShadow").GetComponent<TextMesh> ();
 			comboDamageShadowText = GameObject.Find ("P2DamageShadow").GetComponent<TextMesh> ();
+			hitText = GameObject.Find ("Lhit").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
 		}
+		HideComboText ();
 	}
 	// Update is called once per frame
 	void Update () {
 	
 	}
+	public void HideComboText(){
+		comboCounterText.gameObject.SetActive (false);
+		comboDamageShadowText.gameObject.SetActive (false);
+		comboCounterShadowText.gameObject.SetActive (false);
+		comboDamageText.gameObject.SetActive (false);
+		hitText.gameObject.SetActive (false);
+	}
 	// if attack is blocked returns true else it returns false
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
-		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2)){
-		
-		Debug.Log(state.GetState() == "parry" + ParryFunc + isThrow);
+		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2),
+		int hitStopAmount = 0, AudioClip hitSound = default(AudioClip), float hitPitch =1, float blockPitch =1){
+
 		if (state.GetState() == "parry" && ParryFunc != null && !isThrow){
 				ParryFunc();
 			
 		// check for invincible or blocking
 		}else if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
-			(isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack")) {
+			(isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack" && state.GetState() != "prejump")) {
 
 			// player got hit
 			// deal damage
 			if (state.GetState () == "hitstun" || state.GetState () == "falling hit" || state.GetState() == "frozen") {
+				CancelInvoke();
+				comboCounterText.gameObject.SetActive (true);
+				comboDamageShadowText.gameObject.SetActive (true);
+				comboCounterShadowText.gameObject.SetActive (true);
+				comboDamageText.gameObject.SetActive (true);
+				hitText.gameObject.SetActive (true);
 				comboCounter++;
 				comboScaling -= .1f;
 
@@ -145,7 +161,7 @@ public class HealthScript : MonoBehaviour {
 				}
 			}
 
-			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher, optionalPosition));
+			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher, optionalPosition, hitStopAmount, hitSound, hitPitch));
 
 			// check for death
 			CheckHealth ();
@@ -156,13 +172,15 @@ public class HealthScript : MonoBehaviour {
 			// player is blocking
 			spriteAnimator.PlayBlock ();
 			StopAllCoroutines ();
-			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback, optionalPosition));
+			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback, optionalPosition,hitStopAmount, blockPitch));
 			healthAmount -= (int)((float)amount * .05f);
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft ((int)((float)amount * .05f));
 			} else {
 				hpRight.changeBarRight ((int)((float)amount * .05f));
 			}
+			// check for death
+			CheckHealth ();
 			return true;
 		} else if (isThrow) {
 			Debug.Log ("thro returrn true");
@@ -188,13 +206,14 @@ public class HealthScript : MonoBehaviour {
 			//gameObject.SetActive (false);
 		}
 	}
-	IEnumerator InitiateBlockstun(int stunFrames, Vector3 position, Vector2 bockPush, bool isProjectile, bool useCornerKockback = true, Vector2 optionalPosition = default(Vector2)){
+	IEnumerator InitiateBlockstun(int stunFrames, Vector3 position, Vector2 bockPush, bool isProjectile, bool useCornerKockback = true, Vector2 optionalPosition = default(Vector2), int hitStopAmount = 5, float pitch=1){
 		state.SetState ("blockstun");
-		sounds.PlayBlock ();
+		sounds.PlayBlock (pitch);
 		GameObject sparks = blocksparksPool.FetchObject ();
-		sparks.transform.position = position + new Vector3(Random.Range(-.75f, .75f), Random.Range(-1f, 1f),0);
+		sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y, -.2f);
 		sparks.SetActive(true);
-		timeManager.StopTime (4);
+
+		timeManager.StopTime (hitStopAmount);
 
 		PMS.CheckFacing ();
 		PMS.MoveToward (-bockPush.x, bockPush.y);
@@ -222,7 +241,7 @@ public class HealthScript : MonoBehaviour {
 		}
 
 	}
-	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false, Vector2 optionalPosition = default(Vector2)){
+	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false, Vector2 optionalPosition = default(Vector2), int hitStopAmount = 5, AudioClip hitSound = default(AudioClip), float pitch =0){
 
 		 if (freezingAttack){
 			state.SetState ("frozen");
@@ -231,7 +250,7 @@ public class HealthScript : MonoBehaviour {
 		}else {
 			state.SetState ("hitstun");
 		}
-		sounds.PlayHit ();
+		sounds.PlayHit (hitSound, pitch);
 		if (HitFunc != null) {
 			HitFunc ();
 		}
@@ -239,10 +258,10 @@ public class HealthScript : MonoBehaviour {
 
 		if (!freezingAttack) {
 			GameObject sparks = hitsparksPool.FetchObject ();
-			sparks.transform.position = position + new Vector3 (Random.Range (-.75f, .75f), Random.Range (-1f, 1f), 0);
+			sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y, -.2f);
 			sparks.SetActive (true);
 		}
-		timeManager.StopTime (3);
+		timeManager.StopTime (hitStopAmount);
 		PMS.CheckFacing ();
 		if (!freezingAttack) {
 			if (optionalPosition == default(Vector2) || (optionalPosition.x > transform.position.x && PMS.CheckIfOnLeft()) || (optionalPosition.x < transform.position.x && !PMS.CheckIfOnLeft())){
@@ -260,7 +279,7 @@ public class HealthScript : MonoBehaviour {
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
 		for (int x = 0; x < stunFrames;) {	
-			if (x == 1) {
+			if (x == 5) {
 				if (launcher) {
 					state.SetState ("falling hit");
 					PMS.DsableBodyBox ();
@@ -285,6 +304,7 @@ public class HealthScript : MonoBehaviour {
 			SR.material.SetFloat ("_EffectAmount", 0);
 			spriteAnimator.PlayNeutralAnim ();
 		}
+		Invoke ("HideComboText", .5f);
 	}
 	public void SetHitFunc(DeathEvent newFunc){
 		HitFunc = newFunc;
