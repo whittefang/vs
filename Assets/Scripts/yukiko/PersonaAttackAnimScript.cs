@@ -11,7 +11,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	public Sprite[] SpecialThreeFrames;
 	public Sprite[] superFrames;
 	public Sprite[] jumpMediumFrames;
-
+	public playerDetectionScript detector;
 	public GameObject sp1Fireball, sp3TrapPre, sp3TrapAttack, attack1Hitbox,attack2Hitbox, attack3Hitbox, mediumHitbox
 					, dpHitbox, superHitbox, superEffects;
 	SpriteRenderer spriteRenderer;
@@ -43,11 +43,13 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			tag = "P1Persona";
 			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
+			detector.SetTagToDetect("playerTwoHurtbox");
 		} else {
 			tag = "P2Persona";
 
 			Cards.transform.eulerAngles = new Vector3 (0, 0, 0);
 			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
+			detector.SetTagToDetect("playerOneHurtbox");
 		}
 
 		Cards.transform.position = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1f);
@@ -56,6 +58,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	IEnumerator SendOut(){
 		attackStage=-1;
 		spriteRenderer.sprite = SendoutFrames [0];
+		detector.gameObject.SetActive (true);
 		Vector2 direction;
 		if (transform.position.x > otherPlayer.position.x) {
 			direction = new Vector2 (-17, 0);
@@ -73,9 +76,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 				spriteRenderer.sprite = SendoutFrames [0];
 				counter = 0;
 			}
-			if (i == 7) {
-				attackStage = 1;
-			}
+		
 			counter++;
 			RB.velocity = direction;
 			yield return null;
@@ -114,9 +115,9 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		int animationFrame = 0;
 		attackStage=-1;
 		spriteRenderer.sprite = Attack1Frames [0];
-		for (int i = 0; i < 24;) {
+		for (int i = 0; i < 12;) {
 
-			if (i%3 == 0) {
+			if (i%2 == 0) {
 				if (animationFrame < Attack1Frames.Length) {
 					spriteRenderer.sprite = Attack1Frames [animationFrame];
 				}
@@ -137,6 +138,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 			}
 
 		}
+		StartCoroutine (Attack2 ());
 		//StartCoroutine (TimedUnsummon (15));
 	}
 
@@ -144,15 +146,15 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		int animationFrame = 0;
 		Vector2 direction;
 		if (transform.position.x > otherPlayer.position.x) {
-			direction = new Vector2 (-10, 0);
+			direction = new Vector2 (-10, 10);
 		} else {
-			direction = new Vector2 (10, 0);				
+			direction = new Vector2 (10, 10);				
 		}
 		attackStage=-1;
 		spriteRenderer.sprite = Attack2Frames [0];
-		for (int i = 0; i < 39;) {
+		for (int i = 0; i < 24;) {
 
-			if (i%3 == 0) {
+			if (i%2 == 0) {
 				if (animationFrame < Attack2Frames.Length) {
 					spriteRenderer.sprite = Attack2Frames [animationFrame];
 				}
@@ -175,10 +177,14 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 				} else {
 					RB.velocity = Vector2.zero;
 				}
+				if (direction.y > -5) {
+					direction.y -= 3;
+				}
 				i++;
 			}
 
 		}
+		StartCoroutine (Attack3 ());
 		attackStage = 3;
 		//StartCoroutine (TimedUnsummon (30));
 	}
@@ -193,9 +199,9 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 		}
 		attackStage= -1;
 		spriteRenderer.sprite = Attack3Frames [0];
-		for (int i = 0; i < 27;) {
+		for (int i = 0; i < 18;) {
 			
-			if (i%3 == 0) {
+			if (i%2 == 0) {
 				if (animationFrame < Attack3Frames.Length) {
 					spriteRenderer.sprite = Attack3Frames [animationFrame];
 				}
@@ -219,7 +225,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 		}
 		attackStage = -1;
-		//StartCoroutine (TimedUnsummon (30));
+		StartCoroutine (TimedUnsummon (30));
 	}
 	IEnumerator SpecialOne(){
 
@@ -435,6 +441,7 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	}
 
 	public void StartAttacksAnim(){
+		Debug.Log("hi");
 		if (alive && attackStage != -2) {
 			if (attackStage != -1) {
 				EndAnimations ();
@@ -460,6 +467,15 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 
 			isActive = true;
 		}
+	}
+	public void SendoutPersona(){
+		EndAnimations ();
+		isActive = true;
+		StartCoroutine (SendOut ());
+	}
+	public void StartAttacksChain(){
+		EndAnimations ();
+		StartCoroutine (Attack1 ());
 	}
 	public void StartJumpMediumAnim(){
 		if (alive) {

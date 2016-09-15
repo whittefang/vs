@@ -389,45 +389,14 @@ public class YukikoAttackScript : MonoBehaviour {
 		}
 	}
 	public void Heavy(){
-		if ((state.GetState() == "attack" || state.GetState() == "neutral" || state.GetState() == "light recovery" || state.GetState() == "medium recovery") && persona.GetAttackState() != -1 && persona.CheckAlive()) {
-//			if (persona.GetAttackState () == 0 && state.GetState() == "neutral") {
-//				PMS.CheckFacing ();
-//				StopAllCoroutines ();
-//				StartCoroutine (heavyEnum ());
-//			} else if (persona.GetAttackState () != 0){
-			if (!persona.isActive){
-				sounds.PlayHeavy ();
-			}
-				ActivatePersona(persona.StartAttacksAnim);
-//			}
-//		} else if (state.GetState () == "jumping" && persona.CheckAlive()) {
-//			StartCoroutine (jumpHeavyEnum ());
+		
+		if (state.GetState () == "jumping" && persona.CheckAlive()) {
+			StartCoroutine (jumpHeavyEnum ());
 		}
-
 	}
 	IEnumerator heavyEnum(){
 
-		health.AddMeter (20);
-		proximityBox.SetActive (true);
-		spriteAnimator.PlayHeavy ();
-		
-		PMS.StopMovement ();
-		state.SetState ("heavy recovery");
-		ActivatePersona(persona.StartAttacksAnim);
-		for (int x = 0; x < 30;) {
-			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 7) {
-
-					state.SetState ("attack");
-
-				}
-
-				x++;
-			}
-			yield return null;
-		}
-		heavyHitboxHit = false;
-		state.SetState ("neutral");
+		yield return null;
 	}
 	IEnumerator jumpHeavyEnum(){
 		proximityBox.SetActive (true);
@@ -447,45 +416,35 @@ public class YukikoAttackScript : MonoBehaviour {
 
 	public void SpecialOne(){
 		if ((state.GetState() == "neutral" || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && !sp1Fireball.activeSelf && persona.CheckAlive() && persona.GetAttackState() != -2) {
+			|| (state.GetState() =="heavy recovery"&& heavyHitboxHit)) && persona.CheckAlive() && !persona.CheckActive()) {
+
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
 			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (SpecialOneEnum ());
+
+		
+
 		}
 
 	}
 	IEnumerator SpecialOneEnum(){
-		sp1Buffer = true;
-		health.AddMeter (30);
+		health.AddMeter (20);
 		proximityBox.SetActive (true);
-		spriteAnimator.PlaySpecialOne ();
+		spriteAnimator.PlayHeavy ();
+
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		bool canShoot = true;
-
-
-		for (int x = 0; x < 45;) {
-
+		ActivatePersona(persona.SendoutPersona);
+		for (int x = 0; x < 75;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				// active
-				if (x == 3){
-					sp1Buffer = false;
-				}
-				if (x == 12 && canShoot) {
-
-					ActivatePersona(persona.StartSpecialOneAnim);
-					proximityBox.SetActive (false);
-					canShoot = false;
-				}
 				x++;
 			}
 			yield return null;
-
 		}
-		specialHitboxHit = false;
+		heavyHitboxHit = false;
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){

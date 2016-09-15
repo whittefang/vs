@@ -547,13 +547,13 @@ public class HulkAttackScript : MonoBehaviour {
 			if (i > 50) {
 				PMS.EnableCollider (true);
 
-				PMS.MoveToward (0, 25);
+				state.SetState("invincible");
+				transform.position += new Vector3 (0,.2f, 0);
 			}
 			yield return null;
 		}
 
 		PMS.ForceFlip ();
-		state.SetState("invincible");
 		if (PMS.OnLeft) {
 			transform.position = new Vector3 (otherPlayer.transform.position.x-12, 10, otherPlayer.transform.position.z);
 			superHitbox.transform.eulerAngles = new Vector3 (0, 0, 0);
@@ -563,9 +563,13 @@ public class HulkAttackScript : MonoBehaviour {
 		}
 		superHitbox.transform.position = transform.position;
 		superHitbox.SetActive (true);
-		for (int i = 0; i < 40; i++) {
-			PMS.MoveToward (15, -15);
-			
+		for (int i = 0; i < 35; i++) {
+			if (PMS.OnLeft) {
+				transform.position += new Vector3 (.25f, -.25f, 0);
+			} else {
+				transform.position += new Vector3 (-.25f, -.25f, 0);
+				
+			}			
 			yield return null;
 		}
 		PMS.EnableCollider (false);
