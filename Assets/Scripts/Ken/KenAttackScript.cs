@@ -7,7 +7,7 @@ public class KenAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
+	public GameObject lightHitbox, mediumHitbox, heavyHitbox,heavyHitboxP2, jumpLightHitbox,jumpLightHitbox2, jumpMediumHitbox, jumpHeavyHitbox,
 	throwHitbox, proximityBox;
 	TimeManagerScript timeManager;
 
@@ -24,7 +24,9 @@ public class KenAttackScript : MonoBehaviour {
 		if (tag == "playerOne") {
 			//SetPlayer (true);
 			//otherPlayer = GameObject.Find("P2
+			Komaru.SetPlayer(true);
 		} else {
+			Komaru.SetPlayer(false);
 			//SetPlayer (false);
 		}
 
@@ -161,11 +163,11 @@ public class KenAttackScript : MonoBehaviour {
 				if (x == 3){
 					lightBuffer = false;
 				}
-				if (x == 4) {
+				if (x == 6) {
 					lightHitbox.SetActive (true);
 				}
 				// recovery
-				if (x == 6) {
+				if (x == 8) {
 					lightHitbox.SetActive (false);
 					state.SetState ("light recovery");
 					proximityBox.SetActive (false);
@@ -182,12 +184,23 @@ public class KenAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayJumpLight ();
 		state.SetState ("jump attack");
-		for (int x = 0; x < 15; ) {
+		for (int x = 0; x < 16; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 4){
+				if (x == 6){
 					jumpLightHitbox.SetActive (true);
 				}
+				if (x == 9){
+					jumpLightHitbox.SetActive (false);
+				}
+				if (x == 12) {
+					jumpLightHitbox2.SetActive (true);
+
+				}
+				if (x == 15) {
+					jumpLightHitbox2.SetActive (false);
+				}
+
 
 				x++;
 			}
@@ -222,12 +235,12 @@ public class KenAttackScript : MonoBehaviour {
 					mediumBuffer = false;	
 				}
 				// active
-				if (x == 9) {
+				if (x == 16) {
 					PMS.StopMovement ();
 					mediumHitbox.SetActive (true);
 				}
 				// recovery
-				if (x == 11){
+				if (x == 18){
 					mediumHitbox.SetActive (false);
 					state.SetState ("medium recovery");
 					proximityBox.SetActive (false);
@@ -247,7 +260,7 @@ public class KenAttackScript : MonoBehaviour {
 		for (int x = 0; x < 27;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 9) {
+				if (x == 12) {
 					jumpMediumHitbox.SetActive (true);
 				}
 				if (x == 20) {
@@ -282,15 +295,20 @@ public class KenAttackScript : MonoBehaviour {
 		state.SetState ("attack");
 		for (int x = 0; x < 42;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 18) {
+				if (x == 21) {
 					heavyHitbox.SetActive (true);
 				}
-
-				if (x == 22) {
+				if (x == 24) {
 					PMS.StopMovement ();
 					heavyHitbox.SetActive (false);
-					state.SetState ("heavy recovery");
+				}
+				if (x == 27) {
+					heavyHitboxP2.SetActive (true);
+				}
+				if (x == 30) {
+					heavyHitboxP2.SetActive (false);
 					proximityBox.SetActive (false);
+					state.SetState ("heavy recovery");
 				}
 
 				x++;
@@ -306,10 +324,10 @@ public class KenAttackScript : MonoBehaviour {
 		state.SetState ("jump attack");
 		for (int x = 0; x < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 7) {
+				if (x == 15) {
 					jumpHeavyHitbox.SetActive (true);
 				}
-				if (x == 20) {
+				if (x == 18) {
 					jumpHeavyHitbox.SetActive (false);
 					proximityBox.SetActive (false);
 				}
@@ -404,7 +422,9 @@ public class KenAttackScript : MonoBehaviour {
 		lightHitbox.SetActive (false);
 		mediumHitbox.SetActive (false);
 		heavyHitbox.SetActive (false);
+		heavyHitboxP2.SetActive (false);
 		jumpLightHitbox.SetActive (false);
+		jumpLightHitbox2.SetActive (false);
 		jumpMediumHitbox.SetActive (false);
 		jumpHeavyHitbox.SetActive (false);
 
