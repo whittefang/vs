@@ -122,7 +122,7 @@ public class DogAnimScript : MonoBehaviour {
 			}
 		}
 
-		for (int ii = 0; ii < 5; ii++) {
+		for (int ii = 0; ii < 3; ii++) {
 			for (int i = 4; i < 7; i++) {
 				spriteRenderer.sprite = sp3Frames [i];
 				for (int x = 0; x < 3;) {
@@ -133,12 +133,13 @@ public class DogAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		spriteRenderer.sprite = sp1Frames [12];
 	}
 	IEnumerator Neutral(){
 		while (true) {
 			for (int i = 0; i < 6; i++) {
 				spriteRenderer.sprite = neutralFrames [i];
-				for (int x = 0; x < 3;) {
+				for (int x = 0; x < 5;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused ()) {
 						x++;
@@ -162,7 +163,7 @@ public class DogAnimScript : MonoBehaviour {
 		while (true) {
 			for (int i = 0; i < 5; i++) {
 				spriteRenderer.sprite = walkFrames [i];
-				for (int x = 0; x < 4;) {
+				for (int x = 0; x < 5;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused ()) {
 						x++;

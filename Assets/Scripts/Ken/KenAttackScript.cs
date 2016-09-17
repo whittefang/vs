@@ -8,7 +8,7 @@ public class KenAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject lightHitbox, mediumHitbox, heavyHitbox,heavyHitboxP2, jumpLightHitbox,jumpLightHitbox2, jumpMediumHitbox, jumpHeavyHitbox,
-	throwHitbox, proximityBox;
+	superHitbox, superHitbox2, throwHitbox, proximityBox;
 	TimeManagerScript timeManager;
 
 	SoundsPlayer sounds;
@@ -23,11 +23,10 @@ public class KenAttackScript : MonoBehaviour {
 	void Start () {
 		if (tag == "playerOne") {
 			//SetPlayer (true);
-			//otherPlayer = GameObject.Find("P2
 			Komaru.SetPlayer(true);
 		} else {
-			Komaru.SetPlayer(false);
 			//SetPlayer (false);
+			Komaru.SetPlayer(false);
 		}
 
 		health = GetComponentInChildren<HealthScript> ();
@@ -73,8 +72,8 @@ public class KenAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayThrowTry ();
 		PMS.StopMovement ();
-		state.SetState ("attack");
-		for (int x = 0; x < 10;) {
+		state.SetState ("no dog attack");
+		for (int x = 0; x < 15;) {
 			if (!timeManager.CheckIfTimePaused()) {
 
 				// startup
@@ -104,31 +103,30 @@ public class KenAttackScript : MonoBehaviour {
 
 		spriteAnimator.PlayThrowComplete ();
 		PMS.DsableBodyBox ();
-		ThrowPoint.transform.localPosition = new Vector2 (-1, 0);
+		ThrowPoint.transform.localPosition = new Vector2 (2.4f, 3);
 		otherPlayer.position = ThrowPoint.transform.position;
-		Vector2 endPoint = new Vector2(1f,0);
+		Vector2 endPoint = new Vector2(2.4f,3);
 		for (int x = 0; x < 42;) {
-
+			if (x == 10) {
+				state.SetState ("attack");
+			}
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x < 24) {
 					Vector2 newPoint = Vector2.Lerp (ThrowPoint.transform.localPosition, endPoint, .6f);
 					ThrowPoint.transform.localPosition = newPoint;
 					otherPlayer.position = ThrowPoint.transform.position;
 				}
-				if (x == 1) {
-					endPoint= new Vector2 (-3f, 0);
-				}
 				if (x == 15) {
-					endPoint = new Vector2 (-3, 2f);
+					endPoint = new Vector2 (2, 3f);
 				}
 				if (x == 18) {
-					endPoint = new Vector2 (-2f, 1.5f);
+					endPoint = new Vector2 (-.8f, 5f);
 				}
 				if (x == 21) {
-					endPoint = new Vector2 (1,1f);
+					endPoint = new Vector2 (-2.3f,2.7f);
 				}
 				if (x == 24) {
-					endPoint = new Vector2 (1,-1f);
+					endPoint = new Vector2 (-1.8f,1.3f);
 				}
 				x++;
 			}
@@ -225,10 +223,9 @@ public class KenAttackScript : MonoBehaviour {
 		mediumBuffer = true;
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayMedium ();
-		PMS.MoveToward (5f,0);
 		state.SetState ("attack");
 		// startup
-		for (int x = 0; x < 27; ) {
+		for (int x = 0; x < 39; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 3){
@@ -293,7 +290,7 @@ public class KenAttackScript : MonoBehaviour {
 		spriteAnimator.PlayHeavy ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 42;) {
+		for (int x = 0; x < 60;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 21) {
 					heavyHitbox.SetActive (true);
@@ -342,16 +339,30 @@ public class KenAttackScript : MonoBehaviour {
 		if (state.GetState() == "neutral" || state.GetState() =="light recovery"  || state.GetState() =="medium recovery"  
 			|| state.GetState() =="heavy recovery" || state.GetState() == "attack") {
 
-			Komaru.StartSp1 ();
+			StartCoroutine (SP1BufferEnum ());
 		}
 
+	}
+	IEnumerator SP1BufferEnum(){
+		yield return null;
+		yield return null;
+		yield return null;
+		yield return null;
+		Komaru.StartSp1 ();
 	}
 	public void SpecialTwo(){
 		if (state.GetState() == "neutral" || state.GetState() =="light recovery"  || state.GetState() =="medium recovery"  
 			|| state.GetState() =="heavy recovery" || state.GetState() == "attack") {
-			Komaru.StartSp2 ();
+			StartCoroutine (SP2BufferEnum ());
 		}
 
+	}
+	IEnumerator SP2BufferEnum(){
+		yield return null;
+		yield return null;
+		yield return null;
+		yield return null;
+		Komaru.StartSp2 ();
 	}
 	public void SpecialThree(){
 		if (state.GetState() == "neutral" || state.GetState() =="light recovery"  || state.GetState() =="medium recovery"  
@@ -384,17 +395,23 @@ public class KenAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
-		state.SetState ("attack");
+		state.SetState ("no dog attack");
 		bool canShoot = true;
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 110;) {
 			// active
 
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 12 && canShoot) {
-					canShoot = false;
-					sounds.PlayExtra ();
-
-					proximityBox.SetActive (false);
+				if (x < 32 && (x % 2 == 0)) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+					
+				}
+				if (x == 34) {
+					superHitbox.SetActive (false);
+					superHitbox2.SetActive (true);
+				}
+				if (x == 36) {
+					superHitbox2.SetActive (false);
 				}
 				x++;
 			}

@@ -17,6 +17,7 @@ public class PlayerNumberSetScript : MonoBehaviour {
 	void Awake () {
 		if (testMode){
 			SetPlayer(Player,testOtherPlayer );
+			body.GetComponent<InputScript> ().inputEnabled  = (true);
 		}
 
 	}
@@ -28,7 +29,7 @@ public class PlayerNumberSetScript : MonoBehaviour {
 			soundPlayer.tag = "P1Sound";
 			body.GetComponent<InputScript> ().SetPlayerNumber (0);
 			body.GetComponent<PlayerMovementScript>().otherPlayer = otherPlayer.transform.GetChild(0).gameObject;
-			body.GetComponent<PlayerMovementScript> ().CheckFacing ();
+			//body.GetComponent<PlayerMovementScript> ().CheckFacing ();
 			foreach (Transform child in hurtboxes.transform) {
 				child.tag = "playerOneHurtbox";
 			}
@@ -51,7 +52,7 @@ public class PlayerNumberSetScript : MonoBehaviour {
 			body.GetComponentInChildren<HealthScript>().sounds = otherPlayer.GetComponent<PlayerNumberSetScript>().soundPlayer.GetComponent<SoundsPlayer>();
 			body.GetComponent<InputScript> ().SetPlayerNumber (1);
 			body.GetComponent<PlayerMovementScript>().otherPlayer = otherPlayer.transform.GetChild(0).gameObject;
-			body.GetComponent<PlayerMovementScript> ().CheckFacing ();
+			//body.GetComponent<PlayerMovementScript> ().CheckFacing ();
 			foreach (Transform child in hurtboxes.transform) {
 				child.tag = "playerTwoHurtbox";
 			}

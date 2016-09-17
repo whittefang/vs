@@ -106,9 +106,9 @@ public class HitboxScript : MonoBehaviour {
 		}
 
 		if (other.tag == "P1Persona" && pnum == 1) {
-			other.GetComponent<PersonaAttackAnimScript> ().DealDamage ();
+			other.GetComponent<DogHealthScript> ().DealDamage ();
 		} else if (other.tag == "P2Persona" && pnum == 0) {
-			other.GetComponent<PersonaAttackAnimScript> ().DealDamage ();
+			other.GetComponent<DogHealthScript> ().DealDamage ();
 		}
 	}
 	public void AddTagToDamage(string newTag){

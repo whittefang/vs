@@ -75,8 +75,8 @@ public class KenAnimScript : MonoBehaviour {
 
 
 	void SetJumpHitbox(){
-		hurtboxBody.transform.localPosition = new Vector2 (0, 0);
-		hurtboxBody.transform.localScale  = new Vector2 (1.75f, 1.75f);
+		hurtboxBody.transform.localPosition = new Vector2 (-.2f, 2.1f);
+		hurtboxBody.transform.localScale  = new Vector2 (1.5f, 1.75f);
 	}
 	void SetHurtbox(Vector2 position, Vector2 scale, Transform hurtbox){
 		hurtbox.localPosition = position;
@@ -95,7 +95,7 @@ public class KenAnimScript : MonoBehaviour {
 			spriteRenderer.sprite = animationFrames [currentFrame];
 			currentFrame++;
 			// number of frames to wait
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 5;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
@@ -115,21 +115,27 @@ public class KenAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator WinAnim(){
-		for (int x = 0; x < 10;) {
-			yield return null;
-			if (!timeManager.CheckIfTimePaused ()) {
-				x++;
-			}
-		}
-		for(int i = 0; i < winFrames.Length; i++){
-			spriteRenderer.sprite = winFrames [i];
-			for (int x = 0; x < 3;) {
+		for (int i = 0; i < 8; i++) {
+			spriteRenderer.sprite = winFrames [i];		
+			for (int x = 0; x < 5;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused ()) {
 					x++;
 				}
 			}
 		}
+		while (true) {
+			for (int i = 6; i < 8; i++) {
+				spriteRenderer.sprite = winFrames [i];		
+				for (int x = 0; x < 5;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					}
+				}
+			}
+		}
+
 	}
 	IEnumerator DeathAnim(){
 		Debug.Log ("death");
@@ -230,12 +236,15 @@ public class KenAnimScript : MonoBehaviour {
 	}
 	// depricated
 	IEnumerator Light(){
-		SetHurtbox(new Vector2 (1.5f, .5f), new Vector2 (2, .75f), hurtboxLimb);
+		SetHurtbox(new Vector2 (.75f, 2.5f), new Vector2 (2, .75f), hurtboxLimb);
 
 		for (int i = 0; i < 5; i++) {
 			spriteRenderer.sprite = lightFrames [i];
 			if (i == 1) {
 				sound.PlayLight ();
+			}
+			if (i == 4) {
+				SetHurtbox (new Vector2 (.75f, 2.5f), new Vector2 (2, .75f), hurtboxLimb);
 			}
 			for (int x = 0; x < 3;) {
 				yield return null;
@@ -247,7 +256,6 @@ public class KenAnimScript : MonoBehaviour {
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator Medium(){
-		SetHurtbox(new Vector2 (0f, -1.2f), new Vector2 (1.8f, 2f), hurtboxBody);
 		for (int i = 0; i < 10; i++) {
 			if (i == 1) {
 				sound.PlayMedium ();
@@ -255,7 +263,7 @@ public class KenAnimScript : MonoBehaviour {
 			spriteRenderer.sprite = mediumFrames [i];
 
 			if (i == 2) {
-				SetHurtbox (new Vector2 (2f, -1.8f), new Vector2 (2.7f, 1f),hurtboxLimb);
+				SetHurtbox(new Vector2 (1.4f, 1.2f), new Vector2 (3f, 2f), hurtboxBody);
 			}
 			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);
@@ -269,13 +277,14 @@ public class KenAnimScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Heavy(){
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 12; i++) {
 			if (i == 1) {
 				sound.PlayHeavy ();
+				SetHurtbox(new Vector2 (1.4f, 1.2f), new Vector2 (3f, 2f), hurtboxBody);
 			}
 			spriteRenderer.sprite = heavyFrames [i];
 			if (i == 6) {
-				SetHurtbox(new Vector2 (2.1f, .2f), new Vector2 (2.5f, 1f), hurtboxLimb);
+				SetHurtbox(new Vector2 (2.4f, 2f), new Vector2 (2f, .5f), hurtboxLimb);
 			}
 			if (i == 10) {
 				hurtboxLimb.gameObject.SetActive (false);
@@ -287,6 +296,27 @@ public class KenAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		for (int ii = 0; ii < 3; ii++) {		
+			for (int i = 12; i < 14; i++) {
+				spriteRenderer.sprite = heavyFrames [i];
+				for (int x = 0; x < 3;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					}
+				}
+			}
+		}
+		for (int i = 14; i < 16; i++) {
+			spriteRenderer.sprite = heavyFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator JumpLight(){
 		SetJumpHitbox ();
@@ -330,11 +360,15 @@ public class KenAnimScript : MonoBehaviour {
 	}
 
 	IEnumerator ThrowTry(){
-		spriteRenderer.sprite = throwFrames [0];
-		for (int x = 0; x < 10;) {
-			yield return null;
-			if (!timeManager.CheckIfTimePaused()) {
-				x++;
+		for (int i = 0; i < 4; i++) {
+
+			spriteRenderer.sprite = throwFrames [i];
+		
+			for (int x = 0; x < 4;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
 			}
 		}
 	}
@@ -343,10 +377,17 @@ public class KenAnimScript : MonoBehaviour {
 		if (cameraMove != null) {
 			cameraMove.EnableCameraMovement (false);
 		}
-		for (int i = 1; i < 14; i++) {
+		for (int i = 4; i < 12; i++) {
 			spriteRenderer.sprite = throwFrames [i];
-
-			for (int x = 0; x < 3;) {
+			if (i == 4){
+				for (int x = 0; x < 4;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}
+			for (int x = 0; x < 4;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
@@ -368,18 +409,58 @@ public class KenAnimScript : MonoBehaviour {
 		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < 4; i++) {
 			spriteRenderer.sprite = superFrames [i];
-			if (i == 9) {
-				sound.PlaySP1 ();
-				for (int x = 0; x < 12;) {
+			for (int x = 0; x < 12;x++) {
+				yield return null;
+			}
+		}
+		for (int ii = 0; ii < 3; ii++) {
+			for (int i = 3; i < 5; i++) {
+				spriteRenderer.sprite = superFrames [i];
+				for (int x = 0; x < 4; x++) {
 					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
+				}
+			}
+		}
+		spriteRenderer.sprite = superFrames [5];
+		for (int x = 0; x < 12;x++) {
+			yield return null;
+		}
+
+		for (int ii = 0; ii < 3; ii++) {
+			for (int i = 6; i < 9; i++) {
+				spriteRenderer.sprite = superFrames [i];
+				for (int x = 0; x < 3;) {
+					
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
 						x++;
 					}
 				}
 			}
-			for (int x = 0; x < 3;) {
+		}
+		spriteRenderer.sprite = superFrames [9];
+		for (int x = 0; x < 3;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+		}
+		for (int ii = 0; ii < 6; ii++) {
+			for (int i = 10; i < 12; i++) {
+				spriteRenderer.sprite = superFrames [i];
+				for (int x = 0; x < 4;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}	
+		}
+		for (int i = 12; i < 16; i++) {
+			spriteRenderer.sprite = superFrames [i];
+			for (int x = 0; x < 5;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
