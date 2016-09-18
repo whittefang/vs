@@ -2,12 +2,12 @@
 using System.Collections;
 
 public class DogAttackScript : MonoBehaviour {
-	public GameObject sp1Hitbox, sp2Hitbox, sp3Hitbox, proximityBox, detectionBox;
+	public GameObject sp1Hitbox, sp2Hitbox, sp3Hitbox, superHitbox, superHitbox2, proximityBox, detectionBox;
 	public SpriteRenderer spriteRenderer;
 	public Transform Ken;
 
 	TimeManagerScript timeManager;
-	SoundsPlayer sounds;
+	public SoundsPlayer sounds;
 	Rigidbody2D RB;
 	DogAnimScript spriteAnimator;
 	DogHealthScript healthScript;
@@ -20,7 +20,6 @@ public class DogAttackScript : MonoBehaviour {
 		state = GetComponent<FighterStateMachineScript> ();
 		spriteAnimator = GetComponent<DogAnimScript> ();
 		RB = GetComponent<Rigidbody2D> ();
-		sounds = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		timeManager.AddBody (RB);
 		sp1Hitbox.GetComponent<HitboxScript> ().SetOptFunc (StartSp1Complete);
@@ -102,6 +101,7 @@ public class DogAttackScript : MonoBehaviour {
 		}
 	}
 	IEnumerator Sp1(){
+		sounds.PlaySP1 ();
 		proximityBox.SetActive (true);
 		spriteAnimator.StartSp1Anim ();
 		StopMovement ();
@@ -109,6 +109,7 @@ public class DogAttackScript : MonoBehaviour {
 		ForceFlipOpponent ();
 		for (int x = 0; x < 60;) {			
 			if (!timeManager.CheckIfTimePaused()) {		
+				
 				if (x == 30) {
 					sp1Hitbox.SetActive (true);
 				}
@@ -133,6 +134,7 @@ public class DogAttackScript : MonoBehaviour {
 		sp1Hitbox.SetActive (false);
 		proximityBox.SetActive (false);
 		spriteAnimator.StartSp1HitAnim ();
+		sounds.PlayRandomHit ();
 		for (int x = 0; x < 60;) {
 			if (x == 35) {
 				StopMovement ();
@@ -158,12 +160,14 @@ public class DogAttackScript : MonoBehaviour {
 	IEnumerator Sp2(){
 		proximityBox.SetActive (true);
 		StopMovement ();
+		sounds.PlaySP2 ();
 		state.SetState ("attack");
 		ForceFlipOpponent ();
 		spriteAnimator.StartWalkAnim ();
 		detectionBox.SetActive (true);
 		for (int x = 0; x < 45;) {
 			if (!timeManager.CheckIfTimePaused()) {
+				
 				MoveTowards (15, 0);
 				x++;
 			}
@@ -183,6 +187,7 @@ public class DogAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		detectionBox.SetActive (false);
 		StopMovement ();
+		sounds.PlayRandomHit ();
 		state.SetState ("attack");
 		spriteAnimator.StartSp2Anim ();
 		for (int x = 0; x < 50;) {
@@ -217,10 +222,14 @@ public class DogAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.StartSp3Anim ();
 		StopMovement ();
+		sounds.PlaySP3 ();
 		state.SetState ("attack");
 		ForceFlipOpponent ();
-		for (int x = 0; x < 100;) {
+		for (int x = 0; x < 110;) {
 			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 50){
+					sounds.PlayRandomHit ();
+				}
 				if (x == 27) {
 					MoveTowards (10, 20);
 				}
@@ -260,6 +269,59 @@ public class DogAttackScript : MonoBehaviour {
 					proximityBox.SetActive (false);
 					StopMovement ();
 				}
+				x++;
+			}
+			yield return null;
+		}
+		state.SetState ("neutral");
+		spriteAnimator.StartNeutralAnim ();
+	}
+	public void StartSuper(){
+		if (healthScript.CheckAlive()) {
+			StopAllCoroutines ();
+			StartCoroutine (Super ());
+		}
+	}
+	IEnumerator Super(){
+		proximityBox.SetActive (true);
+		spriteAnimator.StartSuperAnim ();
+		StopMovement ();
+		state.SetState ("attack");
+		ForceFlipOpponent ();
+		for (int x = 0; x < 105;) {
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x ==42 ){
+					MoveTowards (12f, 0);
+				}
+				if (x > 40 && x < 82 && (x % 2 == 0)) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+
+				}
+
+				if (x > 45 && x < 85) {
+					MoveTowards (7.5f, 0);
+				}
+				if (x == 85) {
+					StopMovement ();
+				}
+				if (x == 90) {
+					superHitbox.SetActive (false);
+					superHitbox2.SetActive (true);
+				}
+				if (x == 92) {
+					superHitbox.SetActive (false);
+					superHitbox2.SetActive (false);
+				}
+//				if (x == 54) {
+//					sp3Hitbox.SetActive (false);
+//					sp3Hitbox.SetActive (true);
+//				}
+//				if (x == 56) {
+//					sp3Hitbox.SetActive (false);
+//					proximityBox.SetActive (false);
+//					StopMovement ();
+//				}
 				x++;
 			}
 			yield return null;

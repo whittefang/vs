@@ -10,10 +10,16 @@ public class ColorPaletteSwap : MonoBehaviour {
 	public List<Color32> foundColors = new List<Color32>();
 	public List<Color32> foundColorsnew = new List<Color32>();
 	public bool fireOnAwake = true;
+	public bool preLoadColor = false;
 	// Use this for initialization
 	void Awake () {
 		if (fireOnAwake) {
 			LoadColors (newPaletteDefault);
+		} 
+		if (preLoadColor){
+
+			LoadColors (newPaletteDefault);
+			gameObject.SetActive (false);
 		}
 	}
 	

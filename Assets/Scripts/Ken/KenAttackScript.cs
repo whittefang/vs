@@ -396,10 +396,10 @@ public class KenAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("no dog attack");
+		Komaru.StartSuper();
 		bool canShoot = true;
 		for (int x = 0; x < 110;) {
 			// active
-
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x < 32 && (x % 2 == 0)) {
 					superHitbox.SetActive (false);

@@ -27,19 +27,19 @@ public class SoundsPlayer : MonoBehaviour {
 		AS.PlayOneShot (SP3);
 	}
 	public void PlayLight(){
-		if (RandomChance (30)) {
+		if (RandomChance (50)) {
 			AS.pitch = 1;
 			AS.PlayOneShot (light);
 		}
 	}
 	public void PlayMedium(){
-		if (RandomChance (50)) {
+		if (RandomChance (70)) {
 			AS.pitch = 1;
 			AS.PlayOneShot (medium);
 		}
 	}
 	public void PlayHeavy(){
-		if (RandomChance (60)) {
+		if (RandomChance (85)) {
 			AS.pitch = 1;
 			AS.PlayOneShot (heavy);
 		}
@@ -60,6 +60,10 @@ public class SoundsPlayer : MonoBehaviour {
 		AS.pitch = pitch;
 		//int clipToPlay =  Random.Range (0, hits.Length);
 		AS.PlayOneShot (sound);
+	}
+	public void PlayRandomHit(){
+		AS.pitch = 1;
+		AS.PlayOneShot (hits[Random.Range (0, hits.Length)]);
 	}
 	public void PlayBlock(float pitch =1){
 		AS.pitch = pitch;

@@ -17,7 +17,8 @@ public class PlayerNumberSetScript : MonoBehaviour {
 	void Awake () {
 		if (testMode){
 			SetPlayer(Player,testOtherPlayer );
-			body.GetComponent<InputScript> ().inputEnabled  = (true);
+			body.GetComponent<InputScript> ().inputEnabled = (true);
+
 		}
 
 	}

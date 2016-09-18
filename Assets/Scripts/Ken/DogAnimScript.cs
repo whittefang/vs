@@ -11,6 +11,7 @@ public class DogAnimScript : MonoBehaviour {
 	public Sprite[] neutralFrames;
 	public Sprite[] turnFrames;
 	public Sprite[] winFrames;
+	public Sprite[] superFrames;
 
 	public GameObject hurtbox;
 
@@ -205,7 +206,50 @@ public class DogAnimScript : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator Super(){
+		// intro buildup
+		for (int ii = 0; ii < 4; ii++) {			
+			for (int i = 0; i < 2; i++) {
+				spriteRenderer.sprite = sp3Frames [i];
+				for (int x = 0; x < 5;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < 2; i++) {
+			spriteRenderer.sprite = superFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+			}
+		}
+		for (int ii = 0; ii < 4; ii++) {			
+			for (int i = 2; i < 7; i++) {
+				spriteRenderer.sprite = superFrames [i];
+				for (int x = 0; x < 2;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					}
+				}
+			}
+		}
+		for (int i = 7; i < 13; i++) {
+			spriteRenderer.sprite = superFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
+				}
+			}
+		}
 
+	}
 
 
 	public void StartNeutralAnim(){
@@ -242,6 +286,10 @@ public class DogAnimScript : MonoBehaviour {
 	}public void StartGetupAnim(){
 		EndAnimations ();
 		StartCoroutine (Getup());
+	}
+	public void StartSuperAnim(){
+		EndAnimations ();
+		StartCoroutine (Super());
 	}
 
 

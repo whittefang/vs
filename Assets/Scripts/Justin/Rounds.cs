@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Rounds : MonoBehaviour {
 	//variable for prefab
-	public GameObject FeliciaPrefab, HulkPrefab, RyuPrefab, SubzeroPrefab, YukikoPrefab, BaikenPrefab;
+	public GameObject FeliciaPrefab, HulkPrefab, RyuPrefab, SubzeroPrefab, kenPrefab, BaikenPrefab;
 	public string player1character = "ryu";
 	public string player2character = "ryu";
 	public TextMesh textShadow;
@@ -25,7 +25,8 @@ public class Rounds : MonoBehaviour {
 	public Texture2D[] hulkColor;
 	public Texture2D[] ryuColor;
 	public Texture2D[] subzeroColor;
-	public Texture2D[] yukikoColor;
+	public Texture2D[] kenColor;
+	public Texture2D[] kenDogColor;
 	public Texture2D[] baikenColor;
 	public int player1ColorNumber = 0;
 	public int player2ColorNumber = 0;
@@ -36,7 +37,7 @@ public class Rounds : MonoBehaviour {
 	public GameObject rightGreen, rightRed;
 
 	public GameObject exLeftBorder, exRightBorder; 
-
+	public int tutorialPlayerNumber = 0;
 	void Awake(){
 		if (FalseMeansTest == true) {
 			Debug.Log("object can not be destroyed");
@@ -48,7 +49,7 @@ public class Rounds : MonoBehaviour {
 	}
 	void loadx(Scene x, Scene y){
 		Debug.Log("i loaded");
-		if (SceneManager.GetActiveScene().buildIndex > 2) {
+		if (SceneManager.GetActiveScene().buildIndex >= 4) {
 			if (RoundFlag == 1){
 				StartCoroutine(SetRoundText("Round 1"));
 			}
@@ -58,9 +59,13 @@ public class Rounds : MonoBehaviour {
 			exLeftBorder.SetActive(true);
 			exRightBorder.SetActive(true);
 		}else{
+			if (SceneManager.GetActiveScene ().buildIndex == 3) {
+				GameObject.Find ("RyuTutorialPlayer").GetComponentInChildren<InputScript> ().SetPlayerNumber (tutorialPlayerNumber);
+			}
 			exLeftBorder.SetActive(false);
 			exRightBorder.SetActive(false);
 		}
+
 
 	}
 	// Use this for initialization
@@ -241,9 +246,15 @@ public class Rounds : MonoBehaviour {
 			}
 			break;
 		case "yukiko":
-			player = Instantiate(YukikoPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			player = Instantiate(kenPrefab, spawnPosition, Quaternion.identity) as GameObject;
 			if (isPlayerOne){
-				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(yukikoColor[player1ColorNumber]);
+				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>()){
+					if (tmp.gameObject.name == "Body") {
+						tmp.LoadColors (kenColor [player1ColorNumber]);
+					}else if (tmp.gameObject.name == "DogSprite"){
+						tmp.LoadColors (kenDogColor [player1ColorNumber]);
+					}
+				}
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
 				leftHpBarSprite.SetLeftBoarderArt("yukiko");
 				
@@ -258,10 +269,17 @@ public class Rounds : MonoBehaviour {
 				leftRed.transform.localScale = new Vector3(6.5f, .5f, 0f);	
 			}
 			else{
+				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>()){
+					if (tmp.gameObject.name == "Body") {
+						tmp.LoadColors (kenColor [player2ColorNumber]);
+					}else if (tmp.gameObject.name == "DogSprite"){
+						tmp.LoadColors (kenDogColor [player2ColorNumber]);
+					}
+				}
+
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
 				rightHpBarSprite.SetRightBoarderArt("yukiko");
-				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(yukikoColor[player2ColorNumber]);
-				
+
 				rightGreen = GameObject.Find("RightHpBar");
 				rightGreen.transform.eulerAngles = new Vector3( 0f, 0f, 1.888f);
 				rightGreen.transform.localPosition = new Vector3(-.53f, -.07f, -.7f);

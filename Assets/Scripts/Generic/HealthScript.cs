@@ -22,6 +22,7 @@ public class HealthScript : MonoBehaviour {
 	public bool useChildSpriteRenderer = false;
 	public SpriteRenderer SR;
 	ExMeter exBar;
+	public bool tutorialMode = false;
 	// Use this for initialization
 	void OnEnable () {
 		if (SR == null && !useChildSpriteRenderer) {
@@ -73,8 +74,10 @@ public class HealthScript : MonoBehaviour {
 		HideComboText ();
 	}
 	// Update is called once per frame
-	void Update () {
-	
+	void FixedUpdate () {
+		if (tutorialMode && exCurrent < 1000) {
+			AddMeter (1000 - exCurrent);
+		}
 	}
 	public void HideComboText(){
 		comboCounterText.gameObject.SetActive (false);
@@ -133,7 +136,7 @@ public class HealthScript : MonoBehaviour {
 			} else {
 				hpRight.changeBarRight ((int)(amount * comboScaling));
 			}
-
+			HealUp ();
 
 
 
@@ -179,6 +182,7 @@ public class HealthScript : MonoBehaviour {
 			} else {
 				hpRight.changeBarRight ((int)((float)amount * .05f));
 			}
+			HealUp ();
 			// check for death
 			CheckHealth ();
 			return true;
@@ -325,6 +329,18 @@ public class HealthScript : MonoBehaviour {
 		}else {
 			exBar.ExMeterChange(amountToAdd, false);
 
+		}
+	}
+	void HealUp(){
+		if (healthAmount < healthMax && tutorialMode) {
+			int missing = healthMax - healthAmount;
+			healthAmount = healthMax;
+
+			if (hpLeft != null) {
+				hpLeft.changeBarLeft (-missing);
+			} else {
+				hpRight.changeBarRight (-missing);
+			}
 		}
 	}
 

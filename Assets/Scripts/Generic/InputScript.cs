@@ -5,7 +5,7 @@ using XInputDotNetPure; // Required in C#
 public class InputScript : MonoBehaviour {
 	public delegate void buttonDelegate();
 	public delegate void ThumbstickDelegate(float x, float y);
-	buttonDelegate aButtonPress, bButtonPress, xButtonPress, yButtonPress, aButtonRelease, bButtonRelease, xButtonRelease, yButtonRelease,
+	buttonDelegate  startButtonPress, backButtonPress, aButtonPress, bButtonPress, xButtonPress, yButtonPress, aButtonRelease, bButtonRelease, xButtonRelease, yButtonRelease,
 	rbButtonPress, rbButtonRelease, rTriggerPress, rTriggerRelease, axButtonPress, byButtonPress;
 	ThumbstickDelegate leftStick;
 
@@ -14,12 +14,17 @@ public class InputScript : MonoBehaviour {
 	GamePadState state;
 	GamePadState prevState;
 	public bool inputEnabled = true;
+	public bool tutorialMode = false;
 	public int playerNumber = 0;
 	// Use this for initialization
 	void Start () {
 
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
+		if (tutorialMode) {
+			playerNumber = 5;
+		}
 		playerIndex = (PlayerIndex)playerNumber;
+
 	}
 
 	// Update is called once per frame
@@ -46,6 +51,14 @@ public class InputScript : MonoBehaviour {
 				StopAllCoroutines ();
 				StartCoroutine (BufferButton (byButtonPress));
 
+			}
+			// Detect if start button was pressed this frame
+			if (prevState.Buttons.Start == ButtonState.Released && state.Buttons.Start == ButtonState.Pressed && startButtonPress != null) {
+				startButtonPress ();
+			}
+			// Detect if back button was pressed this frame
+			if (prevState.Buttons.Back == ButtonState.Released && state.Buttons.Back == ButtonState.Pressed && backButtonPress != null) {
+				backButtonPress ();
 			}
 			// Detect if a button was pressed this frame
 			if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed && aButtonPress != null) {
@@ -123,6 +136,14 @@ public class InputScript : MonoBehaviour {
 		axButtonPress = axPress;
 	}
 	// takes in function delegate and assigns them to appropriate buttons
+	public void assignStartButton(buttonDelegate aPress, buttonDelegate aRelease){
+		startButtonPress = aPress;
+	}
+	// takes in function delegate and assigns them to appropriate buttons
+	public void assignbackButton(buttonDelegate aPress, buttonDelegate aRelease){
+		backButtonPress = aPress;
+	}
+	// takes in function delegate and assigns them to appropriate buttons
 	public void assignAButton(buttonDelegate aPress, buttonDelegate aRelease){
 		aButtonPress = aPress;
 		aButtonRelease = aRelease;
@@ -195,5 +216,8 @@ public class InputScript : MonoBehaviour {
 				x++;
 			}
 		}
+	}
+	public void useAbuttonFunc(){
+		aButtonPress ();
 	}
 }
