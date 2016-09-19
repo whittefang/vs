@@ -11,7 +11,6 @@ public class KenAttackScript : MonoBehaviour {
 	superHitbox, superHitbox2, throwHitbox, proximityBox;
 	TimeManagerScript timeManager;
 
-	SoundsPlayer sounds;
 	public GameObject ThrowPoint;
 	public DogAttackScript Komaru;
 
@@ -31,7 +30,6 @@ public class KenAttackScript : MonoBehaviour {
 
 		health = GetComponentInChildren<HealthScript> ();
 		health.SetHitFunc (CancelAttacks);
-		sounds = GetComponent<SoundsPlayer>();
 		state = GetComponent<FighterStateMachineScript>();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
@@ -397,7 +395,6 @@ public class KenAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("no dog attack");
 		Komaru.StartSuper();
-		bool canShoot = true;
 		for (int x = 0; x < 110;) {
 			// active
 			if (!timeManager.CheckIfTimePaused()) {
@@ -444,6 +441,8 @@ public class KenAttackScript : MonoBehaviour {
 		jumpLightHitbox2.SetActive (false);
 		jumpMediumHitbox.SetActive (false);
 		jumpHeavyHitbox.SetActive (false);
+		superHitbox.SetActive (false);
+		superHitbox2.SetActive (false);
 
 		throwHitbox.SetActive (false);
 		proximityBox.SetActive (false);

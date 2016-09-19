@@ -64,7 +64,7 @@ public class LevelSelectScript : MonoBehaviour {
 						roundScript.player1character = ConvertToString (currentSelection);
 					}
 				} else {
-					sceneLoader.SetScene (true, currentSelection + 3);
+					sceneLoader.SetScene (true, currentSelection + 4);
 				}
 				lockedIn = sceneLoader.SetReady (true, true);
 
@@ -76,7 +76,7 @@ public class LevelSelectScript : MonoBehaviour {
 						roundScript.player2character = ConvertToString (currentSelection);
 					}
 				} else {
-					sceneLoader.SetScene (false, currentSelection + 3);
+					sceneLoader.SetScene (false, currentSelection + 4);
 				}
 				lockedIn = sceneLoader.SetReady (false, true);
 			}

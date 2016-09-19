@@ -551,7 +551,7 @@ public class RyuAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		bool canShoot = true;
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 80;) {
 			// active
 
 			if (!timeManager.CheckIfTimePaused()) {

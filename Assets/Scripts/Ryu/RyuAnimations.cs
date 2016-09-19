@@ -29,6 +29,7 @@ public class RyuAnimations : MonoBehaviour {
 	public Transform hurtboxLimb;
 	public GameObject Bag;
 	public GameObject SuperBG;
+	public GameObject superEffect;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
@@ -542,9 +543,10 @@ public class RyuAnimations : MonoBehaviour {
 		sound.PlaySuperBg();
 		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
 		SuperBG.SetActive(true);
+		superEffect.SetActive (true);
 		timeManager.StopTime (75);
 		sound.PlaySuperWord ();
-
+		cameraMove.FocusForSuper (transform, 30);
 		//sound.PlaySP1 ();
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];

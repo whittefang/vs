@@ -10,7 +10,6 @@ public class HulkAttackScript : MonoBehaviour {
 	public GameObject fireball, superHitbox, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
 	sp1Hitbox, sp2Hitbox, sp3Hitbox, fireballGunpoint, throwHitbox, proximityBox;
 
-	ProjectileScript fireballProjectileScript;
 	TimeManagerScript timeManager;
 
 	SoundsPlayer sounds;
@@ -35,7 +34,6 @@ public class HulkAttackScript : MonoBehaviour {
 		state = GetComponent<FighterStateMachineScript>();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
-		fireballProjectileScript = fireball.GetComponent < ProjectileScript> ();
 		PMS = GetComponent<PlayerMovementScript> ();
 		PMS.setAttackCancel (CancelAttacks);
 		inputScript = GetComponent<InputScript> ();
@@ -157,10 +155,12 @@ public class HulkAttackScript : MonoBehaviour {
 					PMS.EnableBodyBox ();
 				}
 
-				if (x > 40 && canMoveDuringCharge){
-					PMS.ForceFlip();
+				if (x > 40 && canMoveDuringCharge) {
+					PMS.ForceFlip ();
 					PMS.MoveToward (25, 0);
 					sp2Hitbox.SetActive (true);
+				} else if (x > 40) {
+					PMS.StopMovement ();
 				}
 				x++;
 			}
@@ -377,7 +377,6 @@ public class HulkAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		bool canShoot = true;
 		for (int x = 0; x < 60;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
@@ -485,7 +484,6 @@ public class HulkAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		PMS.DsableBodyBox ();
-		canMoveDuringCharge = true;
 		for (int x = 0; x < 35;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
@@ -493,18 +491,17 @@ public class HulkAttackScript : MonoBehaviour {
 					state.SetState("invincible");
 				}
 				if (x > 6 && x < 14) {
-					if (canMoveDuringCharge) {
-						PMS.MoveToward (10f, 25);
-					}
+					PMS.MoveToward (10f, 25);
 					sp3Hitbox.SetActive(true);			
+				}
+				if (x == 8) {
+					state.SetState("attack");
 				}
 
 				if (x == 16) {
 					sp3Hitbox.SetActive(false);
 					proximityBox.SetActive (false);
 					PMS.StopMovement ();
-
-					state.SetState("attack");
 				}
 
 				x++;
@@ -542,7 +539,6 @@ public class HulkAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		bool canShoot = true;
 		for (int i = 0; i < 70; i++) {
 			if (i > 50) {
 				PMS.EnableCollider (true);

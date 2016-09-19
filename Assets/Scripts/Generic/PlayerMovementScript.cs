@@ -186,20 +186,23 @@ public class PlayerMovementScript : MonoBehaviour {
 				i++;
 			}
 		}
-		jumpEffect.transform.position = new Vector3 (transform.position.x, groundY, 1);
-		jumpEffect.SetActive (true);
-		if (x > .25f) {
-			// forward
-			jumpAway = false;
-			TowardJump();
+		if (state.GetState () == "prejump") {
 
-		} else if (x < -.25f) {
-			// back
-			AwayJump();
-		} else {
-			// neutral
-			jumpAway = false;
-			NeutralJump();
+			jumpEffect.transform.position = new Vector3 (transform.position.x, groundY, 1);
+			jumpEffect.SetActive (true);
+			if (x > .25f) {
+				// forward
+				jumpAway = false;
+				TowardJump ();
+
+			} else if (x < -.25f) {
+				// back
+				AwayJump ();
+			} else {
+				// neutral
+				jumpAway = false;
+				NeutralJump ();
+			}
 		}
 	}
 	public void NeutralJump(){

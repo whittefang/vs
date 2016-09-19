@@ -41,11 +41,11 @@ public class TutorialScript : MonoBehaviour {
 		switch (spot) {
 		case 0:
 			titleText.text = "Ground Movement";
-			tutorialText.text = "Push the left analog Stick left and right to move back and forth";
+			tutorialText.text = "Use the left stick to move";
 			break;
 		case 1:
 			titleText.text = "Air Movement";
-			tutorialText.text = "Push left analog Stick up to jump";
+			tutorialText.text = "Move stick up to jump";
 			break;
 		case 2:
 			titleText.text = "Normal Attacks";
@@ -73,10 +73,9 @@ public class TutorialScript : MonoBehaviour {
 			break;
 		case 6:
 			titleText.text = "Blocking";
-			tutorialText.text = "Blocking is a key technique that is very important to use in order to obtain victory\n" +
-				"To block you hold the left analog stick in the opposite direction of the opposing fighter \n" +
-				"Try now to block the opponents fireball";
-			InvokeRepeating ("ThrowFireball", 8f, 3);
+			tutorialText.text =	"To block you hold the left stick in the opposite direction of the enemy \n" +
+				"Try now to block the enemies fireball";
+			InvokeRepeating ("ThrowFireball", 5f, 3);
 			break;
 		case 7:
 			titleText.text = "Basic Combos";

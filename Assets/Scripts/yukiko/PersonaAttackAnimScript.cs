@@ -16,7 +16,6 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 					, dpHitbox, superHitbox, superEffects;
 	SpriteRenderer spriteRenderer;
 	TimeManagerScript timeManager;
-	SoundsPlayer sound;
 	Rigidbody2D RB;
 	Transform otherPlayer;
 	public bool isActive = false;
@@ -31,7 +30,6 @@ public class PersonaAttackAnimScript : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
-		sound = GetComponent<SoundsPlayer> ();
 		RB = GetComponent<Rigidbody2D> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		hitboxes = attack1Hitbox.transform.parent.gameObject;

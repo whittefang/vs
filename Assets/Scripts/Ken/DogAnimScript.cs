@@ -18,7 +18,6 @@ public class DogAnimScript : MonoBehaviour {
 
 
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
-	SoundsPlayer sound;
 	TimeManagerScript timeManager;
 	SpriteRenderer spriteRenderer;
 
@@ -27,7 +26,6 @@ public class DogAnimScript : MonoBehaviour {
 		spriteRenderer = GetComponentInChildren<SpriteRenderer> ();
 		hurtboxBodyOriginalPosition = hurtbox.transform.localPosition;
 		hurtboxBodyOriginalScale = hurtbox.transform.localScale;
-		sound = GetComponent<SoundsPlayer> ();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		StartNeutralAnim ();
 

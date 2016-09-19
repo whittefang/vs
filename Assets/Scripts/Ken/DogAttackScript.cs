@@ -336,6 +336,11 @@ public class DogAttackScript : MonoBehaviour {
 	IEnumerator Hit(){
 		state.SetState ("invincible");
 		proximityBox.SetActive (false);
+		sp1Hitbox.SetActive (false);
+		sp2Hitbox.SetActive (false);
+		sp3Hitbox.SetActive (false);
+		superHitbox.SetActive (false);
+		superHitbox2.SetActive (false);
 		spriteAnimator.StartHitAnim ();
 		StopMovement ();
 		for (int x = 0; x < 60;) {			

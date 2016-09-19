@@ -116,7 +116,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	IEnumerator loopAnimationForwardBack(Sprite[] animationFrames){
 
-		int currentFrame = 0;
 		while (true) {
 
 			for (int i = 0; i < animationFrames.Length; i++) {			
@@ -433,36 +432,50 @@ public class BaikenAnimationScript : MonoBehaviour {
 	}
 	IEnumerator JumpHeavy(){
 		SetJumpHitbox ();
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 5; i++) {
 
 			spriteRenderer.sprite = jumpHeavyFrames [i];
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 4;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
 				}
 			}
 		}
+		for (int i = 3; i > 2; i--) {
+
+			spriteRenderer.sprite = jumpHeavyFrames [i];
+			for (int x = 0; x < 5;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		spriteRenderer.sprite = neutralJumpFrames [7];
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator SpecialOne(){
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 6; i++) {
 			if (i == 1){
 				sound.PlaySP1 ();
 			}
 			spriteRenderer.sprite = SpecialOneFrames [i];
-			if (i == 5) {
-				for (int x = 0; x < 6;) {
+			for (int x = 0; x < 4;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		for (int ii = 0; ii < 4; ii++) {			
+			for (int i = 6; i < 11; i++) {
+				spriteRenderer.sprite = SpecialOneFrames [i];
+				for (int x = 0; x < 3;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused()) {
 						x++;
 					}
-				}
-			}
-			for (int x = 0; x < 3;) {
-				yield return null;
-				if (!timeManager.CheckIfTimePaused()) {
-					x++;
 				}
 			}
 		}

@@ -63,7 +63,6 @@ public class ExMeter : MonoBehaviour {
 	*/
 
 	public void ExMeterChange(int meter, bool isPlayerOne){
-		float tempMeter = meter;
 		originalLeftSpot = exLeftRenderer.bounds.max.x;
 		originalRightSpot = exRightRenderer.bounds.min.x;
 

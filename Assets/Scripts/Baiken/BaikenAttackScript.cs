@@ -16,7 +16,6 @@ public class BaikenAttackScript : MonoBehaviour {
 	ProjectileScript fireballProjectileScript , superProjectileScript;
 	TimeManagerScript timeManager;
 
-	SoundsPlayer sounds;
 	public HitboxScript lightHitboxScript, mediumHitboxScript, heavyHitboxScript, throwHitboxScript;
 	public bool lightHitboxHit= false, mediumHitboxHit= false, heavyHitboxHit = false, specialHitboxHit = false;
 	public GameObject ThrowPoint, superKanji;
@@ -27,7 +26,7 @@ public class BaikenAttackScript : MonoBehaviour {
 	bool hitChain = false;
 	List<GameObject> chainLinks;
 	public GameObject linkPrefab;
-	float chainGrabDistance = 6;
+	float chainGrabDistance = 3.5f;
 	// Use this for initialization
 	void Start () {
 		if (tag == "playerOne") {
@@ -38,7 +37,6 @@ public class BaikenAttackScript : MonoBehaviour {
 
 		health = GetComponentInChildren<HealthScript> ();
 		health.SetHitFunc (CancelAttacks);
-		sounds = GetComponent<SoundsPlayer>();
 		state = GetComponent<FighterStateMachineScript>();
 		timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
 		spriteAnimator = GetComponent<SpriteAnimator> ();
@@ -311,21 +309,14 @@ public class BaikenAttackScript : MonoBehaviour {
 		state.SetState ("jump attack");
 		for (int x = 0; x < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 12) {
-					jumpHeavyHitbox.transform.localPosition = new Vector3 (-.75f, -1.3f, 0);
-					jumpHeavyHitbox.SetActive (true);
-				}
 				if (x == 15) {
-					jumpHeavyHitbox.transform.localPosition = new Vector3 (-3.7f, -.3f, 0);
+					jumpHeavyHitbox.transform.localPosition = new Vector3 (2.24f, .37f, 0);
 					jumpHeavyHitbox.SetActive (true);
 				}
 				if (x == 18) {
-					jumpHeavyHitbox.transform.localPosition = new Vector3 (-4.1f, 2.8f, 0);
-					jumpHeavyHitbox.SetActive (true);
-				}
-				if (x == 21){
 					jumpHeavyHitbox.SetActive (false);
 				}
+
 
 				x++;
 			}
@@ -353,25 +344,18 @@ public class BaikenAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		bool canShoot = true;
-		for (int x = 0; x < 36;) {
+		for (int x = 0; x < 35;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				// active
 				if (x == 3){
 					sp1Buffer = false;
 				}
-				if (x == 15) {
-					sp1Effect.SetActive (true);
+				if (x >= 20) {
+					PMS.MoveToward (15f);
+					state.SetState ("blockstun");
 				}
-				if (x == 18) {
-					sp1Hitbox.SetActive (true);
-				}
-	
-				if (x == 27) {
-					sp1Hitbox.SetActive (false);
-					proximityBox.SetActive (false);
-				}
+
 				x++;
 			}
 			yield return null;
@@ -438,7 +422,7 @@ public class BaikenAttackScript : MonoBehaviour {
 	IEnumerator SpecialTwoCompleteEnum(){
 
 		sp2ParryBox.SetActive (false);
-		health.AddMeter (30);
+		health.AddMeter (5);
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayExtra1 ();
 		PMS.StopMovement ();
@@ -590,7 +574,6 @@ public class BaikenAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		bool canShoot = true;
 		for (int x = 0; x < 60;) {
 			// active
 

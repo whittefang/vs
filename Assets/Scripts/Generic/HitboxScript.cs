@@ -73,7 +73,6 @@ public class HitboxScript : MonoBehaviour {
 			if (useOptionalPosition){
 				optionalPosition = transform.position;
 			}
-			Debug.Log (transform.position);
 			bool blocked = other.GetComponentInParent<HealthScript> ().DealDamage (damage, hitstun, blockstun, transform.position, hitPush, blockPush,isProjectile, isThrow, useCornerPushback, isFreezingAttack, launcher, knockdownAttack,optionalPosition, hitstop, hitSound, hitPitch, blockPitch);
 
 			if (isThrow && !blocked){

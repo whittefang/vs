@@ -10,7 +10,7 @@ public class YukikoAttackScript : MonoBehaviour {
 	public GameObject fan1, fan2, sp1Fireball, sp3Trap, sp3TrapPre, medium1Hitbox,medium2Hitbox,medium3Hitbox, heavyHitbox1,heavyHitbox2,heavyHitbox3, jumpMediumHitbox, jumpHeavyHitbox,
 	sp2Hitbox, fireballGunpoint, throwHitbox, proximityBox;
 
-	ProjectileScript sp1FireballProjectileScript , fan1ProjectileScript, fan2ProjectileScript;
+	ProjectileScript fan1ProjectileScript, fan2ProjectileScript;
 	TimeManagerScript timeManager;
 
 	SoundsPlayer sounds;
@@ -43,7 +43,6 @@ public class YukikoAttackScript : MonoBehaviour {
 		spriteAnimator = GetComponent<SpriteAnimator> ();
 		fan1ProjectileScript = fan1.GetComponent < ProjectileScript> ();
 		fan2ProjectileScript = fan2.GetComponent < ProjectileScript> ();
-		sp1FireballProjectileScript = sp1Fireball.GetComponent<ProjectileScript> ();
 		PMS = GetComponent<PlayerMovementScript> ();
 		PMS.setAttackCancel (CancelAttacks);
 		inputScript = GetComponent<InputScript> ();
