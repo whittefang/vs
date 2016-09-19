@@ -31,6 +31,7 @@ public class BaikenAnimationScript : MonoBehaviour {
 	public Transform hurtboxLimb;
 	public GameObject superBackgroundBlack;
 	public GameObject SuperBG;
+	public GameObject superEffect;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
@@ -421,7 +422,9 @@ public class BaikenAnimationScript : MonoBehaviour {
 		SetJumpHitbox ();
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = jumpMediumFrames [i];
-
+			if (i == 5) {
+				sound.PlayExtra ();
+			}
 			for (int x = 0; x < 3;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -595,6 +598,8 @@ public class BaikenAnimationScript : MonoBehaviour {
 		SuperBG.SetActive(true);
 		timeManager.StopTime (90);
 		sound.PlaySuperWord ();
+		superEffect.SetActive (true);
+		cameraMove.FocusForSuper (new Vector3(transform.position.x, transform.position.y +2, transform.position.z), 20);
 
 		//sound.PlaySP1 ();
 		spriteRenderer.sprite = superFrames [0];

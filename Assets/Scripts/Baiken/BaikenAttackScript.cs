@@ -120,12 +120,15 @@ public class BaikenAttackScript : MonoBehaviour {
 		for (int x = 0; x < 60;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
-
+				if (x == 45) {
+					otherPlayer.GetComponent<PlayerMovementScript> ().MoveToward (-25);
+				}
 				x++;
 			}
 
 			yield return null;
 		}
+		PMS.EnableBodyBox ();
 		state.SetState ("neutral");
 	}
 
@@ -653,6 +656,10 @@ public class BaikenAttackScript : MonoBehaviour {
 		lightHitboxHit = false;
 		mediumHitboxHit = false;
 		heavyHitboxHit = false;
+
+		foreach (GameObject link in chainLinks) {
+			link.SetActive (false);
+		}
 	}
 
 	public void SetPlayer(bool playerOne){

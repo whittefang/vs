@@ -544,9 +544,9 @@ public class RyuAnimations : MonoBehaviour {
 		SuperBG.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 2);
 		SuperBG.SetActive(true);
 		superEffect.SetActive (true);
+		cameraMove.FocusForSuper (transform.position, 20);
 		timeManager.StopTime (75);
 		sound.PlaySuperWord ();
-		cameraMove.FocusForSuper (transform, 30);
 		//sound.PlaySP1 ();
 		for (int i = 0; i < 12; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];

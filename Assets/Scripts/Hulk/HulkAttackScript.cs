@@ -360,7 +360,7 @@ public class HulkAttackScript : MonoBehaviour {
 
 	public void SpecialOne(){
 		if ((state.GetState() == "neutral" || (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery" && heavyHitboxHit))) {
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) && !fireball.activeSelf) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;

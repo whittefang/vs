@@ -56,14 +56,14 @@ public class CameraMoveScript : MonoBehaviour {
 	public void EnableCameraMovement(bool enabled){
 		cameraEnabled = enabled;
 	}
-	public void FocusForSuper(Transform objectToFocus, int timeToHoldView){
+	public void FocusForSuper(Vector3 objectToFocus, int timeToHoldView){
 		StartCoroutine (FocusForSuperEnum(objectToFocus, timeToHoldView));
 	}
-	IEnumerator FocusForSuperEnum(Transform objectToFocus, int timeToHoldView){
+	IEnumerator FocusForSuperEnum(Vector3 objectToFocus, int timeToHoldView){
 		cameraEnabled = false;
 		cameraWallScript.StopFollow ();
-		while (Mathf.Abs (transform.position.x - objectToFocus.position.x) > .1f) {
-			Vector3 newPos = Vector2.Lerp (transform.position, objectToFocus.position, .1f);
+		while (Mathf.Abs (transform.position.x - objectToFocus.x) > .1f) {
+			Vector3 newPos = Vector2.Lerp (transform.position, objectToFocus, .1f);
 			newPos.z = transform.position.z;
 			transform.position = newPos;
 			if (thisCamera.orthographicSize > 3) {

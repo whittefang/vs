@@ -33,6 +33,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 	public Transform hurtboxBody;
 	public Transform hurtboxLimb;
 	public GameObject SuperBG;
+	public GameObject superEffect;
 	PlayerMovementScript PMS;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
@@ -542,11 +543,14 @@ public class FeliciaAnimScript : MonoBehaviour {
 		sound.PlaySuperBg();
 		SuperBG.transform.position = new Vector3(cameraMove.transform.position.x, cameraMove.transform.position.y,2);
 		SuperBG.SetActive(true);
+		superEffect.SetActive (true);
+		cameraMove.FocusForSuper (transform.position, 20);
 		timeManager.StopTime (60);
 		sound.PlaySuperWord ();
 
 		//sound.PlaySP1 ();
-		for (int i = 4; i < 11; i++) {
+		// jump animation
+		for (int i = 0; i < 7; i++) {
 			spriteRenderer.sprite = SuperFrames [i];
 			for (int x = 0; x < 5;) {
 				yield return null;
@@ -555,15 +559,60 @@ public class FeliciaAnimScript : MonoBehaviour {
 				//}
 			}
 		}
+		// rollIntro
+		for (int i = 0; i < 3; i++) {
+			spriteRenderer.sprite = SpecialOneFrames [i];
+			if (i == 2) {
+				sound.PlayExtra ();
+			}
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
 
+		}
+		//loop spin 2 times
 		for (int ii = 0; ii < 2; ii++) {
-			for (int i = 0; i < 4; i++) {
+			for (int i = 3; i < 6; i++) {
+				spriteRenderer.sprite = SpecialOneFrames [i];
+				for (int x = 0; x < 3;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					}
+				}
+			}
+		}
+		// double punch twice
+		for (int ii = 0; ii < 2; ii++) {
+			for (int i = 7; i < 17; i++) {
 				spriteRenderer.sprite = SuperFrames [i];
-				for (int x = 0; x < 5;) {
+				for (int x = 0; x < 3;) {
 					yield return null;
 					//if (!timeManager.CheckIfTimePaused ()) {
-						x++;
+					x++;
 					//}
+				}
+			}
+		}
+		for (int i = 17; i < 35; i++) {
+			spriteRenderer.sprite = SuperFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				//if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+				//}
+			}
+		}
+		// end uppercut
+		for (int i = 6; i < 12; i++) {
+			spriteRenderer.sprite = SpecialOneFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused ()) {
+					x++;
 				}
 			}
 		}

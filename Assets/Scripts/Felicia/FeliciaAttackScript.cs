@@ -8,7 +8,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject lightHitbox, mediumHitbox,mediumHitboxPart2, heavyHitbox, jumpLightHitbox,jumpLightHitboxPart2, jumpMediumHitbox, jumpHeavyHitbox,
-	sp1Hitbox, sp1HitboxPart2, sp1HitboxPart3, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox, fireballGunpoint, throwHitbox, superHitbox, proximityBox;
+	sp1Hitbox, sp1HitboxPart2, sp1HitboxPart3, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox, fireballGunpoint, throwHitbox, superHitbox,superHitbox2,superHitbox3, proximityBox;
 
 	TimeManagerScript timeManager;
 
@@ -558,19 +558,83 @@ public class FeliciaAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 10;) {
+		for (int x = 0; x < 180;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				// active
-				if (x == 1) {
-					superHitbox.GetComponent<FeliciaSuperScript> ().SetTarget (otherPlayer.gameObject);
-					superHitbox.GetComponent<FollowScript>().transformToFollow = otherPlayer.gameObject;
+//				if (x == 1) {
+//					superHitbox.GetComponent<FeliciaSuperScript> ().SetTarget (otherPlayer.gameObject);
+//					superHitbox.GetComponent<FollowScript>().transformToFollow = otherPlayer.gameObject;
+//					superHitbox.SetActive (true);
+//				}
+				if (x < 26){
+					PMS.MoveToward (15);
+					if (x % 5 == 0) {
+						superHitbox.SetActive (false);
+						superHitbox.SetActive (true);
+					}
+				}
+				if (x == 26) {
+					superHitbox.SetActive (false);
+				
+				}
+				if (x == 30) {
+					superHitbox.SetActive (false);
 					superHitbox.SetActive (true);
 				}
+				if (x == 40) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}
+				if (x == 50) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}
+				if (x == 60) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}
+				if (x == 70) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}
+				if (x == 80) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}
+				if (x == 100) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}
+				if (x == 120) {
+					superHitbox.SetActive (false);
+					superHitbox.SetActive (true);
+				}if (x == 136) {
+					superHitbox.SetActive (false);
+					superHitbox2.SetActive (true);
+				}
+				if (x == 138) {
+					superHitbox2.SetActive (false);
+				}
+				if (x == 140) {
+					PMS.MoveToward (0, 24);
+					PMS.DsableBodyBox ();
+				}
+				if (x == 144){
+					superHitbox3.SetActive (true);
+				}
+				if (x == 150){
+					superHitbox3.SetActive (false);
+				}
+
 				x++;
 			}
 			yield return null;
 		}
+		superHitbox.SetActive (false);
+		superHitbox2.SetActive (false);
+		superHitbox3.SetActive (false);
+		PMS.EnableBodyBox ();
 		state.SetState ("neutral");
 	}
 	public void SpecialHit(){
@@ -607,6 +671,9 @@ public class FeliciaAttackScript : MonoBehaviour {
 		sp1Hitbox.SetActive (false);
 		sp1HitboxPart2.SetActive (false);
 		sp1HitboxPart3.SetActive (false);
+		superHitbox.SetActive (false);
+		superHitbox2.SetActive (false);
+		superHitbox3.SetActive (false);
 		specialHitboxHit = false;
 		lightHitboxHit = false;
 		mediumHitboxHit = false;

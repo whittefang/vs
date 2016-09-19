@@ -470,7 +470,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 135;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				// active
 				if (x == 15) {

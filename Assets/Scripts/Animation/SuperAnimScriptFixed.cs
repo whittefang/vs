@@ -5,6 +5,7 @@ public class SuperAnimScriptFixed : MonoBehaviour {
 
 	public GameObject portrait, background;
 	FollowScript follow;
+	public int DeactivateDelay = 180;
 	// Use this for initialization
 	void Start () {
 		follow = GetComponent<FollowScript> ();
@@ -19,7 +20,7 @@ public class SuperAnimScriptFixed : MonoBehaviour {
 	}
 	IEnumerator SuperAnimate(){
 		portrait.SetActive (true);
-		for (int x = 0; x < 180;x++) {
+		for (int x = 0; x < DeactivateDelay;x++) {
 			yield return null;
 
 			if (x == 30){

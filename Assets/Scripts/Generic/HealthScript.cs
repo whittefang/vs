@@ -92,17 +92,17 @@ public class HealthScript : MonoBehaviour {
 		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2),
 		int hitStopAmount = 0, AudioClip hitSound = default(AudioClip), float hitPitch =1, float blockPitch =1){
 
-		if (state.GetState() == "parry" && ParryFunc != null && !isThrow){
-				ParryFunc();
+		if (state.GetState () == "parry" && ParryFunc != null && !isThrow) {
+			ParryFunc ();
 			
-		// check for invincible or blocking
-		}else if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
-			(isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack" && state.GetState() != "prejump")) {
+			// check for invincible or blocking
+		} else if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
+		          (isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack" && state.GetState () != "prejump")) {
 
 			// player got hit
 			// deal damage
-			if (state.GetState () == "hitstun" || state.GetState () == "falling hit" || state.GetState() == "frozen") {
-				CancelInvoke();
+			if (state.GetState () == "hitstun" || state.GetState () == "falling hit" || state.GetState () == "frozen") {
+				CancelInvoke ();
 				comboCounterText.gameObject.SetActive (true);
 				comboDamageShadowText.gameObject.SetActive (true);
 				comboCounterShadowText.gameObject.SetActive (true);
@@ -175,7 +175,7 @@ public class HealthScript : MonoBehaviour {
 			// player is blocking
 			spriteAnimator.PlayBlock ();
 			StopAllCoroutines ();
-			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback, optionalPosition,hitStopAmount, blockPitch));
+			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback, optionalPosition, hitStopAmount, blockPitch));
 			healthAmount -= (int)((float)amount * .05f);
 			if (hpLeft != null) {
 				hpLeft.changeBarLeft ((int)((float)amount * .05f));
@@ -188,6 +188,8 @@ public class HealthScript : MonoBehaviour {
 			return true;
 		} else if (isThrow) {
 			Debug.Log ("thro returrn true");
+			return true;
+		} else if (state.GetState () == "invincible") {
 			return true;
 		}
 		return false;

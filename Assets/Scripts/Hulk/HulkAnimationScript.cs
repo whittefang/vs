@@ -36,6 +36,7 @@ public class HulkAnimationScript : MonoBehaviour {
 	public GameObject clapEffect;
 
 	public GameObject SuperBG;
+	public GameObject superEffect;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
@@ -556,6 +557,8 @@ public class HulkAnimationScript : MonoBehaviour {
 		SuperBG.SetActive(true);
 		timeManager.StopTime (95);
 		sound.PlaySuperWord ();
+		superEffect.SetActive (true);
+		cameraMove.FocusForSuper (transform.position, 20);
 
 		//sound.PlaySP1 ();
 		for (int i = 0; i < 10; i++) {

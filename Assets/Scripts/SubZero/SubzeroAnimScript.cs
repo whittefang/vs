@@ -29,6 +29,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 	public Transform hurtboxLimb;
 	public GameObject head;
 	public GameObject SuperBG;
+	public GameObject superEffect;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
@@ -191,7 +192,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 		timeManager.StopTimeForce (60);
 		head.transform.position = transform.position;
 		head.SetActive (true);
-		head.GetComponent<Rigidbody2D> ().AddForceAtPosition (new Vector2(0, 250), new Vector2(.01f,1));
+		head.GetComponent<Rigidbody2D> ().AddForceAtPosition (new Vector2(0, 250), new Vector2(.4f,0));
 		for(int i = 0; i < deathFrames.Length; i++){
 			spriteRenderer.sprite = deathFrames [i];
 			for (int x = 0; x < 5; x++) {
@@ -466,6 +467,8 @@ public class SubzeroAnimScript : MonoBehaviour {
 		SuperBG.SetActive(true);
 		timeManager.StopTime (30);
 		sound.PlaySuperWord ();
+		superEffect.SetActive (true);
+		cameraMove.FocusForSuper (transform.position, 20);
 
 		//sound.PlaySP1 ();
 		for (int i = 0; i < 3; i++) {

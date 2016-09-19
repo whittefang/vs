@@ -25,6 +25,7 @@ public class KenAnimScript : MonoBehaviour {
 	public Transform hurtboxBody;
 	public Transform hurtboxLimb;
 	public GameObject SuperBG;
+	public GameObject superEffect;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
@@ -407,6 +408,8 @@ public class KenAnimScript : MonoBehaviour {
 		SuperBG.SetActive(true);
 		timeManager.StopTime (75);
 		sound.PlaySuperWord ();
+		superEffect.SetActive (true);
+		cameraMove.FocusForSuper (new Vector3(transform.position.x, transform.position.y +2.5f, transform.position.z), 20);
 
 		//sound.PlaySP1 ();
 		for (int i = 0; i < 4; i++) {
