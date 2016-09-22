@@ -22,6 +22,7 @@ public class CharacterSelectScript : MonoBehaviour {
 	public GameObject[] selectedsLoop;
 	public GameObject[] SpecialsLoop;
 	public ColorPreviewScript colorPreviewScript;
+	public GameObject loadscreenObject;
 
 
 	enum uiState{
@@ -45,6 +46,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		state = GamePad.GetState (playerIndex);
 
 		if (state.Buttons.Back == ButtonState.Pressed && prevState.Buttons.Back == ButtonState.Released) {
+			loadscreenObject.SetActive (true);
 			roundScript.tutorialPlayerNumber = playerNumber;
 			SceneManager.LoadScene (3);
 		}

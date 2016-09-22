@@ -56,7 +56,7 @@ public class HitboxScript : MonoBehaviour {
 		throwFunc = newThrowFunc;
 	}
 	void OnTriggerEnter2D(Collider2D other){
-		
+		Debug.Log (other.name);
 		bool match = false;
 		// check if the tag is in the damage list
 		foreach (string x in tagsToDamage) {

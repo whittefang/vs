@@ -263,7 +263,7 @@ public class KenAnimScript : MonoBehaviour {
 			}
 			spriteRenderer.sprite = mediumFrames [i];
 
-			if (i == 2) {
+			if (i == 4) {
 				SetHurtbox(new Vector2 (1.4f, 1.2f), new Vector2 (3f, 2f), hurtboxBody);
 			}
 			if (i == 5) {

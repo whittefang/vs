@@ -22,9 +22,11 @@ public class KenAttackScript : MonoBehaviour {
 	void Start () {
 		if (tag == "playerOne") {
 			//SetPlayer (true);
+			otherPlayer = GameObject.FindWithTag ("playerTwo").transform;
 			Komaru.SetPlayer(true);
 		} else {
 			//SetPlayer (false);
+			otherPlayer = GameObject.FindWithTag ("playerOne").transform;
 			Komaru.SetPlayer(false);
 		}
 
@@ -297,10 +299,10 @@ public class KenAttackScript : MonoBehaviour {
 					PMS.StopMovement ();
 					heavyHitbox.SetActive (false);
 				}
-				if (x == 27) {
+				if (x == 30) {
 					heavyHitboxP2.SetActive (true);
 				}
-				if (x == 30) {
+				if (x == 33) {
 					heavyHitboxP2.SetActive (false);
 					proximityBox.SetActive (false);
 					state.SetState ("heavy recovery");
@@ -395,13 +397,24 @@ public class KenAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("no dog attack");
 		Komaru.StartSuper();
+
+		PlayerMovementScript otherPMS = otherPlayer.GetComponent<PlayerMovementScript> ();
 		for (int x = 0; x < 110;) {
 			// active
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x < 32 && (x % 2 == 0)) {
 					superHitbox.SetActive (false);
 					superHitbox.SetActive (true);
-					
+
+				}
+				if (x < 32) {
+					if (Mathf.Abs (otherPlayer.position.x - transform.position.x) > 2.5f) {
+						if (otherPlayer.transform.position.x > transform.position.x) {
+							otherPlayer.transform.Translate (new Vector3 (-.2f, 0, 0));
+						} else {
+							otherPlayer.transform.Translate (new Vector3 (.2f, 0, 0));			
+						}
+					}
 				}
 				if (x == 34) {
 					superHitbox.SetActive (false);
@@ -428,6 +441,7 @@ public class KenAttackScript : MonoBehaviour {
 		heavyHitboxHit = true;
 	}
 	public void CancelAttacks(){
+		PMS.EnableBodyBox ();
 		mediumBuffer = false;
 		sp2Buffer = false;
 		lightBuffer = false;

@@ -25,9 +25,9 @@ public class ColorPreviewScript : MonoBehaviour {
 		int oldSpot = spot[character];
 		spot[character] += direction;
 		if (spot[character] >= characterColorPalettes [character].characterPalette.Length) {
-			spot[character] = characterColorPalettes [character].characterPalette.Length - 1;
-		}else if (spot[character] <= 0){
 			spot[character] = 0;
+		}else if (spot[character] < 0){
+			spot[character] = characterColorPalettes [character].characterPalette.Length - 1;
 		}
 		colorNumberText.text = spot[character].ToString();
 

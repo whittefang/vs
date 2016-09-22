@@ -176,15 +176,18 @@ public class HealthScript : MonoBehaviour {
 			spriteAnimator.PlayBlock ();
 			StopAllCoroutines ();
 			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback, optionalPosition, hitStopAmount, blockPitch));
-			healthAmount -= (int)((float)amount * .05f);
+			healthAmount -= (int)((float)amount * .2f);
+			int finalDamage = (int)((float)amount * .2f);
+			if (healthAmount <= 0) {
+				finalDamage += healthAmount - 1;
+				healthAmount = 1;
+			}
 			if (hpLeft != null) {
-				hpLeft.changeBarLeft ((int)((float)amount * .05f));
+				hpLeft.changeBarLeft (finalDamage);
 			} else {
-				hpRight.changeBarRight ((int)((float)amount * .05f));
+				hpRight.changeBarRight (finalDamage);
 			}
 			HealUp ();
-			// check for death
-			CheckHealth ();
 			return true;
 		} else if (isThrow) {
 			Debug.Log ("thro returrn true");
@@ -267,7 +270,6 @@ public class HealthScript : MonoBehaviour {
 			sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y, -.2f);
 			sparks.SetActive (true);
 		}
-		timeManager.StopTime (hitStopAmount);
 		PMS.CheckFacing ();
 		if (!freezingAttack) {
 			if (optionalPosition == default(Vector2) || (optionalPosition.x > transform.position.x && PMS.CheckIfOnLeft()) || (optionalPosition.x < transform.position.x && !PMS.CheckIfOnLeft())){
@@ -278,6 +280,8 @@ public class HealthScript : MonoBehaviour {
 		} else {
 			PMS.StopMovement ();
 		}
+
+		timeManager.StopTime (hitStopAmount);
 		// if in the corner push attacker back
 		if((transform.position.x > rightBound || transform.position.x < leftBound) && useCornerKockback){
 			Debug.Log ("pushcorner");

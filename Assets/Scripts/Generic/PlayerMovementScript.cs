@@ -9,7 +9,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	public SpriteRenderer SR;
 	FighterStateMachineScript state;
-	float deadSize = .15f;
+	float deadSize = .25f;
 	bool canMove = true, allowMoveTowards = true;
 	public bool LeftFacingSprites = true;
 	int groundedBuffer = 0;
@@ -28,7 +28,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	 vDelegate cancelAttacks;
 	BoxCollider2D movementBox;
 	bool gettingUp = false;
-
+	public GameObject optionalDog;
 	// Use this for initialization
 	void Awake () {
 		movementBox = GetComponent<BoxCollider2D> ();
@@ -77,7 +77,7 @@ public class PlayerMovementScript : MonoBehaviour {
 			CheckFacing ();
 			JumpCheck (x, y);
 			if (state.GetState () == "neutral") {
-				if (x > 0) {
+				if (x > deadSize) {
 					if (OnLeft) {
 						spriteAnimator.PlayWalkAnim ();
 						RB.velocity = new Vector2 (currentSpeed, RB.velocity.y);
@@ -88,7 +88,7 @@ public class PlayerMovementScript : MonoBehaviour {
 						spriteAnimator.PlayBlock ();
 						RB.velocity = new Vector2 (0, RB.velocity.y);
 					}
-				} else if (x < 0) {
+				} else if (x < -deadSize) {
 					
 					if (OnLeft && !canProximityBlock) {
 						spriteAnimator.PlayWalkAwayAnim ();
@@ -100,10 +100,11 @@ public class PlayerMovementScript : MonoBehaviour {
 						spriteAnimator.PlayBlock ();
 						RB.velocity = new Vector2 (0, RB.velocity.y);
 					}
-				} else if (x == 0) {
+				} else {
 					RB.velocity = new Vector2 (0, RB.velocity.y);
 					spriteAnimator.PlayNeutralAnim ();
 				}
+				gameObject.layer = onGroundMask;
 			}
 		} else if (state.GetState () == "jumping" || state.GetState () == "jump attack" ||  state.GetState() == "falling hit") {
 			
@@ -358,6 +359,9 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void EndGame(){
 		cancelAttacks ();
+		if (optionalDog != null) {
+			optionalDog.GetComponentInChildren<DogAttackScript> ().TurnOff ();
+		}
 		canMove = false;
 	}
 	IEnumerator GetUpAfterKnockdown(){

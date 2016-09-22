@@ -9,7 +9,7 @@ public class PlayerNumberSetScript : MonoBehaviour {
 	public delegate void voidDel(bool b);
 	voidDel optFunc;
 
-	public GameObject body, hurtboxes, hitboxes,  soundPlayer;
+	public GameObject body, hurtboxes, hitboxes, dog, soundPlayer;
 	public bool testMode = false;
 	public GameObject testOtherPlayer;
 	bool showHitboxes = false;
@@ -84,6 +84,11 @@ public class PlayerNumberSetScript : MonoBehaviour {
 			}
 			foreach (SpriteRenderer child in hitboxes.GetComponentsInChildren<SpriteRenderer>(true)) {
 				child.enabled = showHitboxes;
+			}
+			if (dog != null) {
+				foreach (SpriteRenderer child in dog.GetComponentsInChildren<SpriteRenderer>(true)) {
+					child.enabled = showHitboxes;
+				}
 			}
 		}
 	}

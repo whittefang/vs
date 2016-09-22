@@ -344,10 +344,10 @@ public class HulkAttackScript : MonoBehaviour {
 		state.SetState ("jump attack");
 		for (int x = 0; x < 21;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 7) {
+				if (x == 8) {
 					jumpHeavyHitbox.SetActive (true);
 				}
-				if (x == 20) {
+				if (x == 10) {
 					jumpHeavyHitbox.SetActive (false);
 					proximityBox.SetActive (false);
 				}
@@ -384,7 +384,7 @@ public class HulkAttackScript : MonoBehaviour {
 				if (x == 3){
 					sp1Buffer = false;
 				}
-				if (x == 17) {
+				if (x == 18) {
 					fireball.transform.position = new Vector3(transform.position.x, transform.position.y, -.1f);
 					if (PMS.OnLeft) {
 						fireball.transform.eulerAngles = new Vector3 (0, 0, 0);
@@ -484,7 +484,7 @@ public class HulkAttackScript : MonoBehaviour {
 		PMS.StopMovement ();
 		state.SetState ("attack");
 		PMS.DsableBodyBox ();
-		for (int x = 0; x < 35;) {
+		for (int x = 0; x < 60;) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				if(x == 2){
@@ -595,6 +595,7 @@ public class HulkAttackScript : MonoBehaviour {
 		canMoveDuringCharge = false;
 	}
 	public void CancelAttacks(){
+		PMS.EnableBodyBox ();
 		mediumBuffer = false;
 		sp2Buffer = false;
 		lightBuffer = false;

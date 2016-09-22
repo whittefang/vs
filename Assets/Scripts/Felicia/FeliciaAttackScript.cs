@@ -650,6 +650,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		heavyHitboxHit = true;
 	}
 	public void CancelAttacks(){
+		PMS.EnableBodyBox ();
 		mediumBuffer = false;
 		sp2Buffer = false;
 		lightBuffer = false;

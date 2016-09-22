@@ -82,6 +82,14 @@ public class DogAnimScript : MonoBehaviour {
 	IEnumerator Sp2(){
 		for (int i = 0; i < 10; i++) {
 			spriteRenderer.sprite = sp2Frames [i];
+			if (i == 0) {
+				for (int x = 0; x < 6;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused()) {
+						x++;
+					}
+				}
+			}
 			if (i == 7) {
 				for (int x = 0; x < 21;) {
 					yield return null;
@@ -97,6 +105,7 @@ public class DogAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		spriteRenderer.sprite = sp1Frames [12];
 	}	
 	IEnumerator Sp3(){
 		for (int ii = 0; ii < 4; ii++) {

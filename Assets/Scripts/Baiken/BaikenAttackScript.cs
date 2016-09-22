@@ -630,6 +630,7 @@ public class BaikenAttackScript : MonoBehaviour {
 
 	}
 	public void CancelAttacks(){
+		PMS.EnableBodyBox ();
 		mediumBuffer = false;
 		sp2Buffer = false;
 		lightBuffer = false;

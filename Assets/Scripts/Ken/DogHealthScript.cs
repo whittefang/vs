@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class DogHealthScript : MonoBehaviour {
-	int maxCards = 4;
-	int currentCards = 4;
+	int maxCards = 3;
+	int currentCards = 3;
 	public PersonaCardsScript Cards;
 	bool alive = true;
 	DogAttackScript dogAttackScript;
@@ -44,7 +44,7 @@ public class DogHealthScript : MonoBehaviour {
 			//play hit sound(glass break)
 			if (currentCards <= 0) {
 				alive = false;
-				Invoke ("Reactivate", 7);
+				Invoke ("Reactivate", 10);
 			}
 		}
 	}

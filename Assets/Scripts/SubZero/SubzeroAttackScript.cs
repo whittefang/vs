@@ -501,6 +501,7 @@ public class SubzeroAttackScript : MonoBehaviour {
 		sp3movement = false;
 	}
 	public void CancelAttacks(){
+		PMS.EnableBodyBox ();
 		mediumBuffer = false;
 		sp2Buffer = false;
 		lightBuffer = false;

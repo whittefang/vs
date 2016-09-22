@@ -7,7 +7,7 @@ public class RyuAttackScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
-	public GameObject fireball, superFireball, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
+	public GameObject fireball, superFireball, lightHitbox, mediumHitbox, heavyHitbox,heavyHitbox2, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
 	sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp3Hitbox,sp3HitboxP2, fireballGunpoint, throwHitbox, proximityBox;
 
 	ProjectileScript fireballProjectileScript , superProjectileScript;
@@ -54,6 +54,7 @@ public class RyuAttackScript : MonoBehaviour {
 		lightHitboxScript.SetOptFunc (LightHit);
 		mediumHitboxScript.SetOptFunc (MediumHit);
 		heavyHitboxScript.SetOptFunc (HeavyHit);
+		heavyHitbox2.GetComponent<HitboxScript> ().SetOptFunc (HeavyHit);
 		throwHitboxScript.SetThrowFunc (ThrowHit);
 		fireball.GetComponentInChildren<HitboxScript> ().SetOptFunc (SpecialHit);
 		sp2HitboxPart1.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
@@ -286,16 +287,21 @@ public class RyuAttackScript : MonoBehaviour {
 		spriteAnimator.PlayHeavy ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
-		PMS.MoveToward (15);
 		for (int x = 0; x < 42;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 18) {
+				if (x > 9 && x < 20) {
+					PMS.MoveToward (11f);
+				}
+				if (x == 15) {
 					heavyHitbox.SetActive (true);
 				}
-
-				if (x == 22) {
-					PMS.StopMovement ();
+				if (x == 21) {
 					heavyHitbox.SetActive (false);
+					heavyHitbox2.SetActive (true);
+				}
+				if (x == 26) {
+					PMS.StopMovement ();
+					heavyHitbox2.SetActive (false);
 					state.SetState ("heavy recovery");
 					proximityBox.SetActive (false);
 				}
@@ -590,6 +596,7 @@ public class RyuAttackScript : MonoBehaviour {
 		specialHitboxHit = true;
 	}
 	public void CancelAttacks(){
+		PMS.EnableBodyBox ();
 		mediumBuffer = false;
 		sp2Buffer = false;
 		lightBuffer = false;
@@ -598,6 +605,7 @@ public class RyuAttackScript : MonoBehaviour {
 		lightHitbox.SetActive (false);
 		mediumHitbox.SetActive (false);
 		heavyHitbox.SetActive (false);
+		heavyHitbox2.SetActive (false);
 		jumpLightHitbox.SetActive (false);
 		jumpMediumHitbox.SetActive (false);
 		jumpHeavyHitbox.SetActive (false);

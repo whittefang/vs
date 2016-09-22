@@ -120,6 +120,8 @@ public class DogAttackScript : MonoBehaviour {
 			}
 			yield return null;
 		}
+		proximityBox.SetActive (false);
+		sp1Hitbox.SetActive (false);
 		state.SetState ("neutral");
 		spriteAnimator.StartNeutralAnim ();
 	}
@@ -135,7 +137,7 @@ public class DogAttackScript : MonoBehaviour {
 		proximityBox.SetActive (false);
 		spriteAnimator.StartSp1HitAnim ();
 		sounds.PlayRandomHit ();
-		for (int x = 0; x < 60;) {
+		for (int x = 0; x < 70;) {
 			if (x == 35) {
 				StopMovement ();
 			}
@@ -148,6 +150,8 @@ public class DogAttackScript : MonoBehaviour {
 			}
 			yield return null;
 		}
+		proximityBox.SetActive (false);
+		sp1Hitbox.SetActive (false);
 		state.SetState ("neutral");
 		spriteAnimator.StartNeutralAnim ();
 	}
@@ -165,7 +169,7 @@ public class DogAttackScript : MonoBehaviour {
 		ForceFlipOpponent ();
 		spriteAnimator.StartWalkAnim ();
 		detectionBox.SetActive (true);
-		for (int x = 0; x < 45;) {
+		for (int x = 0; x < 35;) {
 			if (!timeManager.CheckIfTimePaused()) {
 				
 				MoveTowards (15, 0);
@@ -190,19 +194,19 @@ public class DogAttackScript : MonoBehaviour {
 		sounds.PlayRandomHit ();
 		state.SetState ("attack");
 		spriteAnimator.StartSp2Anim ();
-		for (int x = 0; x < 50;) {
+		for (int x = 0; x < 80;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x == 9) {
+				if (x == 15) {
 					MoveTowards (7.5f, 20);
 					sp2Hitbox.SetActive (true);
-				}if (x == 15) {
+				}if (x == 21) {
 					MoveTowards (-5, RB.velocity.y);
 				}
-				if (x == 18) {
+				if (x == 24) {
 					sp2Hitbox.SetActive (false);
 					proximityBox.SetActive (false);
 				}
-				if (x == 40) {
+				if (x == 46) {
 					StopMovement ();
 				}
 				x++;
@@ -333,6 +337,18 @@ public class DogAttackScript : MonoBehaviour {
 		StopAllCoroutines ();
 		StartCoroutine (Hit ());
 	}
+	public void TurnOff(){
+		StopAllCoroutines ();
+		state.SetState ("off");
+		proximityBox.SetActive (false);
+		sp1Hitbox.SetActive (false);
+		sp2Hitbox.SetActive (false);
+		sp3Hitbox.SetActive (false);
+		superHitbox.SetActive (false);
+		superHitbox2.SetActive (false);
+		detectionBox.SetActive (false);
+		StopMovement ();
+	}
 	IEnumerator Hit(){
 		state.SetState ("invincible");
 		proximityBox.SetActive (false);
@@ -341,6 +357,7 @@ public class DogAttackScript : MonoBehaviour {
 		sp3Hitbox.SetActive (false);
 		superHitbox.SetActive (false);
 		superHitbox2.SetActive (false);
+		detectionBox.SetActive (false);
 		spriteAnimator.StartHitAnim ();
 		StopMovement ();
 		for (int x = 0; x < 60;) {			
