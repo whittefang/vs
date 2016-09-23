@@ -7,6 +7,7 @@ public class SceneTransistionScript : MonoBehaviour {
 	public int sceneToTransitionTo;
 	int[] playerScenes;
 	bool player1Ready = false, player2Ready = false, levelSelect = false;
+	public GameObject loadScreen;
 	// Use this for initialization
 	void Start () {
 		playerScenes = new int[2];
@@ -49,7 +50,21 @@ public class SceneTransistionScript : MonoBehaviour {
 		levelSelect = true;
 	}
 	IEnumerator LoadSceneDelay(float delay ,int newScene){
-		yield return new WaitForSeconds (delay);
-		SceneManager.LoadScene (newScene);
+		if (loadScreen != null) {
+			loadScreen.SetActive (true);
+			Debug.Log("Start animation");
+		}
+		yield return new WaitForSeconds (1.5f);
+		Debug.Log("pre");
+		AsyncOperation aO = SceneManager.LoadSceneAsync (newScene);
+		Debug.Log("pos");
+		aO.allowSceneActivation = false;
+		while (aO.progress < .9f) {
+			Debug.Log("wait");
+			yield return null;
+		}
+
+		Debug.Log("allowLoad");
+		aO.allowSceneActivation = true;
 	}
 }

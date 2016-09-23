@@ -4,7 +4,7 @@ using System.Collections;
 public class UIsounds : MonoBehaviour {
 
 	AudioSource AS;
-	public AudioClip change, confirm, back; 
+	public AudioClip change, confirm, back, loadSound; 
 	public AudioClip[] selectSounds;
 	// Use this for initialization
 	void Start () {
@@ -18,6 +18,9 @@ public class UIsounds : MonoBehaviour {
 	}
 	public void PlayBack(){
 		AS.PlayOneShot (back);
+	}
+	public void PlayLoad(){
+		AS.PlayOneShot (loadSound);
 	}
 	public void PlayCharacterSelect(int character){
 		AS.PlayOneShot (selectSounds [character]);

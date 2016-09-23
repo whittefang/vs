@@ -625,7 +625,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 				x++;
 			}
 		}
-		for (int i = 0; i < 3; i++) {			
+		for (int i = 0; i < 20; i++) {			
 			spriteRenderer.sprite = winFrames [i];
 			for (int x = 0; x < 5;) {
 				yield return null;
@@ -634,20 +634,7 @@ public class FeliciaAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		int currentFrame =  3;
-		while (true) {
-			if (currentFrame >= winFrames.Length) {
-				currentFrame = 3;
-			}
-				spriteRenderer.sprite = winFrames [currentFrame];
-			for (int x = 0; x < 3;) {
-				yield return null;
-				if (!timeManager.CheckIfTimePaused()) {
-					x++;
-				}
-			}
-			currentFrame++;
-		}
+
 	}
 	public void StartLightAnim(){
 		EndAnimations ();
