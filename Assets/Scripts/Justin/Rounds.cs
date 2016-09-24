@@ -24,6 +24,7 @@ public class Rounds : MonoBehaviour {
 	public Texture2D[] feliciaColor;
 	public Texture2D[] hulkColor;
 	public Texture2D[] ryuColor;
+	public Texture2D[] ryuFireballColor;
 	public Texture2D[] subzeroColor;
 	public Texture2D[] kenColor;
 	public Texture2D[] kenDogColor;
@@ -198,12 +199,23 @@ public class Rounds : MonoBehaviour {
 			if (isPlayerOne){
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
 				leftHpBarSprite.SetLeftBoarderArt("ryu");
-				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(ryuColor[player1ColorNumber]);
-			}
-			else{
-			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-			rightHpBarSprite.SetRightBoarderArt("ryu");
-			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(ryuColor[player2ColorNumber]);
+				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>(true)){
+					if (tmp.gameObject.name == "Body") {
+						tmp.LoadColors (ryuColor[player1ColorNumber]);
+					}else if (tmp.gameObject.name == "fireballSprite"){
+						tmp.LoadColors (ryuFireballColor[player1ColorNumber]);
+					}
+				}
+			}else{
+				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+				rightHpBarSprite.SetRightBoarderArt("ryu");
+				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>(true)){
+					if (tmp.gameObject.name == "Body") {
+						tmp.LoadColors (ryuColor[player2ColorNumber]);
+					}else if (tmp.gameObject.name == "fireballSprite"){
+						tmp.LoadColors (ryuFireballColor[player2ColorNumber]);
+					}
+				}
 			}
 			break;
 		case "felicia":

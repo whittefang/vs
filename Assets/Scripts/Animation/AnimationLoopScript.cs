@@ -56,7 +56,9 @@ public class AnimationLoopScript : MonoBehaviour {
 					}
 				}
 			}
-
+			if (timeBetweenFrames == 0 || frames.Length == 0) {
+				yield return null;
+			}
 		}
 	}
 

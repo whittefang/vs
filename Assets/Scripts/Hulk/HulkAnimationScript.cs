@@ -485,6 +485,13 @@ public class HulkAnimationScript : MonoBehaviour {
 
 		}
 		spriteRenderer.sprite = neutralJumpFrames [6];
+		for (int x = 0; x < 10;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused()) {
+				x++;
+			}
+		}
+		spriteRenderer.sprite = SpecialThreeFrames [4];
 		chargeEffect.SetActive (false);
 	}
 	IEnumerator ThrowTry(){

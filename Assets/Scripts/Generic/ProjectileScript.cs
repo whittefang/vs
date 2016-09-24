@@ -11,7 +11,9 @@ public class ProjectileScript : MonoBehaviour {
 	public int projecttileStrength = 1, projectileOwner = 0;
 	public  GameObject bodyToTurnOff;
 	public BoxCollider2D[] hitboxsToTurnOff;
+	public AudioClip projectileClashSound;
 	TimeManagerScript timeManager;
+	AudioSource sound;
 
 	void OnEnable(){
 		if (timeManager == null) {
@@ -31,6 +33,7 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	void Awake(){
 		savedSpeed = speed;
+		sound = GetComponent<AudioSource>();
 	}
 	void OnDisable(){
 		CancelInvoke ();
@@ -81,6 +84,7 @@ public class ProjectileScript : MonoBehaviour {
 			} else if (projecttileStrength == otherStrength) {
 
 				other.GetComponent<ProjectileScript> ().Kill ();
+				sound.PlayOneShot (projectileClashSound);
 				Kill ();
 			} else {
 				Kill ();
@@ -100,7 +104,6 @@ public class ProjectileScript : MonoBehaviour {
 			SetSpeed (.1f);
 			SetDirection (new Vector2 (Random.Range (-1f, 1f), -1f));
 		}
-
 		GetComponentInChildren<AnimateOnce> ().Animate ();
 	}
 }
