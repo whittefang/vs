@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,6 +7,7 @@ public class TimeManagerScript : MonoBehaviour {
 	public bool timePaused = false;
 	public bool canPauseTime = true;
 
+	Vector2 p1Velocity, p2Velocity;
 	List<Rigidbody2D> extraBodies;
 	List<Vector2> extraBodiesVelocities;
 	public Rigidbody2D p1Body, p2Body;
@@ -56,9 +57,12 @@ public class TimeManagerScript : MonoBehaviour {
 	}
 	IEnumerator StopTimeEnum(int numberOfFrames){
 		timePaused = true;
-		Vector2 p1Velocity, p2Velocity;
-		p1Velocity = p1Body.velocity;
-		p2Velocity = p2Body.velocity;
+		if (p1Velocity == Vector2.zero){
+			p1Velocity = p1Body.velocity;
+		}
+		if (p2Velocity == Vector2.zero) {
+			p2Velocity = p2Body.velocity;
+		}
 		p1Body.velocity = Vector2.zero;
 		p2Body.velocity = Vector2.zero;
 		p1Body.isKinematic = true;
@@ -86,7 +90,8 @@ public class TimeManagerScript : MonoBehaviour {
 		p1Body.isKinematic = false;
 		p2Body.isKinematic = false;
 		timePaused = false;
-		
+		p1Velocity = Vector2.zero;
+		p2Velocity = Vector2.zero;
 	}
 	public bool CheckIfTimePaused(){
 		return timePaused;

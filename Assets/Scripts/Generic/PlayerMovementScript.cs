@@ -381,4 +381,21 @@ public class PlayerMovementScript : MonoBehaviour {
 		spriteAnimator.PlayNeutralAnim ();
 		gettingUp = false;
 	}
+	public void PauseRigidBody(Vector2 velocity){
+		StopAllCoroutines ();
+		StartCoroutine (PauseRigidBodyEnum (velocity));
+	}
+
+	IEnumerator PauseRigidBodyEnum(Vector2 velocity){
+		for (int i = 0; i < 3;) {
+			if (!timeManager.CheckIfTimePaused ()) {
+				i++;
+			}
+			RB.isKinematic = true;
+			RB.velocity = Vector2.zero;
+			yield return null;
+		}
+		RB.isKinematic = false;
+		MoveToward (velocity.x, velocity.y);
+	}
 }

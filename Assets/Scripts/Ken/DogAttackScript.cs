@@ -90,6 +90,7 @@ public class DogAttackScript : MonoBehaviour {
 			}
 			yield return null;
 		}
+		Turn ();
 		StopMovement ();
 		state.SetState ("neutral");
 		spriteAnimator.StartNeutralAnim ();
@@ -110,10 +111,10 @@ public class DogAttackScript : MonoBehaviour {
 		for (int x = 0; x < 60;) {			
 			if (!timeManager.CheckIfTimePaused()) {		
 				
-				if (x == 30) {
+				if (x == 10) {
 					sp1Hitbox.SetActive (true);
 				}
-				if (x >=30){
+				if (x >=10){
 					MoveTowards (25);
 				}
 				x++;

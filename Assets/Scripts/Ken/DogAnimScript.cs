@@ -34,7 +34,7 @@ public class DogAnimScript : MonoBehaviour {
 
 	IEnumerator Sp1(){
 		spriteRenderer.sprite = sp1Frames [0];
-		for (int x = 0; x < 30;) {
+		for (int x = 0; x < 10;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused()) {
 				x++;

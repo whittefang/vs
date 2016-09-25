@@ -23,6 +23,7 @@ public class HealthScript : MonoBehaviour {
 	public SpriteRenderer SR;
 	ExMeter exBar;
 	public bool tutorialMode = false;
+	ComboSoundScript comboSounds;
 	// Use this for initialization
 	void OnEnable () {
 		if (SR == null && !useChildSpriteRenderer) {
@@ -39,6 +40,9 @@ public class HealthScript : MonoBehaviour {
 		}
 		if (spriteAnimator == null) {
 			spriteAnimator = transform.parent.GetComponent<SpriteAnimator> ();
+		}
+		if (comboSounds == null) {
+			comboSounds = GameObject.Find ("Camera").GetComponent<ComboSoundScript> ();
 		}
 		healthAmount = healthMax ;
 
@@ -90,7 +94,7 @@ public class HealthScript : MonoBehaviour {
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
 		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2),
-		int hitStopAmount = 0, AudioClip hitSound = default(AudioClip), float hitPitch =1, float blockPitch =1){
+		int hitStopAmount = 0, AudioClip hitSound = default(AudioClip), float hitPitch =1, float blockPitch =1, bool juggle = false){
 
 		if (state.GetState () == "parry" && ParryFunc != null && !isThrow) {
 			ParryFunc ();
@@ -162,6 +166,10 @@ public class HealthScript : MonoBehaviour {
 				} else {
 					spriteAnimator.PlayHit (hitstun);
 				}
+			}
+
+			if (juggle) {
+				PMS.PauseRigidBody (hitPushback);
 			}
 
 			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher, optionalPosition, hitStopAmount, hitSound, hitPitch));
@@ -289,7 +297,7 @@ public class HealthScript : MonoBehaviour {
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
 		for (int x = 0; x < stunFrames;) {	
-			if (x == 5) {
+			if (x == 7) {
 				if (launcher) {
 					state.SetState ("falling hit");
 					PMS.DsableBodyBox ();
@@ -314,7 +322,8 @@ public class HealthScript : MonoBehaviour {
 			SR.material.SetFloat ("_EffectAmount", 0);
 			spriteAnimator.PlayNeutralAnim ();
 		}
-		Invoke ("HideComboText", .5f);
+		comboSounds.playComboNoise (comboCounter);
+		Invoke ("HideComboText", 1f);
 	}
 	public void SetHitFunc(DeathEvent newFunc){
 		HitFunc = newFunc;
