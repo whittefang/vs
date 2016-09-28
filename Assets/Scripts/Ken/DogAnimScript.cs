@@ -12,7 +12,9 @@ public class DogAnimScript : MonoBehaviour {
 	public Sprite[] turnFrames;
 	public Sprite[] winFrames;
 	public Sprite[] superFrames;
-
+	public GameObject sp1Effect;
+	public GameObject sp2Effect;
+	public GameObject sp3Effect;
 	public GameObject hurtbox;
 
 
@@ -30,7 +32,7 @@ public class DogAnimScript : MonoBehaviour {
 		StartNeutralAnim ();
 
 	}
-	
+
 
 	IEnumerator Sp1(){
 		spriteRenderer.sprite = sp1Frames [0];
@@ -40,6 +42,7 @@ public class DogAnimScript : MonoBehaviour {
 				x++;
 			}
 		}
+		sp1Effect.SetActive (true);
 		while (true) {
 			for (int i = 1; i < 3; i++) {
 				spriteRenderer.sprite = sp1Frames [i];
@@ -51,8 +54,10 @@ public class DogAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		sp1Effect.SetActive (false);
 	}
 	IEnumerator Sp1Complete(){
+		sp1Effect.SetActive (false);
 		for (int i = 3; i < 13; i++) {
 			spriteRenderer.sprite = sp1Frames [i];
 			if (i == 5) {
@@ -89,6 +94,9 @@ public class DogAnimScript : MonoBehaviour {
 						x++;
 					}
 				}
+			}
+			if (i == 4) {
+				sp2Effect.SetActive (true);
 			}
 			if (i == 7) {
 				for (int x = 0; x < 21;) {
@@ -215,17 +223,6 @@ public class DogAnimScript : MonoBehaviour {
 	}
 	IEnumerator Super(){
 		// intro buildup
-		for (int ii = 0; ii < 4; ii++) {			
-			for (int i = 0; i < 2; i++) {
-				spriteRenderer.sprite = sp3Frames [i];
-				for (int x = 0; x < 5;) {
-					yield return null;
-					if (!timeManager.CheckIfTimePaused ()) {
-						x++;
-					}
-				}
-			}
-		}
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = superFrames [i];
 			for (int x = 0; x < 3;) {
@@ -235,7 +232,16 @@ public class DogAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		for (int ii = 0; ii < 4; ii++) {			
+		// wait on pulling out kunai
+		for (int x = 0; x < 24;) {
+			yield return null;
+			if (!timeManager.CheckIfTimePaused ()) {
+				x++;
+			}
+		}
+		// weapon loop
+		sp3Effect.SetActive(true);
+		for (int ii = 0; ii < 5; ii++) {			
 			for (int i = 2; i < 7; i++) {
 				spriteRenderer.sprite = superFrames [i];
 				for (int x = 0; x < 2;) {
@@ -246,6 +252,8 @@ public class DogAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		sp3Effect.SetActive(false);
+		// last hit
 		for (int i = 7; i < 13; i++) {
 			spriteRenderer.sprite = superFrames [i];
 			for (int x = 0; x < 3;) {
@@ -306,6 +314,9 @@ public class DogAnimScript : MonoBehaviour {
 
 	public void EndAnimations(){
 		StopAllCoroutines ();
+		sp1Effect.SetActive (false);
+		sp2Effect.SetActive (false);
+		sp3Effect.SetActive (false);
 		hurtbox.transform.localScale  = hurtboxBodyOriginalScale;
 		hurtbox.transform.localPosition  = hurtboxBodyOriginalPosition;
 	}

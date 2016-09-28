@@ -336,7 +336,8 @@ public class KenAttackScript : MonoBehaviour {
 	}
 
 	public void SpecialOne(){
-		if (state.GetState() == "neutral" || state.GetState() =="light recovery"  || state.GetState() =="medium recovery"  
+		if (state.GetState() == "neutral" || state.GetState() =="light recovery"  || state.GetState() =="medium recovery" 
+			|| state.GetState() == "jump attack" ||  state.GetState() == "jumping"
 			|| state.GetState() =="heavy recovery" || state.GetState() == "attack") {
 
 			StartCoroutine (SP1BufferEnum ());
@@ -352,6 +353,7 @@ public class KenAttackScript : MonoBehaviour {
 	}
 	public void SpecialTwo(){
 		if (state.GetState() == "neutral" || state.GetState() =="light recovery"  || state.GetState() =="medium recovery"  
+			|| state.GetState() == "jump attack" ||  state.GetState() == "jumping"
 			|| state.GetState() =="heavy recovery" || state.GetState() == "attack") {
 			StartCoroutine (SP2BufferEnum ());
 		}
@@ -366,8 +368,9 @@ public class KenAttackScript : MonoBehaviour {
 	}
 	public void SpecialThree(){
 		if (state.GetState() == "neutral" || state.GetState() =="light recovery"  || state.GetState() =="medium recovery"  
+			|| state.GetState() == "jump attack" ||  state.GetState() == "jumping"
 			|| state.GetState() =="heavy recovery" || state.GetState() == "attack") {
-			Komaru.StartSp3 ();
+			Komaru.StartSuper ();
 		}
 
 	}
@@ -396,10 +399,11 @@ public class KenAttackScript : MonoBehaviour {
 		spriteAnimator.PlaySuper ();
 		PMS.StopMovement ();
 		state.SetState ("no dog attack");
-		Komaru.StartSuper();
+		//Komaru.StartSuper();
 
 		PlayerMovementScript otherPMS = otherPlayer.GetComponent<PlayerMovementScript> ();
-		for (int x = 0; x < 110;) {
+		state.SetState ("invincible");
+		for (int x = 0; x < 60;) {
 			// active
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x < 32 && (x % 2 == 0)) {
@@ -416,12 +420,15 @@ public class KenAttackScript : MonoBehaviour {
 						}
 					}
 				}
-				if (x == 34) {
+				if (x == 32) {
+
+					state.SetState ("attack");
 					superHitbox.SetActive (false);
 					superHitbox2.SetActive (true);
 				}
 				if (x == 36) {
 					superHitbox2.SetActive (false);
+					proximityBox.SetActive (false);
 				}
 				x++;
 			}

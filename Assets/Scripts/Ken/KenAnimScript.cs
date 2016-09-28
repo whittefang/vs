@@ -257,7 +257,7 @@ public class KenAnimScript : MonoBehaviour {
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 	IEnumerator Medium(){
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 7; i++) {
 			if (i == 1) {
 				sound.PlayMedium ();
 			}
@@ -269,7 +269,16 @@ public class KenAnimScript : MonoBehaviour {
 			if (i == 5) {
 				hurtboxLimb.gameObject.SetActive (false);
 			}
-			for (int x = 0; x < 4;) {
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		for (int i = 7; i < 16; i++) {
+			spriteRenderer.sprite = mediumFrames [i];
+			for (int x = 0; x < 2;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
@@ -310,7 +319,7 @@ public class KenAnimScript : MonoBehaviour {
 		}
 		for (int i = 14; i < 16; i++) {
 			spriteRenderer.sprite = heavyFrames [i];
-			for (int x = 0; x < 3;) {
+			for (int x = 0; x < 2;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
 					x++;
@@ -450,7 +459,7 @@ public class KenAnimScript : MonoBehaviour {
 				x++;
 			}
 		}
-		for (int ii = 0; ii < 6; ii++) {
+//		for (int ii = 0; ii < 6; ii++) {
 			for (int i = 10; i < 12; i++) {
 				spriteRenderer.sprite = superFrames [i];
 				for (int x = 0; x < 4;) {
@@ -460,7 +469,7 @@ public class KenAnimScript : MonoBehaviour {
 					}
 				}
 			}	
-		}
+//		}
 		for (int i = 12; i < 16; i++) {
 			spriteRenderer.sprite = superFrames [i];
 			for (int x = 0; x < 5;) {

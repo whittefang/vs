@@ -12,8 +12,10 @@ public class DogAttackScript : MonoBehaviour {
 	DogAnimScript spriteAnimator;
 	DogHealthScript healthScript;
 	FighterStateMachineScript state;
+	public FighterStateMachineScript kenState;
 	Transform otherPlayer;
 	bool onLeft = true;
+	public SpriteRenderer sp1Effect, sp2Effect, sp3Effect;
 
 	// Use this for initialization
 	void Awake () {
@@ -27,7 +29,8 @@ public class DogAttackScript : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		if (state.GetState () == "neutral" && Mathf.Abs(transform.position.x - Ken.position.x) > 2f && healthScript.CheckAlive()) {
+		if (state.GetState () == "neutral" && Mathf.Abs(transform.position.x - Ken.position.x) > 2f && healthScript.CheckAlive() 
+			&& kenState.GetState() != "hitstun" &&  kenState.GetState() != "blockstun"  &&  kenState.GetState() != "jumping" ) {
 			StartCoroutine (Turn ());
 		}
 
@@ -47,11 +50,18 @@ public class DogAttackScript : MonoBehaviour {
 	void ForceFlipOpponent(){
 		if (otherPlayer.position.x > transform.position.x) {
 			onLeft = true;
-			spriteRenderer.flipX = true;
+			FlipSprites (true);
 		} else {
 			onLeft = false;
-			spriteRenderer.flipX = false;
+			FlipSprites (false);
 		}
+	}
+	void FlipSprites(bool flip){
+
+		spriteRenderer.flipX = flip;
+		sp1Effect.flipX = flip;
+		sp2Effect.flipX = flip;
+		sp3Effect.flipX = flip;
 	}
 	IEnumerator Turn(){
 		state.SetState ("walking");
@@ -61,13 +71,13 @@ public class DogAttackScript : MonoBehaviour {
 				doFlip = true;
 			}
 			onLeft = true;
-			spriteRenderer.flipX = true;
+			FlipSprites (true);
 		} else {
 			if (onLeft) {
 				doFlip = true;
 			}
 			onLeft = false;
-			spriteRenderer.flipX = false;
+			FlipSprites (false);
 		}
 		if (doFlip) {
 			spriteAnimator.StarTurnAnim ();
@@ -144,7 +154,7 @@ public class DogAttackScript : MonoBehaviour {
 			}
 			if (!timeManager.CheckIfTimePaused()) {	
 				if (x ==1) {
-					MoveTowards (-5, 24);
+					MoveTowards (-10, 22);
 				}
 				x++;
 
@@ -282,7 +292,7 @@ public class DogAttackScript : MonoBehaviour {
 		spriteAnimator.StartNeutralAnim ();
 	}
 	public void StartSuper(){
-		if (healthScript.CheckAlive()) {
+		if ((state.GetState() == "neutral" || state.GetState() == "walking") && healthScript.CheckAlive()) {
 			StopAllCoroutines ();
 			StartCoroutine (Super ());
 		}
@@ -293,18 +303,17 @@ public class DogAttackScript : MonoBehaviour {
 		StopMovement ();
 		state.SetState ("attack");
 		ForceFlipOpponent ();
-		for (int x = 0; x < 105;) {
+		for (int x = 0; x < 118;) {
 			if (!timeManager.CheckIfTimePaused()) {
-				if (x ==42 ){
+				if (x ==30 ){
 					MoveTowards (12f, 0);
 				}
-				if (x > 40 && x < 82 && (x % 2 == 0)) {
+				if (x >= 30 && x <= 80 && (x % 10 == 0)) {
 					superHitbox.SetActive (false);
 					superHitbox.SetActive (true);
-
 				}
 
-				if (x > 45 && x < 85) {
+				if (x > 35 && x < 80) {
 					MoveTowards (7.5f, 0);
 				}
 				if (x == 85) {
@@ -318,15 +327,6 @@ public class DogAttackScript : MonoBehaviour {
 					superHitbox.SetActive (false);
 					superHitbox2.SetActive (false);
 				}
-//				if (x == 54) {
-//					sp3Hitbox.SetActive (false);
-//					sp3Hitbox.SetActive (true);
-//				}
-//				if (x == 56) {
-//					sp3Hitbox.SetActive (false);
-//					proximityBox.SetActive (false);
-//					StopMovement ();
-//				}
 				x++;
 			}
 			yield return null;
@@ -361,6 +361,7 @@ public class DogAttackScript : MonoBehaviour {
 		detectionBox.SetActive (false);
 		spriteAnimator.StartHitAnim ();
 		StopMovement ();
+		sounds.PlayExtra ();
 		for (int x = 0; x < 60;) {			
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 0) {

@@ -16,10 +16,10 @@ public class DogHealthScript : MonoBehaviour {
 	public void SetOtherPlayer(bool isP1){
 		Cards.transform.parent = GameObject.Find ("Camera").transform;
 		if (isP1) {
-			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
+			Cards.transform.eulerAngles = new Vector3 (0, 0, 0);
 			tag = "P1Persona";
 		} else {
-			Cards.transform.eulerAngles = new Vector3 (0, 0, 0);
+			Cards.transform.eulerAngles = new Vector3 (0, 180, 0);
 			tag = "P2Persona";
 		}
 		Cards.transform.position = new Vector3(Cards.transform.parent.position.x, Cards.transform.parent.position.y, -1f);

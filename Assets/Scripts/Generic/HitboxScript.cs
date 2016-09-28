@@ -88,6 +88,7 @@ public class HitboxScript : MonoBehaviour {
 					optionalFunc ();
 				}
 			}
+
 			if (multiHit && multihitFlag && (!isProjectile || (isProjectile && other.GetComponentInParent<FighterStateMachineScript>().GetState() != "projectile invulnerable")) ) {
 				StartCoroutine (multiHitEnum());			
 			} else {
@@ -102,6 +103,9 @@ public class HitboxScript : MonoBehaviour {
 						GetComponentInParent<ProjectileScript> ().Kill ();
 					}
 				}
+			}
+			if (!multiHit) {
+				gameObject.SetActive (false);
 			}
 		}
 

@@ -198,7 +198,7 @@ public class Rounds : MonoBehaviour {
 			player = Instantiate(RyuPrefab, spawnPosition, Quaternion.identity) as GameObject;
 			if (isPlayerOne){
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				leftHpBarSprite.SetLeftBoarderArt("ryu");
+				//leftHpBarSprite.SetLeftBoarderArt("ryu");
 				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>(true)){
 					if (tmp.gameObject.name == "Body") {
 						tmp.LoadColors (ryuColor[player1ColorNumber]);
@@ -208,7 +208,7 @@ public class Rounds : MonoBehaviour {
 				}
 			}else{
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-				rightHpBarSprite.SetRightBoarderArt("ryu");
+				//rightHpBarSprite.SetRightBoarderArt("ryu");
 				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>(true)){
 					if (tmp.gameObject.name == "Body") {
 						tmp.LoadColors (ryuColor[player2ColorNumber]);
@@ -223,12 +223,12 @@ public class Rounds : MonoBehaviour {
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(feliciaColor[player1ColorNumber]);
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				leftHpBarSprite.SetLeftBoarderArt("felicia");
+				//leftHpBarSprite.SetLeftBoarderArt("felicia");
 			}
 			else{
 			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(feliciaColor[player2ColorNumber]);
 			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-			rightHpBarSprite.SetRightBoarderArt("felicia");
+			//rightHpBarSprite.SetRightBoarderArt("felicia");
 			}
 			break;
 		case "hulk":
@@ -236,12 +236,12 @@ public class Rounds : MonoBehaviour {
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(hulkColor[player1ColorNumber]);
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				leftHpBarSprite.SetLeftBoarderArt("hulk");
+				//leftHpBarSprite.SetLeftBoarderArt("hulk");
 			}
 			else{
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(hulkColor[player2ColorNumber]);
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-				rightHpBarSprite.SetRightBoarderArt("hulk");
+				//rightHpBarSprite.SetRightBoarderArt("hulk");
 			}
 			break;
 		case "subzero":
@@ -249,11 +249,11 @@ public class Rounds : MonoBehaviour {
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(subzeroColor[player1ColorNumber]);
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				leftHpBarSprite.SetLeftBoarderArt("subzero");
+				//leftHpBarSprite.SetLeftBoarderArt("subzero");
 			}
 			else{
 			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-			rightHpBarSprite.SetRightBoarderArt("subzero");
+			//rightHpBarSprite.SetRightBoarderArt("subzero");
 			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(subzeroColor[player2ColorNumber]);
 			}
 			break;
@@ -267,18 +267,18 @@ public class Rounds : MonoBehaviour {
 						tmp.LoadColors (kenDogColor [player1ColorNumber]);
 					}
 				}
-				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				leftHpBarSprite.SetLeftBoarderArt("yukiko");
-				
-				leftGreen = GameObject.Find("LeftHpBar");
-				leftGreen.transform.eulerAngles = new Vector3( 0f, 0f, -2.306f);
-				leftGreen.transform.localPosition = new Vector3(.79f, -.03f, -1.1f);
-				leftGreen.transform.localScale = new Vector3(6.5f, .5f, 0f);
-
-				leftRed = GameObject.Find("LeftHpBarRed");
-				leftRed.transform.eulerAngles = new Vector3( 0f, 0f, -2.306f);
-				leftRed.transform.localPosition = new Vector3(.79f, -.03f, -.5f);
-				leftRed.transform.localScale = new Vector3(6.5f, .5f, 0f);	
+//				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+//				leftHpBarSprite.SetLeftBoarderArt("yukiko");
+//				
+//				leftGreen = GameObject.Find("LeftHpBar");
+//				leftGreen.transform.eulerAngles = new Vector3( 0f, 0f, -2.306f);
+//				leftGreen.transform.localPosition = new Vector3(.79f, -.03f, -1.1f);
+//				leftGreen.transform.localScale = new Vector3(6.5f, .5f, 0f);
+//
+//				leftRed = GameObject.Find("LeftHpBarRed");
+//				leftRed.transform.eulerAngles = new Vector3( 0f, 0f, -2.306f);
+//				leftRed.transform.localPosition = new Vector3(.79f, -.03f, -.5f);
+//				leftRed.transform.localScale = new Vector3(6.5f, .5f, 0f);	
 			}
 			else{
 				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>()){
@@ -289,18 +289,18 @@ public class Rounds : MonoBehaviour {
 					}
 				}
 
-				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-				rightHpBarSprite.SetRightBoarderArt("yukiko");
-
-				rightGreen = GameObject.Find("RightHpBar");
-				rightGreen.transform.eulerAngles = new Vector3( 0f, 0f, 1.888f);
-				rightGreen.transform.localPosition = new Vector3(-.53f, -.07f, -.7f);
-				rightGreen.transform.localScale = new Vector3(6.5f, .5f, -.4f);
-
-				rightRed = GameObject.Find("RightHpBarRed");
-				rightRed.transform.eulerAngles = new Vector3( 0f, 0f, 1.888f);
-				rightRed.transform.localPosition = new Vector3(-.53f, -.07f, 3f);
-				rightRed.transform.localScale = new Vector3(6.5f, .5f, 0f);
+//				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+//				rightHpBarSprite.SetRightBoarderArt("yukiko");
+//
+//				rightGreen = GameObject.Find("RightHpBar");
+//				rightGreen.transform.eulerAngles = new Vector3( 0f, 0f, 1.888f);
+//				rightGreen.transform.localPosition = new Vector3(-.53f, -.07f, -.7f);
+//				rightGreen.transform.localScale = new Vector3(6.5f, .5f, -.4f);
+//
+//				rightRed = GameObject.Find("RightHpBarRed");
+//				rightRed.transform.eulerAngles = new Vector3( 0f, 0f, 1.888f);
+//				rightRed.transform.localPosition = new Vector3(-.53f, -.07f, 3f);
+//				rightRed.transform.localScale = new Vector3(6.5f, .5f, 0f);
 				
 			}
 			break;
@@ -308,12 +308,12 @@ public class Rounds : MonoBehaviour {
 			player = Instantiate(BaikenPrefab, spawnPosition, Quaternion.identity) as GameObject;
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(baikenColor[player1ColorNumber]);
-				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				//leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
 				leftHpBarSprite.SetLeftBoarderArt("subzero");
 			}
 			else{
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-				rightHpBarSprite.SetRightBoarderArt("subzero");
+				//rightHpBarSprite.SetRightBoarderArt("subzero");
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(baikenColor[player2ColorNumber]);
 			}
 			break;
