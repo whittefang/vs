@@ -19,6 +19,7 @@ public class HealthScript : MonoBehaviour {
 	float comboScaling = 1, leftBound = -10.05f, rightBound = 10.05f;
 	LeftHpBarChange hpLeft;
 	RightHpBarChange hpRight;
+	HealthBarAnim hpRed;
 	public bool useChildSpriteRenderer = false;
 	public SpriteRenderer SR;
 	ExMeter exBar;
@@ -62,6 +63,8 @@ public class HealthScript : MonoBehaviour {
 			comboDamageShadowText = GameObject.Find ("P1DamageShadow").GetComponent<TextMesh> ();
 			hitText = GameObject.Find ("rhit").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
+			hpRed = GameObject.Find ("LeftHpBarRed").GetComponentInChildren<HealthBarAnim> ();
+			hpRed.setHp (healthMax);
 		} else {
 			exCurrent =	(int)exBar.GetEx(false);
 			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
@@ -74,6 +77,8 @@ public class HealthScript : MonoBehaviour {
 			comboDamageShadowText = GameObject.Find ("P2DamageShadow").GetComponent<TextMesh> ();
 			hitText = GameObject.Find ("Lhit").GetComponent<TextMesh> ();
 			otherPlayerMovementScript = otherPlayer.GetComponentInChildren<PlayerMovementScript> ();
+			hpRed = GameObject.Find ("RightHpBarRed").GetComponentInChildren<HealthBarAnim> ();
+			hpRed.setHp (healthMax);
 		}
 		HideComboText ();
 	}
@@ -101,11 +106,11 @@ public class HealthScript : MonoBehaviour {
 			
 			// check for invincible or blocking
 		} else if ((state.GetState () != "invincible" && !PMS.CheckIfBlocking () && state.GetState () != "blockstun" && !isThrow && !(state.GetState () == "projectile invulnerable" && isProjectile)) ||
-		          (isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack" && state.GetState () != "prejump")) {
+			(isThrow && state.GetState () != "invincible" && state.GetState () != "hitstun" && state.GetState() != "prelaunch" && state.GetState () != "blockstun" && state.GetState () != "jumping" && state.GetState () != "jump attack" && state.GetState () != "prejump")) {
 
 			// player got hit
 			// deal damage
-			if (state.GetState () == "hitstun" || state.GetState () == "falling hit" || state.GetState () == "frozen") {
+			if (state.GetState () == "hitstun" || state.GetState () == "falling hit" || state.GetState () == "frozen" || state.GetState() == "prelaunch") {
 				CancelInvoke ();
 				comboCounterText.gameObject.SetActive (true);
 				comboDamageShadowText.gameObject.SetActive (true);
@@ -161,7 +166,7 @@ public class HealthScript : MonoBehaviour {
 				if (isThrow) {
 					sounds.PlayThrowHit ();	
 					spriteAnimator.PlayHit (hitstun);
-				} else if (isKnockdownAttack || state.GetState () == "jumping" || state.GetState () == "jumping attack" || state.GetState () == "falling hit") {
+				} else if (isKnockdownAttack || state.GetState () == "jumping"   || state.GetState() == "prelaunch" || state.GetState () == "jumping attack" || state.GetState () == "falling hit") {
 					spriteAnimator.PlayKnockdown ();
 				} else {
 					spriteAnimator.PlayHit (hitstun);
@@ -184,8 +189,8 @@ public class HealthScript : MonoBehaviour {
 			spriteAnimator.PlayBlock ();
 			StopAllCoroutines ();
 			StartCoroutine (InitiateBlockstun (blockstun, hitPosition, blockPushback, isProjectile, useCornerKnockback, optionalPosition, hitStopAmount, blockPitch));
-			healthAmount -= (int)((float)amount * .2f);
-			int finalDamage = (int)((float)amount * .2f);
+			healthAmount -= (int)((float)amount * .1f);
+			int finalDamage = (int)((float)amount * .1f);
 			if (healthAmount <= 0) {
 				finalDamage += healthAmount - 1;
 				healthAmount = 1;
@@ -229,15 +234,17 @@ public class HealthScript : MonoBehaviour {
 		GameObject sparks = blocksparksPool.FetchObject ();
 		sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y, -.2f);
 		sparks.SetActive(true);
-
-		timeManager.StopTime (hitStopAmount);
+		if (HitFunc != null) {
+			HitFunc ();
+		}
+		PMS.MoveToward (-bockPush.x, bockPush.y);
+		//timeManager.StopTime (hitStopAmount);
 
 		PMS.CheckFacing ();
-		PMS.MoveToward (-bockPush.x, bockPush.y);
 		// if in the corner push attacker back
-		Debug.Log((transform.position.x + " " + rightBound + "  " + transform.position.x + "  "+ leftBound));
+		//Debug.Log((transform.position.x + " " + rightBound + "  " + transform.position.x + "  "+ leftBound));
 		if((transform.position.x > rightBound || transform.position.x < leftBound) && useCornerKockback){
-			Debug.Log ("pushcorner");
+			//Debug.Log ("pushcorner");
 			PMS.CheckFacing ();
 			otherPlayerMovementScript.MoveToward(-7.5f);	
 		}
@@ -256,15 +263,18 @@ public class HealthScript : MonoBehaviour {
 		} else {
 			state.SetState ("falling hit");
 		}
+		hpRed.DealDamage (healthAmount);
 
 	}
 	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false, Vector2 optionalPosition = default(Vector2), int hitStopAmount = 5, AudioClip hitSound = default(AudioClip), float pitch =0){
 
-		 if (freezingAttack){
+		if (freezingAttack) {
 			state.SetState ("frozen");
-		}else if (state.GetState () == "jumping" || state.GetState () == "jumping attack" || state.GetState () == "falling hit") {
+		} else if (state.GetState () == "jumping" || state.GetState () == "jumping attack" || state.GetState () == "falling hit") {
 			state.SetState ("falling hit");
-		}else {
+		} else if (launcher || state.GetState() == "prelaunch") {
+			state.SetState ("prelaunch");
+		} else {
 			state.SetState ("hitstun");
 		}
 		sounds.PlayHit (hitSound, pitch);
@@ -275,7 +285,7 @@ public class HealthScript : MonoBehaviour {
 
 		if (!freezingAttack) {
 			GameObject sparks = hitsparksPool.FetchObject ();
-			sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y, -.2f);
+			sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y+Random.Range (-.3f, .3f), -.2f);
 			sparks.SetActive (true);
 		}
 		PMS.CheckFacing ();
@@ -323,6 +333,7 @@ public class HealthScript : MonoBehaviour {
 			spriteAnimator.PlayNeutralAnim ();
 		}
 		comboSounds.playComboNoise (comboCounter);
+		hpRed.DealDamage (healthAmount);
 		Invoke ("HideComboText", 1f);
 	}
 	public void SetHitFunc(DeathEvent newFunc){

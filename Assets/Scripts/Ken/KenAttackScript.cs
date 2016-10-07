@@ -420,13 +420,13 @@ public class KenAttackScript : MonoBehaviour {
 						}
 					}
 				}
-				if (x == 32) {
+				if (x == 36) {
 
 					state.SetState ("attack");
 					superHitbox.SetActive (false);
 					superHitbox2.SetActive (true);
 				}
-				if (x == 36) {
+				if (x == 38) {
 					superHitbox2.SetActive (false);
 					proximityBox.SetActive (false);
 				}

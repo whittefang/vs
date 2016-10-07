@@ -29,6 +29,7 @@ public class ProjectileScript : MonoBehaviour {
 		movementEnabled = true;
 		foreach (BoxCollider2D b in hitboxsToTurnOff) {
 			b.enabled = true;
+			b.gameObject.SetActive (true);
 		}
 	}
 	void Awake(){
@@ -92,6 +93,7 @@ public class ProjectileScript : MonoBehaviour {
 		}
 	}
 	public void Kill(){
+		Debug.Log ("proj kil");
 		movementEnabled = false;
 		foreach (BoxCollider2D b in hitboxsToTurnOff) {
 			b.enabled = false;

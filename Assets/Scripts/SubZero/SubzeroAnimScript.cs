@@ -244,7 +244,6 @@ public class SubzeroAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		GetComponent<InputScript> ().inputEnabled = true;
 		StartNeutralAnim ();
 	}
 
@@ -588,6 +587,7 @@ public class SubzeroAnimScript : MonoBehaviour {
 		StopAllCoroutines ();
 		hurtboxBody.transform.localScale  = hurtboxBodyOriginalScale;
 		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
+		superEffect.SetActive (false);
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 }

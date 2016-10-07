@@ -206,9 +206,6 @@ public class HulkAnimationScript : MonoBehaviour {
 				x++;
 			}
 		}
-		if (GetComponent<InputScript> () != null) {
-			GetComponent<InputScript> ().inputEnabled = true;
-		}
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){

@@ -39,12 +39,20 @@ public class Rounds : MonoBehaviour {
 
 	public GameObject exLeftBorder, exRightBorder; 
 	public int tutorialPlayerNumber = 0;
+
+	public GameObject round1Anim, round2Anim, round3Anim, readyAnim, fightAnim;
+
+	GameObject p1, p2;
+
 	void Awake(){
 		if (FalseMeansTest == true) {
-			Debug.Log("object can not be destroyed");
-			DontDestroyOnLoad(gameObject);
+			Debug.Log ("object can not be destroyed");
+			DontDestroyOnLoad (gameObject);
 			SceneManager.activeSceneChanged += loadx;
+		} else {
+			StartCoroutine(SetRoundText("Round 1"));
 		}
+
 		ex = GetComponent<ExMeter>();
 		fs = GetComponent<FollowScript>();
 	}
@@ -140,7 +148,7 @@ public class Rounds : MonoBehaviour {
 	}
 	public void PlayerOneWin(){
 		Debug.Log ("p1Win");
-		StartCoroutine(SetRoundText("Player 1 Wins!"));
+		//StartCoroutine(SetRoundText("Player 1 Wins!"));
 		StartCoroutine (wait (P1WinFunc));
 
 	}
@@ -160,7 +168,7 @@ public class Rounds : MonoBehaviour {
 		}
 	}
 	public void PlayerTwoWin(){
-		StartCoroutine(SetRoundText("Player 2 Wins!"));
+		//StartCoroutine(SetRoundText("Player 2 Wins!"));
 		Debug.Log ("p2Win");
 		StartCoroutine(wait(P2WinFunc));
 
@@ -198,7 +206,7 @@ public class Rounds : MonoBehaviour {
 			player = Instantiate(RyuPrefab, spawnPosition, Quaternion.identity) as GameObject;
 			if (isPlayerOne){
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				//leftHpBarSprite.SetLeftBoarderArt("ryu");
+				leftHpBarSprite.SetLeftBoarderArt("ryu");
 				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>(true)){
 					if (tmp.gameObject.name == "Body") {
 						tmp.LoadColors (ryuColor[player1ColorNumber]);
@@ -208,7 +216,7 @@ public class Rounds : MonoBehaviour {
 				}
 			}else{
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-				//rightHpBarSprite.SetRightBoarderArt("ryu");
+				rightHpBarSprite.SetRightBoarderArt("ryu");
 				foreach (ColorPaletteSwap tmp in player.GetComponentsInChildren<ColorPaletteSwap>(true)){
 					if (tmp.gameObject.name == "Body") {
 						tmp.LoadColors (ryuColor[player2ColorNumber]);
@@ -223,12 +231,12 @@ public class Rounds : MonoBehaviour {
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(feliciaColor[player1ColorNumber]);
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				//leftHpBarSprite.SetLeftBoarderArt("felicia");
+				leftHpBarSprite.SetLeftBoarderArt("felicia");
 			}
 			else{
 			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(feliciaColor[player2ColorNumber]);
 			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-			//rightHpBarSprite.SetRightBoarderArt("felicia");
+			rightHpBarSprite.SetRightBoarderArt("felicia");
 			}
 			break;
 		case "hulk":
@@ -236,12 +244,12 @@ public class Rounds : MonoBehaviour {
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(hulkColor[player1ColorNumber]);
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				//leftHpBarSprite.SetLeftBoarderArt("hulk");
+				leftHpBarSprite.SetLeftBoarderArt("hulk");
 			}
 			else{
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(hulkColor[player2ColorNumber]);
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-				//rightHpBarSprite.SetRightBoarderArt("hulk");
+				rightHpBarSprite.SetRightBoarderArt("hulk");
 			}
 			break;
 		case "subzero":
@@ -249,11 +257,11 @@ public class Rounds : MonoBehaviour {
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(subzeroColor[player1ColorNumber]);
 				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				//leftHpBarSprite.SetLeftBoarderArt("subzero");
+				leftHpBarSprite.SetLeftBoarderArt("subzero");
 			}
 			else{
 			rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-			//rightHpBarSprite.SetRightBoarderArt("subzero");
+			rightHpBarSprite.SetRightBoarderArt("subzero");
 			player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(subzeroColor[player2ColorNumber]);
 			}
 			break;
@@ -267,8 +275,8 @@ public class Rounds : MonoBehaviour {
 						tmp.LoadColors (kenDogColor [player1ColorNumber]);
 					}
 				}
-//				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-//				leftHpBarSprite.SetLeftBoarderArt("yukiko");
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("yukiko");
 //				
 //				leftGreen = GameObject.Find("LeftHpBar");
 //				leftGreen.transform.eulerAngles = new Vector3( 0f, 0f, -2.306f);
@@ -289,8 +297,8 @@ public class Rounds : MonoBehaviour {
 					}
 				}
 
-//				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-//				rightHpBarSprite.SetRightBoarderArt("yukiko");
+				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+				rightHpBarSprite.SetRightBoarderArt("yukiko");
 //
 //				rightGreen = GameObject.Find("RightHpBar");
 //				rightGreen.transform.eulerAngles = new Vector3( 0f, 0f, 1.888f);
@@ -308,12 +316,12 @@ public class Rounds : MonoBehaviour {
 			player = Instantiate(BaikenPrefab, spawnPosition, Quaternion.identity) as GameObject;
 			if (isPlayerOne){
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(baikenColor[player1ColorNumber]);
-				//leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
-				leftHpBarSprite.SetLeftBoarderArt("subzero");
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("baiken");
 			}
 			else{
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
-				//rightHpBarSprite.SetRightBoarderArt("subzero");
+				rightHpBarSprite.SetRightBoarderArt("baiken");
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(baikenColor[player2ColorNumber]);
 			}
 			break;
@@ -327,7 +335,6 @@ public class Rounds : MonoBehaviour {
 	}
 
 	public void PlayersSpawn(){
-		GameObject p1, p2;
 		p1 = CharacterSpawn(true);
 		p2 = CharacterSpawn(false);
 		p1.GetComponent<PlayerNumberSetScript>().SetPlayer("playerOne", p2);
@@ -339,11 +346,28 @@ public class Rounds : MonoBehaviour {
 	}
 
 	IEnumerator SetRoundText(string roundText){
-		GetComponentInChildren<TextMesh> ().text = roundText;
-		textShadow.text = roundText;
-		yield return new WaitForSeconds(2f);
-		GetComponentInChildren<TextMesh> ().text = "";
-		textShadow.text = "";
+		yield return new WaitForSeconds (.5f);
+		if (roundText == "Round 1"){
+			round1Anim.SetActive(true);
+		}else if (roundText == "Round 2"){
+			round2Anim.SetActive(true);
+		}else if (roundText == "Round 3"){
+			round3Anim.SetActive(true);
+		}
+//		GetComponentInChildren<TextMesh> ().text = roundText;
+//		textShadow.text = roundText;
+		yield return new WaitForSeconds(.6f);
+		readyAnim.SetActive (true);
+		yield return new WaitForSeconds(.8f);
+		fightAnim.SetActive (true);
+		yield return new WaitForSeconds(1f);
+		//turn on inputs
+		if (FalseMeansTest) {
+			p1.GetComponentInChildren<InputScript> ().inputEnabled = true;
+			p2.GetComponentInChildren<InputScript> ().inputEnabled = true;
+		}
+//		GetComponentInChildren<TextMesh> ().text = "";
+//		textShadow.text = "";
 
 	}
 

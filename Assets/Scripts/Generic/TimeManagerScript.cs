@@ -59,9 +59,11 @@ public class TimeManagerScript : MonoBehaviour {
 		timePaused = true;
 		if (p1Velocity == Vector2.zero){
 			p1Velocity = p1Body.velocity;
+			Debug.Log (p1Velocity);
 		}
 		if (p2Velocity == Vector2.zero) {
 			p2Velocity = p2Body.velocity;
+			Debug.Log (p2Velocity);
 		}
 		p1Body.velocity = Vector2.zero;
 		p2Body.velocity = Vector2.zero;

@@ -222,9 +222,6 @@ public class BaikenAnimationScript : MonoBehaviour {
 				}
 			}
 		}
-		if (GetComponent<InputScript> () != null) {
-			GetComponent<InputScript> ().inputEnabled = true;
-		}
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){

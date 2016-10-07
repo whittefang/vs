@@ -462,6 +462,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		transform.position  = new Vector3(transform.position.x, transform.position.y, -1);
 		//state.SetState ("attack");
 		// needs jumpbox turned off
+		PMS.forceCollisionOff = true;
 		PMS.DsableBodyBox ();
 		state.SetState ("attack");
 		for (int x = 0; x < 18;) {
@@ -484,6 +485,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		}
 		transform.position  = new Vector3(transform.position.x, transform.position.y, 0);
 		state.SetState ("neutral");
+		PMS.forceCollisionOff = false;
 		PMS.EnableBodyBox ();
 	}
 	public void SpecialThree(){
@@ -679,6 +681,7 @@ public class FeliciaAttackScript : MonoBehaviour {
 		lightHitboxHit = false;
 		mediumHitboxHit = false;
 		heavyHitboxHit = false;
+		PMS.forceCollisionOff = false;
 		PMS.GetComponent<BoxCollider2D>().offset = new Vector2 (0, -1.2f);
 		PMS.GetComponent<BoxCollider2D>().size  = new Vector2 (1.6f, 2f);
 	}

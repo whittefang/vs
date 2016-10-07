@@ -28,6 +28,8 @@ public class PlayerMovementScript : MonoBehaviour {
 	 vDelegate cancelAttacks;
 	BoxCollider2D movementBox;
 	bool gettingUp = false;
+	public bool forceCollisionOff = false;
+	public Vector3 groundSpritePosition, airSpritePosition;
 	public GameObject optionalDog;
 	// Use this for initialization
 	void Awake () {
@@ -63,8 +65,8 @@ public class PlayerMovementScript : MonoBehaviour {
 		spriteAnimator.PlayNeutralAnim ();
 	}
 	// Update is called once per frame
-	void Update () {
-	
+	void FixedUpdate () {
+		
 	}
 	public void ProcessMovement(float x,  float y){
 		if (canMove && state.GetState () == "neutral" && !timeManager.CheckIfTimePaused()) {
@@ -106,10 +108,13 @@ public class PlayerMovementScript : MonoBehaviour {
 				}
 				gameObject.layer = onGroundMask;
 			}
-		} else if (state.GetState () == "jumping" || state.GetState () == "jump attack" ||  state.GetState() == "falling hit") {
-			
-			GroundCheck ();
+		} 
+		if (!forceCollisionOff) {
+
+			GroundCheck ();	
 		}
+			
+
 	}
 	public void SetSpeed(float newSpeed = 0){
 		currentSpeed = newSpeed;
@@ -208,16 +213,33 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 	public void NeutralJump(){
 			state.SetState ("jumping");
+		forceCollisionOff = true;
+		if (useChildSpriteRenderer) {
+			if (OnLeft) {
+				SR.transform.localPosition = airSpritePosition;
+			} else {
+				SR.transform.localPosition = new Vector3 (-airSpritePosition.x, 0, 0);
+			}
+		}
 			gameObject.layer = jumpingMask;
 			// prejump frames
 			spriteAnimator.PlayJumpNeutral();
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2 (0, jumpForce));
-			groundedBuffer = 3;
+		groundedBuffer = 3;
+		forceCollisionOff = false;
 
 	}
 	public void TowardJump(){
-			state.SetState ("jumping");
+		state.SetState ("jumping");
+		forceCollisionOff = true;
+		if (useChildSpriteRenderer) {
+			if (OnLeft) {
+				SR.transform.localPosition = airSpritePosition;
+			} else {
+				SR.transform.localPosition = new Vector3 (-airSpritePosition.x, 0, 0);
+			}
+		}
 			gameObject.layer = jumpingMask;
 			// prejump frames
 			if (OnLeft) {
@@ -231,11 +253,23 @@ public class PlayerMovementScript : MonoBehaviour {
 			}
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2(jumpDistance, jumpForce));
-			groundedBuffer = 3;
+		groundedBuffer = 3;
 
+		Invoke ("TurnForceBackOff", .1f);
+	}
+	void TurnForceBackOff(){
+		forceCollisionOff = false;
 	}
 	public void AwayJump(){
-			state.SetState ("jumping");
+		state.SetState ("jumping");
+		forceCollisionOff = true;
+		if (useChildSpriteRenderer) {
+			if (OnLeft) {
+				SR.transform.localPosition = airSpritePosition;
+			} else {
+				SR.transform.localPosition = new Vector3 (-airSpritePosition.x, 0, 0);
+			}
+		}
 			gameObject.layer = jumpingMask;
 			// prejump frames
 			if (OnLeft) {
@@ -249,37 +283,62 @@ public class PlayerMovementScript : MonoBehaviour {
 			}
 			RB.velocity = Vector2.zero;
 			RB.AddForce (new Vector2 (-jumpDistance, jumpForce));
-			groundedBuffer = 3;
+		groundedBuffer = 3;
+		Invoke ("TurnForceBackOff", .1f);
 
 	}
 	void GroundCheck(){
 		// do a check for ground
 		//.35f
 		RaycastHit2D groundCheck = Physics2D.Raycast (transform.position, Vector2.down, groundDistance, groundMask);
-
-		if (groundCheck.collider != null && groundedBuffer <= 0 && !timeManager.CheckIfTimePaused()) {
-
-			// landing frames
-			cancelAttacks();
-			if (landingRecoveryFrames > 0) {
-				StopMovement ();
-				spriteAnimator.PlayLanding ();
-				landingRecoveryFrames--;
-			} else if (state.GetState () == "falling hit" && !gettingUp) {
-				state.SetState ("invincible");
-				StopAllCoroutines ();
-				StartCoroutine (GetUpAfterKnockdown ());
-			}else if (!gettingUp){
-				state.SetState ("neutral");
-			}
-			movementBox.offset = moveboxOffset;
-			movementBox.size = moveboxSize;
+		if (groundCheck.collider != null) {
 			gameObject.layer = onGroundMask;
-			CheckFacing ();
-		} else if (groundedBuffer > 0  && !timeManager.CheckIfTimePaused()) {
-			groundedBuffer--;
-
+		} else {
+			gameObject.layer = jumpingMask;
 		}
+
+		if (state.GetState () == "jumping" || state.GetState () == "jump attack" ||  state.GetState() == "falling hit") {
+			if (groundCheck.collider != null && groundedBuffer <= 0 && !timeManager.CheckIfTimePaused()) {
+
+				// landing frames
+				cancelAttacks();
+				if (landingRecoveryFrames > 0) {
+					StopMovement ();
+					spriteAnimator.PlayLanding ();
+					landingRecoveryFrames--;
+				} else if (state.GetState () == "falling hit" && !gettingUp) {
+					state.SetState ("invincible");
+					StopAllCoroutines ();
+					RB.gravityScale = 7;
+					if (useChildSpriteRenderer) {
+						if (OnLeft) {
+							SR.transform.localPosition = groundSpritePosition;
+						} else {
+							SR.transform.localPosition = new Vector3 (-groundSpritePosition.x, 0, 0);
+						}
+					}
+					StartCoroutine (GetUpAfterKnockdown ());
+				}else if (!gettingUp){
+
+					if (useChildSpriteRenderer) {
+						if (OnLeft) {
+							SR.transform.localPosition = groundSpritePosition;
+						} else {
+							SR.transform.localPosition = new Vector3 (-groundSpritePosition.x, 0, 0);
+						}
+					}
+					state.SetState ("neutral");
+				}
+				movementBox.offset = moveboxOffset;
+				movementBox.size = moveboxSize;
+				gameObject.layer = onGroundMask;
+				CheckFacing ();
+			} else if (groundedBuffer > 0  && !timeManager.CheckIfTimePaused()) {
+				groundedBuffer--;
+
+			}
+		}
+
 	}
 
 	public bool ForceGroundCheck(){
@@ -289,6 +348,14 @@ public class PlayerMovementScript : MonoBehaviour {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	public void TurnOffGravity(bool enabled){
+		if (enabled) {
+			RB.gravityScale = 0;
+		} else {
+			RB.gravityScale = 7;
 		}
 	}
 
@@ -365,20 +432,30 @@ public class PlayerMovementScript : MonoBehaviour {
 		canMove = false;
 	}
 	IEnumerator GetUpAfterKnockdown(){
-		Debug.Log ("landed");
+		//Debug.Log ("landed");
 		gettingUp = true;
+		foreach (Transform hurtbox in hurtboxes.GetComponentsInChildren<Transform>()) {
+			if (hurtbox.name == "Body") {
+				hurtbox.gameObject.SetActive (false);
+			}
+		}
 		yield return new WaitForSeconds (.5f);
 		spriteAnimator.PlayGetup ();
-		Debug.Log ("startgetup");
+		//Debug.Log ("startgetup");
 		for (int i = 0; i < 30;) {
 			yield return null;
 			if (!timeManager.CheckIfTimePaused ()) {
 				i++;
 			}
-			Debug.Log ("getup");
+			//Debug.Log ("getup");
 		}
 		state.SetState ("neutral");
 		spriteAnimator.PlayNeutralAnim ();
+		foreach (Transform hurtbox in hurtboxes.GetComponentsInChildren<Transform>(true)) {
+			if (hurtbox.name == "Body") {
+				hurtbox.gameObject.SetActive (true);
+			}
+		}
 		gettingUp = false;
 	}
 	public void PauseRigidBody(Vector2 velocity){
@@ -387,15 +464,19 @@ public class PlayerMovementScript : MonoBehaviour {
 	}
 
 	IEnumerator PauseRigidBodyEnum(Vector2 velocity){
+
+		RB.gravityScale = 0;
+		RB.velocity = Vector2.zero;
 		for (int i = 0; i < 3;) {
 			if (!timeManager.CheckIfTimePaused ()) {
 				i++;
 			}
-			RB.isKinematic = true;
-			RB.velocity = Vector2.zero;
 			yield return null;
+
+			//RB.isKinematic = true;
 		}
-		RB.isKinematic = false;
-		MoveToward (velocity.x, velocity.y);
+		RB.gravityScale = 7;
+		//RB.isKinematic = false;
+		MoveToward (-velocity.x, velocity.y);
 	}
 }

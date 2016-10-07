@@ -182,7 +182,6 @@ public class FeliciaAnimScript : MonoBehaviour {
 				}
 			}
 		}
-		GetComponent<InputScript> ().inputEnabled = true;
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){

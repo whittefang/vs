@@ -123,8 +123,9 @@ public class DogAttackScript : MonoBehaviour {
 				
 				if (x == 10) {
 					sp1Hitbox.SetActive (true);
+					MoveTowards (25, 12);
 				}
-				if (x >=10){
+				if (x >10){
 					MoveTowards (25);
 				}
 				x++;
@@ -308,7 +309,7 @@ public class DogAttackScript : MonoBehaviour {
 				if (x ==30 ){
 					MoveTowards (12f, 0);
 				}
-				if (x >= 30 && x <= 80 && (x % 10 == 0)) {
+				if (x >= 30 && x <= 80 && (x % 5 == 0)) {
 					superHitbox.SetActive (false);
 					superHitbox.SetActive (true);
 				}
@@ -380,6 +381,9 @@ public class DogAttackScript : MonoBehaviour {
 		}
 	}
 	void MoveTowards(float x, float y = 0){
+		if (y == 0) {
+			y = RB.velocity.y;
+		}
 		if (onLeft) {
 			RB.velocity = new Vector2 (x, y);
 		}else {

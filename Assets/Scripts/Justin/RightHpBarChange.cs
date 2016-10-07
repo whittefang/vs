@@ -13,7 +13,7 @@ public class RightHpBarChange : MonoBehaviour {
 	public Renderer rendererRight;
 	public GameObject DND;
 	public SpriteRenderer RightBoarder;
-	public Sprite[] rightBoarders;
+	public GameObject[] rightBoarders;
 
 	void Start () {
 		rendererRight  = GetComponent<SpriteRenderer> ();
@@ -29,32 +29,24 @@ public class RightHpBarChange : MonoBehaviour {
 
 	public void SetRightBoarderArt(string name){
 		switch (name){
-			case "ryu" :
-				RightBoarder.sprite = rightBoarders[0];
-				RightBoarder.transform.localPosition = new Vector3(0f, .04f, -1.3f);
-				break;
-			case "felicia" :
-				RightBoarder.sprite = rightBoarders[1];
-				//RightBoarder.transform.localPosition = new Vector3(-.26f, -.04f, 0f);
-				RightBoarder.transform.localPosition = new Vector3(1.25f, -.03f, -1.3f);
-
-				break;
-			case "subzero" :
-				RightBoarder.sprite = rightBoarders[2];
-				//RightBoarder.transform.localPosition = new Vector3(.33f, .46f, 0f);
-				RightBoarder.transform.localPosition = new Vector3(.63f, .46f, -1.3f);
-				break;
-			case "hulk" :
-				RightBoarder.sprite = rightBoarders[3];
-				RightBoarder.transform.localPosition = new Vector3(.82f, -.38f, -1.3f);
-					
-				break;
-			case "yukiko" :
-				RightBoarder.sprite = rightBoarders[4];
-				RightBoarder.transform.localPosition = new Vector3(.4f, -.41f, -1.3f);
-				currentLengthR = 6.5f;
-				maxLengthR = 6.5f;
-				break;
+		case "ryu":
+			rightBoarders [0].SetActive (true);
+			break;
+		case "felicia" :
+			rightBoarders [1].SetActive (true);
+			break;
+		case "subzero" :
+			rightBoarders [2].SetActive (true);
+			break;
+		case "hulk" :
+			rightBoarders [3].SetActive (true);
+			break;
+		case "yukiko" :
+			rightBoarders [4].SetActive (true);
+			break;
+		case "baiken" :
+			rightBoarders [5].SetActive (true);
+			break;
 		}
 
 

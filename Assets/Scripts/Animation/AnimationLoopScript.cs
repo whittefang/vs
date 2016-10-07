@@ -3,9 +3,10 @@ using System.Collections;
 
 public class AnimationLoopScript : MonoBehaviour {
 	public Sprite[] frames, introFrames;
-	public bool useTransition = false, useDelay = false, loopBackwardsAfterFinish = false;
+	public bool useTransition = false, useDelay = false, loopBackwardsAfterFinish = false, useMasterTime = false;
 	SpriteRenderer  SR;
 	public int timeBetweenFrames = 4, delay = 0;
+	TimeManagerScript timeManager;
 	// Use this for initialization
 	void OnEnable () {
 		if (SR == null) {
@@ -13,7 +14,11 @@ public class AnimationLoopScript : MonoBehaviour {
 		}
 		StartCoroutine (loop ());
 	}
-	
+	void Awake(){
+		if (useMasterTime) {
+			timeManager = GameObject.Find ("MasterGameObject").GetComponent<TimeManagerScript> ();
+		}
+	}
 	// Update is called once per frame
 	void FixedUpdate () {
 		
@@ -43,7 +48,14 @@ public class AnimationLoopScript : MonoBehaviour {
 			for (int i = 0; i < frames.Length; i++) {
 				SR.sprite = frames [i];
 
-				for (int x = 0; x < timeBetweenFrames; x++) {
+				for (int x = 0; x < timeBetweenFrames; ) {
+					if (useMasterTime) {
+						if (!timeManager.CheckIfTimePaused ()) {
+							x++;
+						}
+					} else {
+						x++;
+					}
 					yield return null;
 				}
 			}
@@ -51,7 +63,14 @@ public class AnimationLoopScript : MonoBehaviour {
 				for (int i = frames.Length-1; i > 0; i--) {
 					SR.sprite = frames [i];
 
-					for (int x = 0; x < timeBetweenFrames; x++) {
+					for (int x = 0; x < timeBetweenFrames;) {
+						if (useMasterTime) {
+							if (!timeManager.CheckIfTimePaused ()) {
+								x++;
+							}
+						} else {
+							x++;
+						}
 						yield return null;
 					}
 				}

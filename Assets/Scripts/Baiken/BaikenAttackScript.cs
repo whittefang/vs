@@ -343,7 +343,6 @@ public class BaikenAttackScript : MonoBehaviour {
 	IEnumerator SpecialOneEnum(){
 		sp1Buffer = true;
 		health.AddMeter (30);
-		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialOne ();
 		PMS.StopMovement ();
 		state.SetState ("attack");
@@ -355,6 +354,7 @@ public class BaikenAttackScript : MonoBehaviour {
 					sp1Buffer = false;
 				}
 				if (x >= 20) {
+					Debug.Log ("baiken sp1");
 					PMS.MoveToward (15f);
 					state.SetState ("blockstun");
 				}

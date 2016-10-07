@@ -26,6 +26,7 @@ public class KenAnimScript : MonoBehaviour {
 	public Transform hurtboxLimb;
 	public GameObject SuperBG;
 	public GameObject superEffect;
+	public GameObject superLighting;
 	Vector3 hurtboxBodyOriginalPosition, hurtboxBodyOriginalScale;
 
 
@@ -190,9 +191,6 @@ public class KenAnimScript : MonoBehaviour {
 					x++;
 				}
 			}
-		}
-		if (GetComponent<InputScript> () != null) {
-			GetComponent<InputScript> ().inputEnabled = true;
 		}
 		StartNeutralAnim ();
 	}
@@ -440,6 +438,7 @@ public class KenAnimScript : MonoBehaviour {
 			yield return null;
 		}
 
+		superLighting.SetActive (true);
 		for (int ii = 0; ii < 3; ii++) {
 			for (int i = 6; i < 9; i++) {
 				spriteRenderer.sprite = superFrames [i];
@@ -452,6 +451,8 @@ public class KenAnimScript : MonoBehaviour {
 				}
 			}
 		}
+
+		superLighting.SetActive (false);
 		spriteRenderer.sprite = superFrames [9];
 		for (int x = 0; x < 3;) {
 			yield return null;
@@ -574,6 +575,7 @@ public class KenAnimScript : MonoBehaviour {
 		StopAllCoroutines ();
 		hurtboxBody.transform.localScale  = hurtboxBodyOriginalScale;
 		hurtboxBody.transform.localPosition  = hurtboxBodyOriginalPosition;
+		superLighting.SetActive (false);
 		hurtboxLimb.gameObject.SetActive (false);
 	}
 }

@@ -194,9 +194,6 @@ public class RyuAnimations : MonoBehaviour {
 		}
 		Bag.transform.position = transform.position;
 		Bag.SetActive (true);
-		if (GetComponent<InputScript> () != null) {
-			GetComponent<InputScript> ().inputEnabled = true;
-		}
 		StartNeutralAnim ();
 	}
 	IEnumerator JumpTowards(){
