@@ -26,12 +26,12 @@ public class ComboSoundScript : MonoBehaviour {
 			SoundToPlay = 2;
 		}else if (amount == 6) {
 			SoundToPlay = 3;
-		}else if (amount == 7) {
-			SoundToPlay = 4;
-		}else if (amount >= 10 && amount <30) {
-			SoundToPlay = 5;
 		}else if (amount >=30) {
 			SoundToPlay = 6;
+		}else if (amount >= 10) {
+			SoundToPlay = 5;
+		}else if (amount >= 7) {
+			SoundToPlay = 4;
 		}
 
 		Debug.Log (SoundToPlay);

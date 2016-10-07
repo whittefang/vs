@@ -71,6 +71,7 @@ public class ShanaAnim : MonoBehaviour {
 		spriteAnimator.setWinAnimation (StartWinAnim);
 		spriteAnimator.setKnockdownAnimation (StartknockdownAnim);
 		spriteAnimator.setGetupAnimation (StartGetUpAnim);
+		spriteAnimator.setExtra1Animation (StartSpecialTwoAirAnim);
 		if (hurtboxBody.gameObject.GetComponentInParent<HealthScript> () != null) {
 			hurtboxBody.gameObject.GetComponentInParent<HealthScript> ().SetDeathFunc (StartDeathAnim);
 		}
@@ -427,9 +428,7 @@ public class ShanaAnim : MonoBehaviour {
 	IEnumerator SpecialOne(){
 		for (int i = 0; i < 2; i++) {
 			spriteRenderer.sprite = SpecialOneFrames [i];
-			if (i == 2) {
-				sound.PlaySP1 ();
-			}
+
 			for (int x = 0; x < 6;) {
 				yield return null;
 				if (!timeManager.CheckIfTimePaused()) {
@@ -437,12 +436,11 @@ public class ShanaAnim : MonoBehaviour {
 				}
 			}
 		}
+
+		sound.PlaySP1 ();
 		for (int ii = 0; ii < 5; ii++) {		
 			for (int i = 2; i < 4; i++) {
 				spriteRenderer.sprite = SpecialOneFrames [i];
-				if (i == 2) {
-					sound.PlaySP1 ();
-				}
 				for (int x = 0; x < 3;) {
 					yield return null;
 					if (!timeManager.CheckIfTimePaused ()) {
@@ -494,7 +492,33 @@ public class ShanaAnim : MonoBehaviour {
 			}
 		}
 	}
+	IEnumerator SpecialTwoAir(){
+		for (int i = 0; i < 2; i++) {
+			if (i == 1) {
+				sound.PlaySP2 ();
+			}
+			spriteRenderer.sprite = SpecialTwoFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+		for (int ii = 0; ii < 2; ii++) {
+			for (int i = 2; i < 5; i++) {
 
+				spriteRenderer.sprite = SpecialTwoFrames [i];
+				for (int x = 0; x < 3;) {
+					yield return null;
+					if (!timeManager.CheckIfTimePaused ()) {
+						x++;
+					}
+				}
+			}
+		}
+		StartCoroutine (FallingAnim());
+	}
 	IEnumerator SpecialThree(){
 		sound.PlaySP3 ();
 		for (int i = 0; i < 2; i++) {
@@ -593,6 +617,8 @@ public class ShanaAnim : MonoBehaviour {
 				}
 			}
 		}
+		sound.PlayExtra3 ();
+		sound.PlayExtra ();
 		//air loop
 		for (int ii = 0; ii < 10; ii++) {		
 			for (int i = 7; i < 9; i++) {
@@ -647,6 +673,10 @@ public class ShanaAnim : MonoBehaviour {
 	public void StartSpecialTwoAnim(){
 		EndAnimations ();
 		StartCoroutine (SpecialTwo());
+	}
+	public void StartSpecialTwoAirAnim(){
+		EndAnimations ();
+		StartCoroutine (SpecialTwoAir());
 	}
 	public void StartSpecialThreeAnim(){
 		EndAnimations ();

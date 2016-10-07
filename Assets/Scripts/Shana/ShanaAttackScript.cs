@@ -8,14 +8,16 @@ public class ShanaAttackScript : MonoBehaviour {
 	FighterStateMachineScript state;
 	PlayerMovementScript PMS;
 	public GameObject fireball, fireExplosion, superFireball, lightHitbox, mediumHitbox, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
-	sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, superHitbox, fireballGunpoint, throwHitbox, throwHitboxFollowup, proximityBox;
-	public GameObject swingOneEffect,swingTwoEffect,swingThreeEffect,airDashEffect, sp2Effect, sp3Effect, airSwingTwo, airSwingThree;
+	sp1Hitbox, sp2HitboxPart1, sp2HitboxPart2, sp2AirHitbox, superHitbox, fireballGunpoint, throwHitbox, throwHitboxFollowup, proximityBox;
+	public GameObject swingOneEffect,swingTwoEffect,swingThreeEffect,airDashEffect, sp2Effect, sp3Effect, airSwingTwo, airSwingThree,
+					  groundFireEffect, embersEffect;
 	ProjectileScript fireballProjectileScript , superProjectileScript;
 	TimeManagerScript timeManager;
 
 	SoundsPlayer sounds;
 	HitboxScript lightHitboxScript, mediumHitboxScript, heavyHitboxScript, throwHitboxScript;
-	public bool lightHitboxHit= false, mediumHitboxHit= false,airMediumHitboxHit= false, heavyHitboxHit = false, specialHitboxHit = false;
+	public bool lightHitboxHit= false, mediumHitboxHit= false,airMediumHitboxHit= false, heavyHitboxHit = false,
+				specialHitboxHit = false, airHeavyHitboxHit = false;
 	public GameObject ThrowPoint;
 	public int airDashes = 2;
 	bool  mediumBuffer = false, sp2Buffer = false, lightBuffer = false, sp1Buffer = false;
@@ -56,6 +58,7 @@ public class ShanaAttackScript : MonoBehaviour {
 		heavyHitbox.GetComponent<HitboxScript>().SetOptFunc (HeavyHit);
 		throwHitbox.GetComponent<HitboxScript>().SetThrowFunc (ThrowHit);
 		jumpMediumHitbox.GetComponent<HitboxScript>().SetOptFunc (MediumAirHit);
+		jumpHeavyHitbox.GetComponent<HitboxScript>().SetOptFunc (HeavyAirHit);
 		fireball.GetComponentInChildren<HitboxScript> ().SetOptFunc (SpecialHit);
 		//sp2HitboxPart1.GetComponent<HitboxScript> ().SetOptFunc (SpecialHit);
 
@@ -323,6 +326,7 @@ public class ShanaAttackScript : MonoBehaviour {
 			}
 			yield return null;
 		}
+		airHeavyHitboxHit = false;
 	}
 
 	public void SpecialOne(){
@@ -354,7 +358,6 @@ public class ShanaAttackScript : MonoBehaviour {
 				}
 				if (x == 12 && canShoot) {
 					canShoot = false;
-					sounds.PlayExtra ();
 					fireball.transform.position = fireballGunpoint.transform.position;
 					if (PMS.CheckIfOnLeft ()) {
 						fireball.transform.eulerAngles = new Vector2(0, 0);
@@ -380,16 +383,22 @@ public class ShanaAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 	}
 	public void SpecialTwo(){
-		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)){
+		if (state.GetState () == "neutral" || (state.GetState () == "light recovery" && lightHitboxHit) || (state.GetState () == "medium recovery" && mediumHitboxHit)
+		    || (state.GetState () == "heavy recovery" && heavyHitboxHit)) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;
 			PMS.CheckFacing ();
 			StopAllCoroutines ();
 			StartCoroutine (SpecialTwoEnum ());
-		}
+		} else if ((state.GetState () == "jumping" || airHeavyHitboxHit || airMediumHitboxHit) && transform.position.y > 1.5f) {
+			StopAllCoroutines ();
 
+			airMediumHitboxHit = false;
+			airHeavyHitboxHit = false;
+			heavyHitboxHit = false;
+			StartCoroutine(SpecialTwoAirEnum());
+		}
 	}
 	IEnumerator SpecialTwoEnum(){
 
@@ -438,6 +447,47 @@ public class ShanaAttackScript : MonoBehaviour {
 		state.SetState ("neutral");
 		PMS.EnableBodyBox ();
 	}
+	IEnumerator SpecialTwoAirEnum(){
+
+		health.AddMeter (30);
+		proximityBox.SetActive (true);
+		spriteAnimator.PlayExtra1 ();
+		PMS.StopMovement ();
+		sp2Buffer = true;
+		//state.SetState ("attack");
+		// needs jumpbox turned off
+		PMS.MoveToward (8f,10f);
+
+		state.SetState ("jump attack");
+		PMS.DsableBodyBox ();
+		for (int x = 0; x < 40;) {
+
+			if (!timeManager.CheckIfTimePaused()) {
+				if (x == 3) {
+					sp2Buffer = false;
+					//PMS.StopMovement ();
+				}
+				if (x == 8){
+					sp2Effect.SetActive (true);
+				}
+				if (x >=  8 & x < 24) {
+					if (x % 4 == 0) {
+						sp2AirHitbox.SetActive (false);
+						sp2AirHitbox.SetActive (true);
+					}
+				}
+
+				if (x == 26){
+					sp2AirHitbox.SetActive (false);
+				}
+					
+				x++;
+			}
+			yield return null;
+		}
+		state.SetState ("neutral");
+		PMS.EnableBodyBox ();
+	}
 	public void SpecialThree(){
 		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
 			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) {
@@ -456,6 +506,8 @@ public class ShanaAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlaySpecialThree ();
 		PMS.StopMovement ();
+		groundFireEffect.SetActive (true);
+		embersEffect.SetActive (true);
 		state.SetState ("attack");
 		for (int x = 0; x < 30;) {
 			if (!timeManager.CheckIfTimePaused()) {
@@ -538,6 +590,9 @@ public class ShanaAttackScript : MonoBehaviour {
 	public void MediumAirHit(){
 		airMediumHitboxHit = true;
 	}
+	public void HeavyAirHit(){
+		airHeavyHitboxHit = true;
+	}
 	public void CancelAttacks(){
 		PMS.EnableBodyBox ();
 		mediumBuffer = false;
@@ -554,6 +609,7 @@ public class ShanaAttackScript : MonoBehaviour {
 
 		sp2HitboxPart1.SetActive (false);
 		sp2HitboxPart2.SetActive (false);
+		sp2AirHitbox.SetActive (false);
 		throwHitbox.SetActive (false);
 		proximityBox.SetActive (false);
 		specialHitboxHit = false;
