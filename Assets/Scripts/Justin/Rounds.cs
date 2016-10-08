@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Rounds : MonoBehaviour {
 	//variable for prefab
-	public GameObject FeliciaPrefab, HulkPrefab, RyuPrefab, SubzeroPrefab, kenPrefab, BaikenPrefab;
+	public GameObject FeliciaPrefab, HulkPrefab, RyuPrefab,ShanaPrefab, SubzeroPrefab, kenPrefab, BaikenPrefab;
 	public string player1character = "ryu";
 	public string player2character = "ryu";
 	public TextMesh textShadow;
@@ -25,6 +25,7 @@ public class Rounds : MonoBehaviour {
 	public Texture2D[] hulkColor;
 	public Texture2D[] ryuColor;
 	public Texture2D[] ryuFireballColor;
+	public Texture2D[] ShanaColor;
 	public Texture2D[] subzeroColor;
 	public Texture2D[] kenColor;
 	public Texture2D[] kenDogColor;
@@ -323,6 +324,19 @@ public class Rounds : MonoBehaviour {
 				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
 				rightHpBarSprite.SetRightBoarderArt("baiken");
 				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(baikenColor[player2ColorNumber]);
+			}
+			break;
+		case "shana":
+			player = Instantiate(ShanaPrefab, spawnPosition, Quaternion.identity) as GameObject;
+			if (isPlayerOne){
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(ShanaColor[player1ColorNumber]);
+				leftHpBarSprite = GameObject.Find("LeftHpBar").GetComponent<LeftHpBarChange>();
+				leftHpBarSprite.SetLeftBoarderArt("shana");
+			}
+			else{
+				rightHpBarSprite = GameObject.Find("RightHpBar").GetComponent<RightHpBarChange>();
+				rightHpBarSprite.SetRightBoarderArt("shana");
+				player.GetComponentInChildren<ColorPaletteSwap>().LoadColors(ShanaColor[player2ColorNumber]);
 			}
 			break;
 		default :

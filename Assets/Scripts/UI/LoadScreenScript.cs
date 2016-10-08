@@ -56,6 +56,8 @@ public class LoadScreenScript : MonoBehaviour {
 			return 4;
 		case "baiken": 
 			return 5;
+		case "shana": 
+			return 6;
 		default:
 			return 0;
 		}

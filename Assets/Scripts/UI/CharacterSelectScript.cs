@@ -162,7 +162,7 @@ public class CharacterSelectScript : MonoBehaviour {
 		case 2: 
 			return "ryu";
 		case 3: 
-			return "random";
+			return "shana";
 		case 4: 
 			return "subzero";
 		case 5: 
