@@ -375,10 +375,14 @@ public class DogAttackScript : MonoBehaviour {
 			}
 			yield return null;
 		}
-		if (healthScript.CheckAlive()){
-			state.SetState ("neutral");
-			spriteAnimator.StartNeutralAnim ();
+		while (!healthScript.CheckAlive () || kenState.GetState() == "hitstun" || kenState.GetState() == "blockstun" || kenState.GetState() == "falling hit"
+			|| kenState.GetState() == "frozen" || kenState.GetState() == "invincible"  || kenState.GetState() == "prelaunch") {
+			yield return null;
 		}
+
+		Debug.Log (kenState.GetState ());
+		state.SetState ("neutral");
+		spriteAnimator.StartNeutralAnim ();
 	}
 	void MoveTowards(float x, float y = 0){
 		if (y == 0) {

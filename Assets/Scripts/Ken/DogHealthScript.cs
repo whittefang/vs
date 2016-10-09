@@ -34,6 +34,7 @@ public class DogHealthScript : MonoBehaviour {
 	void Reactivate(){
 		alive = true;
 		currentCards = maxCards;
+		Cards.ResetCards ();
 		dogAttackScript.StartRecover ();
 	}
 	public void DealDamage(){

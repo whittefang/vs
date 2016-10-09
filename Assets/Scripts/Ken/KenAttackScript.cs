@@ -182,7 +182,7 @@ public class KenAttackScript : MonoBehaviour {
 		proximityBox.SetActive (true);
 		spriteAnimator.PlayJumpLight ();
 		state.SetState ("jump attack");
-		for (int x = 0; x < 16; ) {
+		for (int x = 0; x < 21; ) {
 
 			if (!timeManager.CheckIfTimePaused()) {
 				if (x == 6){
@@ -197,6 +197,12 @@ public class KenAttackScript : MonoBehaviour {
 				}
 				if (x == 15) {
 					jumpLightHitbox2.SetActive (false);
+				}
+				if (x == 18){
+					jumpLightHitbox.SetActive (true);
+				}
+				if (x == 21){
+					jumpLightHitbox.SetActive (false);
 				}
 
 

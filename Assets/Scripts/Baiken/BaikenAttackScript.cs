@@ -11,7 +11,7 @@ public class BaikenAttackScript : MonoBehaviour {
 	public GameObject lightHitbox, mediumHitbox, mediumHitbox2, heavyHitbox, jumpLightHitbox, jumpMediumHitbox, jumpHeavyHitbox,
 	sp1Hitbox, sp2Hitbox, sp2ParryBox, sp3HookHitbox, sp3Hook,sp3hitboxComplete, sp3hitboxComplete2,fireballGunpoint,
 	superHitbox,superHitbox2, throwHitbox, proximityBox;
-	public GameObject jumpMediumEffect, sp1Effect;
+	public GameObject jumpMediumEffect, sp1Effect, superEffect;
 
 	ProjectileScript fireballProjectileScript , superProjectileScript;
 	TimeManagerScript timeManager;
@@ -587,6 +587,7 @@ public class BaikenAttackScript : MonoBehaviour {
 				superKanji.SetActive (true);
 			}
 			if (x == 4) {
+				superEffect.SetActive (true);
 				superHitbox.SetActive (false);
 				proximityBox.SetActive (false);
 			}

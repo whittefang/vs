@@ -337,6 +337,17 @@ public class KenAnimScript : MonoBehaviour {
 				}
 			}
 		}
+		for (int i = 0; i < 3; i++) {
+			spriteRenderer.sprite = jumpLightFrames [i];
+			for (int x = 0; x < 3;) {
+				yield return null;
+				if (!timeManager.CheckIfTimePaused()) {
+					x++;
+				}
+			}
+		}
+
+		spriteRenderer.sprite = jumpLightFrames [0];
 	}
 	IEnumerator JumpMedium(){
 		SetJumpHitbox ();

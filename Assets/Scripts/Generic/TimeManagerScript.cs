@@ -59,11 +59,11 @@ public class TimeManagerScript : MonoBehaviour {
 		timePaused = true;
 		if (p1Velocity == Vector2.zero){
 			p1Velocity = p1Body.velocity;
-			Debug.Log (p1Velocity);
+			//Debug.Log (p1Velocity);
 		}
 		if (p2Velocity == Vector2.zero) {
 			p2Velocity = p2Body.velocity;
-			Debug.Log (p2Velocity);
+			//Debug.Log (p2Velocity);
 		}
 		p1Body.velocity = Vector2.zero;
 		p2Body.velocity = Vector2.zero;
@@ -72,7 +72,7 @@ public class TimeManagerScript : MonoBehaviour {
 		int currentBody = 0;
 		foreach (Rigidbody2D r in extraBodies) {
 			extraBodiesVelocities[currentBody] =  r.velocity;
-			Debug.Log (extraBodiesVelocities [currentBody]);
+			//Debug.Log (extraBodiesVelocities [currentBody]);
 			r.velocity = Vector2.zero;
 			r.isKinematic = true;
 			currentBody++;
@@ -83,7 +83,7 @@ public class TimeManagerScript : MonoBehaviour {
 		currentBody = 0;
 		foreach (Rigidbody2D r in extraBodies) {
 			r.isKinematic = false;
-			Debug.Log (extraBodiesVelocities [currentBody]);
+			//Debug.Log (extraBodiesVelocities [currentBody]);
 			r.velocity = extraBodiesVelocities[currentBody];
 			currentBody++;
 		}
