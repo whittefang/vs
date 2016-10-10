@@ -12,7 +12,8 @@ public class HealthScript : MonoBehaviour {
 	SpriteAnimator spriteAnimator;
 	public PlayerMovementScript PMS, otherPlayerMovementScript;
 	TimeManagerScript timeManager;
-	ObjectPoolScript hitsparksPool, blocksparksPool;
+	ObjectPoolScript[] hitsparksPool;
+	ObjectPoolScript blocksparksPool;
 	public SoundsPlayer sounds;
 	TextMesh comboCounterText, comboDamageText,comboCounterShadowText, comboDamageShadowText, hitText;
 	public int comboCounter = 0, comboDamage = 0, freezingCounter = 0;
@@ -55,8 +56,7 @@ public class HealthScript : MonoBehaviour {
 			exCurrent =	(int)exBar.GetEx(true);
 			hpLeft = GameObject.Find ("LeftHpBar").GetComponentInChildren<LeftHpBarChange> ();
 			hpLeft.setHpLeft (healthMax);
-			hitsparksPool = GameObject.Find ("P2MasterObject").GetComponent<ObjectPoolScript> ();
-			blocksparksPool = GameObject.Find ("P2BlockSparksObject").GetComponent<ObjectPoolScript> ();
+
 			comboCounterText = GameObject.Find ("P1ComboCount").GetComponent<TextMesh> ();
 			comboDamageText = GameObject.Find ("P1Damage").GetComponent<TextMesh> ();
 			comboCounterShadowText = GameObject.Find ("P1ComboCountShadow").GetComponent<TextMesh> ();
@@ -69,8 +69,6 @@ public class HealthScript : MonoBehaviour {
 			exCurrent =	(int)exBar.GetEx(false);
 			hpRight = GameObject.Find ("RightHpBar").GetComponentInChildren<RightHpBarChange> ();
 			hpRight.setHpRight (healthMax);
-			hitsparksPool = GameObject.Find ("P1MasterObject").GetComponent<ObjectPoolScript> ();
-			blocksparksPool = GameObject.Find ("P1BlockSparksObject").GetComponent<ObjectPoolScript> ();
 			comboCounterText = GameObject.Find ("P2ComboCount").GetComponent<TextMesh> ();
 			comboDamageText = GameObject.Find ("P2Damage").GetComponent<TextMesh> ();
 			comboCounterShadowText = GameObject.Find ("P2ComboCountShadow").GetComponent<TextMesh> ();
@@ -80,6 +78,12 @@ public class HealthScript : MonoBehaviour {
 			hpRed = GameObject.Find ("RightHpBarRed").GetComponentInChildren<HealthBarAnim> ();
 			hpRed.setHp (healthMax);
 		}
+		hitsparksPool = new ObjectPoolScript[4];
+		hitsparksPool[0] = GameObject.Find ("HitLightPool").GetComponent<ObjectPoolScript> ();
+		hitsparksPool[1] = GameObject.Find ("HitMediumPool").GetComponent<ObjectPoolScript> ();
+		hitsparksPool[2] = GameObject.Find ("HitHeavyPool").GetComponent<ObjectPoolScript> ();
+		hitsparksPool[3] = GameObject.Find ("HitExplosionPool").GetComponent<ObjectPoolScript> ();
+		blocksparksPool = GameObject.Find ("P2BlockSparksObject").GetComponent<ObjectPoolScript> ();
 		HideComboText ();
 	}
 	// Update is called once per frame
@@ -99,7 +103,7 @@ public class HealthScript : MonoBehaviour {
 	public bool DealDamage(int amount = 1, int hitstun = 0, int blockstun = 0, Vector3 hitPosition = default(Vector3), 
 		Vector2 hitPushback = default(Vector2), Vector2 blockPushback = default(Vector2), bool isProjectile = false, bool isThrow = false, 
 		bool useCornerKnockback = true, bool freezingAttack = false, bool launcher = false, bool isKnockdownAttack = false, Vector2 optionalPosition = default(Vector2),
-		int hitStopAmount = 0, AudioClip hitSound = default(AudioClip), float hitPitch =1, float blockPitch =1, bool juggle = false){
+		int hitStopAmount = 0, AudioClip hitSound = default(AudioClip), float hitPitch =1, float blockPitch =1, bool juggle = false, int attackStrength =0){
 
 		if (state.GetState () == "parry" && ParryFunc != null && !isThrow) {
 			ParryFunc ();
@@ -177,7 +181,7 @@ public class HealthScript : MonoBehaviour {
 				PMS.PauseRigidBody (hitPushback);
 			}
 
-			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher, optionalPosition, hitStopAmount, hitSound, hitPitch));
+			StartCoroutine (InitiateHitstun (hitstun, hitPosition, hitPushback, isProjectile, useCornerKnockback, freezingAttack, launcher, optionalPosition, hitStopAmount, hitSound, hitPitch, attackStrength));
 
 			// check for death
 			CheckHealth ();
@@ -266,7 +270,7 @@ public class HealthScript : MonoBehaviour {
 		hpRed.DealDamage (healthAmount);
 
 	}
-	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false, Vector2 optionalPosition = default(Vector2), int hitStopAmount = 5, AudioClip hitSound = default(AudioClip), float pitch =0){
+	IEnumerator InitiateHitstun(int stunFrames, Vector3 position, Vector2 hitPush, bool isProjectile, bool useCornerKockback = true, bool freezingAttack = false, bool launcher= false, Vector2 optionalPosition = default(Vector2), int hitStopAmount = 5, AudioClip hitSound = default(AudioClip), float pitch =0, int attackStrength =0){
 
 		if (freezingAttack) {
 			state.SetState ("frozen");
@@ -284,8 +288,8 @@ public class HealthScript : MonoBehaviour {
 			
 
 		if (!freezingAttack) {
-			GameObject sparks = hitsparksPool.FetchObject ();
-			sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y+Random.Range (-.3f, .3f), -.2f);
+			GameObject sparks = hitsparksPool[attackStrength].FetchObject ();
+			sparks.transform.position =  new Vector3 (transform.position.x +Random.Range (-.75f, .75f), position.y+Random.Range (-.5f, .5f), -.2f);
 			sparks.SetActive (true);
 		}
 		PMS.CheckFacing ();

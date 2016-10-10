@@ -489,8 +489,8 @@ public class ShanaAttackScript : MonoBehaviour {
 		PMS.EnableBodyBox ();
 	}
 	public void SpecialThree(){
-		if (state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
-			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) {
+		if ((state.GetState() == "neutral" ||  (state.GetState() =="light recovery" && lightHitboxHit) || (state.GetState() =="medium recovery" && mediumHitboxHit) 
+			|| (state.GetState() =="heavy recovery" && heavyHitboxHit)) && !fireExplosion.activeSelf) {
 			lightHitboxHit = false;
 			mediumHitboxHit = false;
 			heavyHitboxHit = false;

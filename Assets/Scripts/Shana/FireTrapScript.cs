@@ -28,7 +28,7 @@ public class FireTrapScript : MonoBehaviour {
 			yield return null;
 		}
 		hitbox.SetActive (false);
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (.8f);
 		preEffect.SetActive (false);
 		activeEffect.SetActive (false);
 		gameObject.SetActive (false);
