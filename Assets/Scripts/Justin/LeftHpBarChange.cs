@@ -47,6 +47,9 @@ public class LeftHpBarChange : MonoBehaviour {
 		case "baiken" :
 			leftBoarders [5].SetActive (true);
 			break;
+		case "shana" :
+			leftBoarders [6].SetActive (true);
+			break;
 		}
 
 
